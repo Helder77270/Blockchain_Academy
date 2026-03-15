@@ -206,9 +206,36 @@ html, body, #root {
   }
 }
 
-/* Slide layout — each slide snaps and fills the viewport */
+/* Slide layout — each slide is exactly one viewport height, content scales to fit */
+:root {
+  --nav-h: 56px; /* CourseNav height — update here if nav changes */
+  --slide-h: calc(100dvh - var(--nav-h));
+}
+
 .slide-flow > div {
-  height: 100%;
-  min-height: 100%;
+  height: var(--slide-h);
   scroll-snap-align: start;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Templates that need to fill the full slide height for vertical centering */
+.slide-template {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  Scale slide content proportionally on shorter screens (laptops).
+  Targets only the direct child of each slide wrapper so the slide frame
+  itself stays full-height for correct snap behaviour.
+  At 900 px height the factor is exactly 1 (no scale). Below that it shrinks.
+*/
+@media (max-height: 900px) {
+  .slide-flow > div > * {
+    zoom: calc(var(--slide-h) / 900px);
+    width: 100%; /* counteract zoom shrinking the laid-out width */
+  }
 }

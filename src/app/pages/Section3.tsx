@@ -27,7 +27,7 @@ export function Section3() {
         <SectionNav chapters={section3Chapters} />
       </div>
       <div id="section-scroll" className="flex-1 overflow-y-auto snap-y snap-mandatory">
-        <div className="h-full slide-flow">
+        <div className="slide-flow">
 
         {/* ═══════ TITLE ═══════ */}
         <div className="h-full">

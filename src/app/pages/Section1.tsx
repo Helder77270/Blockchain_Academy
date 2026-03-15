@@ -669,7 +669,7 @@ export function Section1() {
         <SectionNav chapters={section1Chapters} />
       </div>
       <div id="section-scroll" className="flex-1 overflow-y-auto snap-y snap-mandatory">
-        <div className="h-full slide-flow">
+        <div className="slide-flow">
 
         {/* ═══════ TITLE ═══════ */}
         <div className="h-full">
