@@ -2,18 +2,17 @@ import { TitleSlide } from '../components/templates/TitleSlide';
 import { ConceptSlide } from '../components/templates/ConceptSlide';
 import { ComparisonSlide } from '../components/templates/ComparisonSlide';
 import { DiagramSlide } from '../components/templates/DiagramSlide';
-import { ProcessSlide } from '../components/templates/ProcessSlide';
 import { QuizSlide } from '../components/templates/QuizSlide';
 import { TakeawaySlide } from '../components/templates/TakeawaySlide';
 import { CalloutBox } from '../components/shared/CalloutBox';
 import { DefinitionBox } from '../components/shared/DefinitionBox';
-import { NetworkNode } from '../components/blockchain/NetworkNode';
 import { BlockchainChain } from '../components/blockchain/BlockchainChain';
 import { Bitcoin, Zap } from 'lucide-react';
 import { SectionNav } from '../components/navigation/SectionNav';
 
 const section2Chapters = [
   { id: 's2-breakthrough', label: 'Bitcoin Breakthrough' },
+  { id: 's2-byzantine', label: 'Byzantine Problem' },
   { id: 's2-what', label: 'What is Bitcoin?' },
   { id: 's2-immutability', label: 'Immutability' },
   { id: 's2-supply', label: 'Supply Model' },
@@ -75,7 +74,31 @@ export function Section2() {
           />
         </div>
 
-        {/* ═══════ 2. WHAT IS BITCOIN ═══════ */}
+        {/* ═══════ 2. BYZANTINE GENERALS PROBLEM ═══════ */}
+        <div id="s2-byzantine" className="h-full">
+          <ConceptSlide
+            title="The Byzantine Generals Problem"
+            description="Before Bitcoin, computer scientists had no practical solution to reaching agreement in a network where some participants might be malicious or unreliable — a problem formalized in 1982."
+            visual={
+              <div className="space-y-4 w-full">
+                <CalloutBox type="important" title="The Problem">
+                  Imagine several generals surrounding a city who must agree on a common battle plan. They can only communicate via messengers — but some generals (or messengers) may be traitors sending contradictory orders. How do loyal generals reach consensus?
+                </CalloutBox>
+                <CalloutBox type="tip" title="Why It Matters for Bitcoin">
+                  In a decentralized network, nodes are the "generals." Any node can lie, go offline, or send conflicting data. Bitcoin's Proof of Work is the first practical solution that makes cheating economically irrational rather than just theoretically impossible.
+                </CalloutBox>
+              </div>
+            }
+            keyPoints={[
+              "Problem formalized by Lamport, Shostak & Pease in 1982",
+              "A network tolerates up to ⅓ of participants being malicious (Byzantine Fault Tolerance)",
+              "Proof of Work makes attacks prohibitively expensive — dishonest nodes waste real energy",
+              "Bitcoin achieves consensus without trusting any individual participant"
+            ]}
+          />
+        </div>
+
+        {/* ═══════ 3. WHAT IS BITCOIN ═══════ */}
         <div id="s2-what" className="h-full">
           <ConceptSlide
             title="What is Bitcoin?"
@@ -258,50 +281,36 @@ export function Section2() {
 
         {/* ═══════ 6. NODE DISTRIBUTION ═══════ */}
         <div id="s2-nodes" className="h-full">
-          <DiagramSlide
+          <ComparisonSlide
             title="Node Distribution & Roles"
-            diagram={
-              <div className="flex flex-col items-center gap-6 py-2">
-                <div className="flex gap-8 items-end">
-                  <div className="flex flex-col items-center gap-2">
-                    <NetworkNode label="Full Node" status="active" />
-                    <span className="text-xs text-muted-foreground text-center max-w-24">Stores entire blockchain, validates all rules</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-2">
-                    <NetworkNode label="Miner" status="active" />
-                    <span className="text-xs text-muted-foreground text-center max-w-24">Creates new blocks, earns rewards</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-2">
-                    <NetworkNode label="SPV Node" status="syncing" />
-                    <span className="text-xs text-muted-foreground text-center max-w-24">Light client, verifies via Merkle proofs</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-2">
-                    <NetworkNode label="Pruned Node" status="active" />
-                    <span className="text-xs text-muted-foreground text-center max-w-24">Full validation, discards old blocks</span>
-                  </div>
-                </div>
-                <div className="text-center px-6 py-3 bg-card rounded-lg border border-border max-w-lg">
-                  <p className="text-sm text-muted-foreground">
-                    Nodes are distributed across <span className="text-foreground font-bold">100+ countries</span>. 
-                    Top concentrations: United States, Germany, France, Canada, Netherlands. 
-                    Geographic diversity increases censorship resistance.
-                  </p>
-                </div>
-              </div>
-            }
-            caption="A healthy network needs geographic and jurisdictional diversity among nodes"
-            annotations={[
+            featureLabel="Node Type"
+            option1Label="Role"
+            option2Label="Storage Needs"
+            option3Label="Validation Method"
+            items={[
               {
-                label: "Full Nodes",
-                description: "Enforce all consensus rules independently. ~19,000 publicly reachable; estimated 50,000+ total including private nodes"
+                feature: "⚙️ Full Node",
+                option1: "Enforces all consensus rules, relays transactions to peers. The backbone of the network.",
+                option2: "Full blockchain — ~600 GB and growing. Requires a dedicated drive.",
+                option3: "Independently verifies every transaction and every block from genesis."
               },
               {
-                label: "Miners",
-                description: "Pool-based mining dominates. Major pools: Foundry USA, AntPool, F2Pool. Mining hardware uses specialized ASICs"
+                feature: "⛏️ Mining Node",
+                option1: "Bundles transactions into blocks and competes via Proof of Work to earn block rewards + fees.",
+                option2: "Full blockchain + specialized ASIC hardware. Very high resource cost.",
+                option3: "Full validation like a full node, plus solves the PoW hash puzzle to propose new blocks."
               },
               {
-                label: "Why It Matters",
-                description: "More nodes = harder to attack or censor. Each node independently verifies every block and transaction"
+                feature: "📱 SPV / Light Node",
+                option1: "Lightweight client used in mobile wallets. Sends and receives BTC without storing the chain.",
+                option2: "Block headers only — ~50 MB. Suitable for phones and low-storage devices.",
+                option3: "Relies on Merkle proofs provided by full nodes. Trusts the longest chain, not self-verified."
+              },
+              {
+                feature: "✂️ Pruned Node",
+                option1: "Validates the full chain during sync, then discards old block data to save disk space.",
+                option2: "Recent blocks only — configurable, typically ~5–10 GB after pruning.",
+                option3: "Full validation from genesis during initial sync. After pruning, can no longer serve old blocks."
               }
             ]}
           />
@@ -347,82 +356,211 @@ export function Section2() {
         </div>
 
         {/* ═══════ 8. LIGHTNING NETWORK ═══════ */}
+        {/* ─── Lightning: Channel Lifecycle ─── */}
         <div id="s2-lightning" className="h-full">
-          <ProcessSlide
-            title="The Lightning Network"
-            steps={[
-              {
-                number: 1,
-                title: "Open Channel",
-                description: "Two parties lock BTC in a multi-signature address on the main chain, creating a payment channel"
-              },
-              {
-                number: 2,
-                title: "Off-Chain Transactions",
-                description: "They exchange signed transactions instantly and for nearly zero fees — without touching the blockchain"
-              },
-              {
-                number: 3,
-                title: "Route Payments",
-                description: "Channels connect into a network — payments route through intermediaries even without a direct channel"
-              },
-              {
-                number: 4,
-                title: "Close Channel",
-                description: "When done, the final balance is broadcast to the main chain in a single transaction"
-              }
-            ]}
-          />
-        </div>
+          <div className="w-full h-full flex flex-col p-5 lg:p-8">
 
-        <div className="h-full">
-          <ConceptSlide
-            title="Lightning Network in Practice"
-            description="Lightning is Bitcoin's Layer 2 scaling solution — enabling instant, cheap micropayments while inheriting the security of the base layer."
-            visual={
-              <div className="space-y-4 w-full">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-card rounded-xl border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="size-5 text-[#f59e0b]" />
-                      <h4 className="font-bold text-foreground">Speed</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Transactions settle in milliseconds instead of ~10 minutes</p>
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-2">
+              <Zap className="size-6 text-[#f59e0b]" />
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Lightning Network — How a Channel Works</h2>
+              <span className="px-3 py-1 bg-[#f59e0b]/20 text-[#f59e0b] rounded-full text-xs font-bold border border-[#f59e0b]/30">LAYER 2</span>
+            </div>
+
+            {/* Anchor metaphor */}
+            <div className="bg-[#f59e0b]/10 border border-[#f59e0b]/30 rounded-xl px-4 py-2 mb-3 flex items-center gap-3">
+              <span className="text-xl">🍺</span>
+              <p className="text-sm">
+                <span className="font-bold text-[#f59e0b]">Think of it like a bar tab —</span>
+                <span className="text-muted-foreground"> you open a tab (lock funds on Bitcoin), buy rounds freely all evening (off-chain payments), then pay one bill at closing time (settle on-chain). Unlimited drinks, one receipt.</span>
+              </p>
+            </div>
+
+            {/* 2×2 step grid */}
+            <div className="grid grid-cols-2 gap-3 flex-1 min-h-0">
+
+              {/* Step 1 */}
+              <div className="bg-card border-2 border-[#ED1C24]/40 rounded-xl p-4 flex flex-col gap-2">
+                <span className="px-2 py-0.5 bg-[#ED1C24]/20 text-[#ED1C24] rounded text-xs font-bold w-fit">STEP 1 · ON-CHAIN 🔗</span>
+                <h3 className="font-bold text-foreground">Open the Tab</h3>
+                <p className="text-sm text-muted-foreground">Alice and Bob each deposit BTC into a <span className="text-foreground font-medium">shared wallet with two keys</span>. Neither can take the money alone — both signatures are always required. This is the one Bitcoin transaction that opens the channel.</p>
+                <div className="mt-auto pt-2 border-t border-border flex items-center gap-2 text-sm">
+                  <div className="flex-1 text-center">
+                    <div className="text-xs text-muted-foreground">Alice deposits</div>
+                    <div className="font-mono font-bold text-[#f59e0b]">0.5 BTC</div>
                   </div>
-                  <div className="p-4 bg-card rounded-xl border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="size-5 text-[#39B54A]" />
-                      <h4 className="font-bold text-foreground">Cost</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Fees typically less than 1 satoshi (~$0.0003) per payment</p>
+                  <span className="text-muted-foreground font-bold">+</span>
+                  <div className="flex-1 text-center">
+                    <div className="text-xs text-muted-foreground">Bob deposits</div>
+                    <div className="font-mono font-bold text-[#f59e0b]">0.5 BTC</div>
                   </div>
-                  <div className="p-4 bg-card rounded-xl border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="size-5 text-[#6366f1]" />
-                      <h4 className="font-bold text-foreground">Capacity</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground">~5,000+ BTC locked in channels, ~16,000+ nodes routing payments</p>
-                  </div>
-                  <div className="p-4 bg-card rounded-xl border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="size-5 text-[#ED1C24]" />
-                      <h4 className="font-bold text-foreground">Adoption</h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground">El Salvador, Strike, Cash App, and thousands of merchants accept Lightning payments</p>
+                  <span className="text-muted-foreground font-bold">=</span>
+                  <div className="flex-1 text-center">
+                    <div className="text-xs text-muted-foreground">Shared wallet</div>
+                    <div className="font-mono font-bold text-[#39B54A]">1.0 BTC 🔒</div>
                   </div>
                 </div>
-                <CalloutBox type="tip" title="Real-World Impact">
-                  El Salvador adopted Bitcoin as legal tender in 2021 and built the Chivo wallet on Lightning. Citizens can send remittances home for near-zero fees instead of the typical 10-15% charged by traditional services.
+              </div>
+
+              {/* Step 2 */}
+              <div className="bg-card border-2 border-[#f59e0b]/40 rounded-xl p-4 flex flex-col gap-2">
+                <span className="px-2 py-0.5 bg-[#f59e0b]/20 text-[#f59e0b] rounded text-xs font-bold w-fit">STEP 2 · OFF-CHAIN ⚡</span>
+                <h3 className="font-bold text-foreground">Pay Instantly — Free</h3>
+                <p className="text-sm text-muted-foreground">Each payment is a <span className="text-foreground font-medium">signed IOU</span> — both parties sign a note saying "Alice has X, Bob has Y." Nothing goes on Bitcoin yet. Each new IOU replaces the last, like updating a running tab.</p>
+                <div className="mt-auto pt-2 border-t border-border">
+                  <div className="text-xs text-muted-foreground mb-1.5">Alice pays Bob → the IOU updates:</div>
+                  <div className="space-y-1">
+                    {[
+                      { alice: 50, bob: 50, label: 'Start' },
+                      { alice: 30, bob: 70, label: 'Alice pays 0.2 BTC' },
+                      { alice: 10, bob: 90, label: 'Alice pays 0.2 BTC again' },
+                    ].map(row => (
+                      <div key={row.label} className="flex items-center gap-2 text-xs">
+                        <span className="text-muted-foreground w-32 shrink-0">{row.label}</span>
+                        <div className="flex-1 flex rounded overflow-hidden h-4">
+                          <div className="bg-[#6366f1]/60 flex items-center justify-center text-white font-bold transition-all" style={{ width: `${row.alice}%` }}>
+                            {row.alice > 15 ? `${row.alice}%` : ''}
+                          </div>
+                          <div className="bg-[#39B54A]/60 flex items-center justify-center text-white font-bold transition-all" style={{ width: `${row.bob}%` }}>
+                            {row.bob > 15 ? `${row.bob}%` : ''}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex gap-3 text-xs mt-1">
+                      <span className="flex items-center gap-1"><span className="size-2.5 rounded-sm bg-[#6366f1]/60 inline-block" /> Alice</span>
+                      <span className="flex items-center gap-1"><span className="size-2.5 rounded-sm bg-[#39B54A]/60 inline-block" /> Bob</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="bg-card border-2 border-[#39B54A]/40 rounded-xl p-4 flex flex-col gap-2">
+                <span className="px-2 py-0.5 bg-[#39B54A]/20 text-[#39B54A] rounded text-xs font-bold w-fit">STEP 3 · ROUTING 🌐</span>
+                <h3 className="font-bold text-foreground">Pay Anyone — No Direct Channel Needed</h3>
+                <p className="text-sm text-muted-foreground">No channel with Bob? Alice can pay him through Charlie. The key: a <span className="text-foreground font-medium">cryptographic lock</span> ensures Charlie can only forward the payment — he physically cannot steal it. Like a relay race where the baton <em>must</em> be passed.</p>
+                <div className="mt-auto pt-2 border-t border-border">
+                  <div className="flex items-end justify-between gap-1 mb-1">
+                    <div className="text-center">
+                      <div className="size-10 rounded-full bg-[#6366f1]/20 border-2 border-[#6366f1]/50 flex items-center justify-center font-bold text-[#6366f1]">A</div>
+                      <div className="text-xs text-muted-foreground mt-1">Alice</div>
+                      <div className="text-xs text-[#6366f1] font-mono">sends</div>
+                    </div>
+                    <div className="flex-1 flex flex-col items-center pb-4">
+                      <div className="w-full border-t-2 border-dashed border-[#f59e0b]/60" />
+                      <span className="text-xs text-[#f59e0b] mt-0.5">🔐 locked</span>
+                    </div>
+                    <div className="text-center">
+                      <div className="size-10 rounded-full bg-[#f59e0b]/20 border-2 border-[#f59e0b]/50 flex items-center justify-center font-bold text-[#f59e0b]">C</div>
+                      <div className="text-xs text-muted-foreground mt-1">Charlie</div>
+                      <div className="text-xs text-muted-foreground font-mono">relays</div>
+                    </div>
+                    <div className="flex-1 flex flex-col items-center pb-4">
+                      <div className="w-full border-t-2 border-dashed border-[#39B54A]/60" />
+                      <span className="text-xs text-[#39B54A] mt-0.5">🔓 unlocked</span>
+                    </div>
+                    <div className="text-center">
+                      <div className="size-10 rounded-full bg-[#ED1C24]/20 border-2 border-[#ED1C24]/50 flex items-center justify-center font-bold text-[#ED1C24]">B</div>
+                      <div className="text-xs text-muted-foreground mt-1">Bob</div>
+                      <div className="text-xs text-[#39B54A] font-mono">receives</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">Charlie earns a tiny routing fee but can never keep the full amount</p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="bg-card border-2 border-[#6366f1]/40 rounded-xl p-4 flex flex-col gap-2">
+                <span className="px-2 py-0.5 bg-[#ED1C24]/20 text-[#ED1C24] rounded text-xs font-bold w-fit">STEP 4 · ON-CHAIN 🔗</span>
+                <h3 className="font-bold text-foreground">Close the Tab — Pay the Bill</h3>
+                <p className="text-sm text-muted-foreground">Either party can post the <span className="text-foreground font-medium">latest IOU</span> to Bitcoin at any time. The blockchain reads it and sends real BTC to both. <span className="text-[#ED1C24] font-medium">Cheat attempt:</span> if someone posts an old IOU trying to get more money — Bitcoin detects it and gives the cheater's funds to the other person.</p>
+                <div className="mt-auto pt-2 border-t border-border flex items-stretch gap-2">
+                  <div className="flex-1 bg-muted/50 rounded-lg p-2 text-center">
+                    <div className="text-xs text-muted-foreground">Payments made</div>
+                    <div className="text-lg font-black text-foreground">∞</div>
+                    <div className="text-xs text-[#39B54A]">2 on-chain txs total</div>
+                  </div>
+                  <div className="flex-1 bg-[#39B54A]/10 rounded-lg p-2 text-center border border-[#39B54A]/30">
+                    <div className="text-xs text-muted-foreground">Alice gets</div>
+                    <div className="font-mono font-bold text-[#39B54A]">0.1 BTC</div>
+                  </div>
+                  <div className="flex-1 bg-[#39B54A]/10 rounded-lg p-2 text-center border border-[#39B54A]/30">
+                    <div className="text-xs text-muted-foreground">Bob gets</div>
+                    <div className="font-mono font-bold text-[#39B54A]">0.9 BTC</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* ─── Lightning: Why It Matters ─── */}
+        <div className="h-full">
+          <div className="w-full h-full flex flex-col p-5 lg:p-8">
+
+            <div className="flex items-center gap-3 mb-2">
+              <Zap className="size-6 text-[#f59e0b]" />
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Lightning Network — Why It Matters</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              Bitcoin's base layer processes ~7 transactions per second and takes ~10 minutes to confirm. Lightning solves this without changing Bitcoin itself.
+            </p>
+
+            <div className="grid grid-cols-3 gap-3 mb-3">
+              <div className="bg-card rounded-xl border border-border p-4 text-center">
+                <div className="text-2xl lg:text-3xl font-black text-[#f59e0b]">~1ms</div>
+                <div className="text-sm font-semibold text-foreground mt-1">Settlement</div>
+                <div className="text-xs text-muted-foreground mt-0.5">vs ~10 min on-chain</div>
+              </div>
+              <div className="bg-card rounded-xl border border-border p-4 text-center">
+                <div className="text-2xl lg:text-3xl font-black text-[#39B54A]">&lt;$0.001</div>
+                <div className="text-sm font-semibold text-foreground mt-1">Fee per payment</div>
+                <div className="text-xs text-muted-foreground mt-0.5">vs $1–$50 on-chain</div>
+              </div>
+              <div className="bg-card rounded-xl border border-border p-4 text-center">
+                <div className="text-2xl lg:text-3xl font-black text-[#6366f1]">∞</div>
+                <div className="text-sm font-semibold text-foreground mt-1">Theoretical TPS</div>
+                <div className="text-xs text-muted-foreground mt-0.5">limited only by nodes</div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 flex-1 min-h-0">
+              <div className="space-y-3">
+                <div className="bg-card rounded-xl border border-border p-4">
+                  <h4 className="font-bold text-foreground mb-1">🌍 Real-World Adoption</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• <span className="text-foreground font-medium">El Salvador</span> — national Bitcoin wallet (Chivo) runs on Lightning</li>
+                    <li>• <span className="text-foreground font-medium">Strike & Cash App</span> — millions of users send Lightning payments</li>
+                    <li>• <span className="text-foreground font-medium">Remittances</span> — &lt;0.1% fee vs 10–15% via Western Union</li>
+                  </ul>
+                </div>
+                <div className="bg-card rounded-xl border border-border p-4">
+                  <h4 className="font-bold text-foreground mb-1">⚡ New Use Cases</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• <span className="text-foreground font-medium">Streaming money</span> — pay per second for content or services</li>
+                    <li>• <span className="text-foreground font-medium">Micropayments</span> — tip 1 sat for an article or a tweet</li>
+                    <li>• <span className="text-foreground font-medium">Machine payments</span> — IoT devices paying each other autonomously</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="bg-card rounded-xl border border-border p-4">
+                  <h4 className="font-bold text-foreground mb-1">🔐 Security Guarantees</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Channels are enforced by <span className="text-foreground font-medium">Bitcoin smart contracts</span> — no middleman</li>
+                    <li>• A party trying to cheat with an old state gets their funds <span className="text-foreground font-medium">penalized</span></li>
+                    <li>• HTLCs ensure intermediaries can route but <span className="text-foreground font-medium">never steal</span></li>
+                  </ul>
+                </div>
+                <CalloutBox type="tip" title="Key Insight">
+                  Lightning doesn't replace Bitcoin — it sits on top of it. The base layer provides the trust; Lightning provides the speed. Same model as the internet: TCP/IP underneath, HTTP on top.
                 </CalloutBox>
               </div>
-            }
-            keyPoints={[
-              "Lightning solves Bitcoin's scalability bottleneck (~7 TPS on-chain)",
-              "Payments are private — only sender and receiver know the details",
-              "Enables use cases like streaming payments (pay per second)",
-              "Inherits Bitcoin's security: channels are enforced by on-chain smart contracts"
-            ]}
-          />
+            </div>
+
+          </div>
         </div>
 
         {/* ═══════ QUIZ ═══════ */}
@@ -476,6 +614,48 @@ export function Section2() {
               { text: "To make all Bitcoin transactions completely anonymous", correct: false }
             ]}
             explanation="The Lightning Network is a Layer 2 solution that processes transactions in off-chain payment channels. Final balances are settled on the main chain, enabling instant payments with minimal fees while inheriting Bitcoin's base-layer security."
+          />
+        </div>
+
+        {/* Quiz: Byzantine Generals Problem */}
+        <div className="h-full">
+          <QuizSlide
+            question="What was Bitcoin's key insight for solving the Byzantine Generals Problem?"
+            options={[
+              { text: "Appointing a trusted coordinator node to validate all messages", correct: false },
+              { text: "Encrypting all communications between nodes so traitors can't intercept them", correct: false },
+              { text: "Making dishonest behaviour economically irrational through Proof of Work", correct: true },
+              { text: "Requiring every node to know the identity of every other node", correct: false }
+            ]}
+            explanation="Bitcoin doesn't try to eliminate dishonest participants — it makes cheating unprofitable. Proof of Work forces attackers to expend real energy and hardware. The cost of a successful attack always exceeds the potential gain, so rational actors stay honest."
+          />
+        </div>
+
+        {/* Quiz: Node types */}
+        <div className="h-full">
+          <QuizSlide
+            question="Which node type performs full validation of the entire blockchain history but then discards old block data to save disk space?"
+            options={[
+              { text: "SPV / Light Node", correct: false },
+              { text: "Mining Node", correct: false },
+              { text: "Full Node", correct: false },
+              { text: "Pruned Node", correct: true }
+            ]}
+            explanation="A pruned node downloads and validates every block from genesis — enforcing all consensus rules — then deletes raw block data older than a configurable threshold. Unlike an SPV node, it doesn't trust others for validation; unlike a full node, it doesn't keep the entire history on disk."
+          />
+        </div>
+
+        {/* Quiz: Lightning channel mechanics */}
+        <div className="h-full">
+          <QuizSlide
+            question="In a Lightning Network channel, what stops a party from cheating by broadcasting an old balance state?"
+            options={[
+              { text: "Bitcoin miners manually review every channel closure", correct: false },
+              { text: "Channels automatically expire after 24 hours, preventing old states", correct: false },
+              { text: "Both parties must be online simultaneously to close a channel", correct: false },
+              { text: "A penalty mechanism lets the honest party claim ALL channel funds if an old state is broadcast", correct: true }
+            ]}
+            explanation="Every time balances update, both parties sign a revocation key for the previous state. If someone tries to cheat by broadcasting an old state, the counterparty can use that revocation key to claim the entire channel balance as a penalty — making cheating catastrophically expensive."
           />
         </div>
 

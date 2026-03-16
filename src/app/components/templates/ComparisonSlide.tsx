@@ -7,13 +7,14 @@ interface ComparisonItem {
 
 interface ComparisonSlideProps {
   title: string;
+  featureLabel?: string;
   option1Label: string;
   option2Label: string;
   option3Label?: string;
   items: ComparisonItem[];
 }
 
-export function ComparisonSlide({ title, option1Label, option2Label, option3Label, items }: ComparisonSlideProps) {
+export function ComparisonSlide({ title, featureLabel = 'Feature', option1Label, option2Label, option3Label, items }: ComparisonSlideProps) {
   const hasThreeOptions = !!option3Label;
   const cols = hasThreeOptions ? 'grid-cols-4' : 'grid-cols-3';
 
@@ -25,7 +26,7 @@ export function ComparisonSlide({ title, option1Label, option2Label, option3Labe
         {/* Table Header */}
         <div className={`grid ${cols} gap-2 lg:gap-4 mb-2 lg:mb-3`}>
           <div className="p-2 lg:p-4 bg-muted rounded-lg">
-            <h3 className="font-bold text-sm lg:text-base text-foreground">Feature</h3>
+            <h3 className="font-bold text-sm lg:text-base text-foreground">{featureLabel}</h3>
           </div>
           <div className="p-2 lg:p-4 bg-gradient-to-br from-[#ED1C24] to-[#39B54A] rounded-lg">
             <h3 className="font-bold text-sm lg:text-base text-white">{option1Label}</h3>

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 
 interface Resource {
@@ -38,7 +39,7 @@ const resources: Resource[] = [
     tag: "Deep Dive",
     tagColor: "#f59e0b",
   },
-  // Courses & Learning
+  // Books
   {
     title: "Mastering Bitcoin — Andreas Antonopoulos (free online)",
     url: "https://github.com/bitcoinbook/bitcoinbook",
@@ -54,6 +55,14 @@ const resources: Resource[] = [
     tagColor: "#8b5cf6",
   },
   {
+    title: "The Bitcoin Standard — Saifedean Ammous",
+    url: "https://saifedean.com/thebitcoinstandard/",
+    description: "A deep economic and historical argument for Bitcoin as sound money. Thought-provoking regardless of your stance.",
+    tag: "Book",
+    tagColor: "#8b5cf6",
+  },
+  // Courses
+  {
     title: "MIT 15.S12 — Blockchain and Money (Gary Gensler)",
     url: "https://www.youtube.com/playlist?list=PLUl4u3cNGP63UUkfL0onkxF6MYgVa04Fn",
     description: "Full MIT course on blockchain technology and its applications in finance. 24 lectures, completely free.",
@@ -67,7 +76,7 @@ const resources: Resource[] = [
     tag: "Interactive",
     tagColor: "#39B54A",
   },
-  // Visualization & Tools
+  // Tools
   {
     title: "Blockchain Explorer — Mempool.space",
     url: "https://mempool.space/",
@@ -89,14 +98,21 @@ const resources: Resource[] = [
     tag: "Tool",
     tagColor: "#22d3ee",
   },
-  // Fun & Culture
   {
-    title: "The Bitcoin Standard — Saifedean Ammous",
-    url: "https://saifedean.com/thebitcoinstandard/",
-    description: "A deep economic and historical argument for Bitcoin as sound money. Thought-provoking regardless of your stance.",
-    tag: "Book",
-    tagColor: "#8b5cf6",
+    title: "Blockchain.com Explorer — Visual Block Explorer",
+    url: "https://www.blockchain.com/explorer",
+    description: "Clean, visual Bitcoin and Ethereum block explorer. Explore blocks, transactions, and addresses with clear graphs and stats.",
+    tag: "Tool",
+    tagColor: "#22d3ee",
   },
+  {
+    title: "DeFi Llama — DeFi Analytics Dashboard",
+    url: "https://defillama.com/",
+    description: "The most comprehensive DeFi analytics platform. Track Total Value Locked (TVL) across all chains and protocols with beautiful charts.",
+    tag: "Tool",
+    tagColor: "#22d3ee",
+  },
+  // Videos
   {
     title: "Whiteboard Crypto — YouTube",
     url: "https://www.youtube.com/@WhiteboardCrypto",
@@ -111,6 +127,7 @@ const resources: Resource[] = [
     tag: "Video",
     tagColor: "#6366f1",
   },
+  // News & Research
   {
     title: "Bitcoin Magazine",
     url: "https://bitcoinmagazine.com/",
@@ -118,27 +135,20 @@ const resources: Resource[] = [
     tag: "News",
     tagColor: "#f59e0b",
   },
-  // Visual & Interactive
+  {
+    title: "Quo Vadis Web3 — Blockchain Research Report",
+    url: "https://quovadis.webthree.rs/",
+    description: "Comprehensive research report exploring where Web3 is heading — covering DeFi, NFTs, DAOs, regulation, and emerging trends.",
+    tag: "Research",
+    tagColor: "#f59e0b",
+  },
+  // Visuals
   {
     title: "TxCity — Watch Bitcoin & Ethereum Transactions Live",
     url: "https://txcity.io/v/eth-btc",
     description: "Mesmerizing real-time visualization of BTC and ETH transactions as passengers boarding buses (blocks). A beautiful way to see the blockchain in action.",
     tag: "Visual",
     tagColor: "#39B54A",
-  },
-  {
-    title: "Quo Vadis Web3 — Blockchain Research Report",
-    url: "https://quovadis.webthree.rs/",
-    description: "Comprehensive research report exploring where Web3 is heading — covering DeFi, NFTs, DAOs, regulation, and emerging trends. Great for understanding the bigger picture.",
-    tag: "Research",
-    tagColor: "#f59e0b",
-  },
-  {
-    title: "Blockchain.com Explorer — Visual Block Explorer",
-    url: "https://www.blockchain.com/explorer",
-    description: "Clean, visual Bitcoin and Ethereum block explorer. Explore blocks, transactions, and addresses with clear graphs and stats.",
-    tag: "Tool",
-    tagColor: "#22d3ee",
   },
   {
     title: "Bitfeed — Real-Time Bitcoin Block Visualizer",
@@ -155,26 +165,155 @@ const resources: Resource[] = [
     tagColor: "#39B54A",
   },
   {
-    title: "DeFi Llama — DeFi Analytics Dashboard",
-    url: "https://defillama.com/",
-    description: "The most comprehensive DeFi analytics platform. Track Total Value Locked (TVL) across all chains and protocols with beautiful charts.",
-    tag: "Tool",
-    tagColor: "#22d3ee",
-  },
-  {
     title: "Ultrasound.money — Ethereum Supply Dashboard",
     url: "https://ultrasound.money/",
     description: "Real-time visualization of ETH issuance, burn rate, and supply dynamics since The Merge. Beautiful animated charts.",
     tag: "Visual",
     tagColor: "#39B54A",
   },
+  // Ethereum — Technical
+  {
+    title: "Ethereum Whitepaper — Vitalik Buterin",
+    url: "https://ethereum.org/en/whitepaper/",
+    description: "The original Ethereum proposal from 2014. Introduces smart contracts, the EVM, and the vision of a 'world computer'. A must-read after the Bitcoin whitepaper.",
+    tag: "Must-Read",
+    tagColor: "#ED1C24",
+  },
+  {
+    title: "Ethereum Yellow Paper — Gavin Wood",
+    url: "https://ethereum.github.io/yellowpaper/paper.pdf",
+    description: "The formal mathematical specification of the Ethereum Virtual Machine. Dense but authoritative — the definitive technical reference for how the EVM executes bytecode.",
+    tag: "Deep Dive",
+    tagColor: "#f59e0b",
+  },
+  {
+    title: "Ethereum Developer Documentation",
+    url: "https://ethereum.org/en/developers/docs/",
+    description: "The official Ethereum Foundation developer docs. Covers accounts, transactions, gas, the EVM, consensus, and Layer 2 — well-structured for all levels.",
+    tag: "Deep Dive",
+    tagColor: "#f59e0b",
+  },
+  {
+    title: "Solidity Documentation",
+    url: "https://docs.soliditylang.org/",
+    description: "Official docs for Solidity, the primary language for writing Ethereum smart contracts. Covers syntax, types, ABI encoding, and security patterns.",
+    tag: "Deep Dive",
+    tagColor: "#f59e0b",
+  },
+  {
+    title: "EVM Codes — Interactive EVM Opcode Reference",
+    url: "https://evm.codes/",
+    description: "Interactive reference for every EVM opcode with gas costs, stack effects, and a live bytecode playground. Indispensable for anyone writing or auditing Solidity.",
+    tag: "Tool",
+    tagColor: "#22d3ee",
+  },
+  {
+    title: "OpenZeppelin Contracts",
+    url: "https://docs.openzeppelin.com/contracts/",
+    description: "The industry-standard library of audited, reusable smart contracts — ERC-20, ERC-721, access control, governance, and more. The starting point for any serious Solidity project.",
+    tag: "Tool",
+    tagColor: "#22d3ee",
+  },
+  {
+    title: "Remix IDE",
+    url: "https://remix.ethereum.org/",
+    description: "Browser-based Solidity IDE with a built-in compiler, debugger, and local EVM. Zero setup — the fastest way to write and deploy your first smart contract.",
+    tag: "Interactive",
+    tagColor: "#39B54A",
+  },
+  {
+    title: "Ethereum EIPs — Improvement Proposals",
+    url: "https://eips.ethereum.org/",
+    description: "The official repository of all Ethereum Improvement Proposals. Read EIP-20 (ERC-20 tokens), EIP-721 (NFTs), EIP-1559 (fee market reform), and more at the source.",
+    tag: "Deep Dive",
+    tagColor: "#f59e0b",
+  },
+  // Ethereum — Business & Ecosystem
+  {
+    title: "Bankless — Podcast & Newsletter",
+    url: "https://www.bankless.com/",
+    description: "The leading Ethereum culture media brand. Covers DeFi, DAOs, L2 ecosystems, and the broader crypto economy with long-form interviews and analysis.",
+    tag: "News",
+    tagColor: "#f59e0b",
+  },
+  {
+    title: "The Defiant",
+    url: "https://thedefiant.io/",
+    description: "Daily DeFi and Ethereum ecosystem news with in-depth reporting on protocols, regulation, and market trends. One of the most reliable crypto journalism outlets.",
+    tag: "News",
+    tagColor: "#f59e0b",
+  },
+  {
+    title: "Week in Ethereum News",
+    url: "https://weekinethereumnews.com/",
+    description: "A weekly digest of everything happening in the Ethereum ecosystem — protocol upgrades, tooling releases, security disclosures, and ecosystem news. Invaluable for staying current.",
+    tag: "News",
+    tagColor: "#f59e0b",
+  },
+  {
+    title: "Electric Capital Developer Report",
+    url: "https://www.developerreport.com/",
+    description: "Annual data-driven report on blockchain developer activity across all ecosystems. The go-to source for understanding which chains are actually being built on.",
+    tag: "Research",
+    tagColor: "#f59e0b",
+  },
+  {
+    title: "L2Beat — Layer 2 Risk & Analytics",
+    url: "https://l2beat.com/",
+    description: "Comprehensive tracking of every Ethereum Layer 2 — TVL, risk ratings, withdrawal mechanisms, and technical maturity. Essential for understanding the L2 landscape.",
+    tag: "Tool",
+    tagColor: "#22d3ee",
+  },
+  // Wallets
+  {
+    title: "MetaMask",
+    url: "https://metamask.io/",
+    description: "The most widely used Ethereum browser extension wallet. Install it to interact with dApps, DeFi protocols, and NFT marketplaces directly in your browser.",
+    tag: "Wallet",
+    tagColor: "#f97316",
+  },
+  {
+    title: "Phantom",
+    url: "https://phantom.com/",
+    description: "The leading Solana wallet, also supporting Ethereum and Bitcoin. Known for its clean UI and seamless dApp integration.",
+    tag: "Wallet",
+    tagColor: "#f97316",
+  },
+  {
+    title: "Coinbase Wallet",
+    url: "https://www.coinbase.com/wallet",
+    description: "Self-custodial wallet from Coinbase. A beginner-friendly entry point supporting multiple chains, DeFi, and NFTs — you hold your own keys.",
+    tag: "Wallet",
+    tagColor: "#f97316",
+  },
+  {
+    title: "Binance Web3 Wallet",
+    url: "https://www.binance.com/en/web3wallet",
+    description: "Binance's built-in self-custodial Web3 wallet. Access DeFi protocols, dApps, and cross-chain swaps directly from the Binance app.",
+    tag: "Wallet",
+    tagColor: "#f97316",
+  },
 ];
 
+const ALL_TAGS = ['All', ...Array.from(new Set(resources.map(r => r.tag)))];
+
+const TAG_COLORS: Record<string, string> = Object.fromEntries(
+  resources.map(r => [r.tag, r.tagColor])
+);
+
 export function Bibliography() {
+  const [activeFilter, setActiveFilter] = useState<string>('All');
+
+  const filtered = activeFilter === 'All'
+    ? resources
+    : resources.filter(r => r.tag === activeFilter);
+
   return (
     <div className="size-full overflow-y-auto">
       <div className="max-w-5xl mx-auto px-8 py-16">
-        <div className="text-center mb-12">
+
+        {/* Header */}
+        <div className="text-center mb-10">
           <div className="inline-block px-4 py-2 rounded-full bg-[#ED1C24]/10 border border-[#ED1C24]/30 mb-4">
             <span className="text-[#ED1C24] font-bold">📖 Bibliography</span>
           </div>
@@ -187,8 +326,36 @@ export function Bibliography() {
           </p>
         </div>
 
+        {/* Filter pills */}
+        <div className="flex flex-wrap gap-2 mb-8 justify-center">
+          {ALL_TAGS.map(tag => {
+            const isActive = activeFilter === tag;
+            const color = tag === 'All' ? '#ED1C24' : TAG_COLORS[tag];
+            return (
+              <button
+                key={tag}
+                onClick={() => setActiveFilter(tag)}
+                className="px-4 py-1.5 rounded-full text-sm font-semibold border transition-all"
+                style={
+                  isActive
+                    ? { backgroundColor: color, color: '#fff', borderColor: color }
+                    : { backgroundColor: color + '15', color: color, borderColor: color + '40' }
+                }
+              >
+                {tag}
+                {tag !== 'All' && (
+                  <span className="ml-1.5 opacity-70 font-normal text-xs">
+                    {resources.filter(r => r.tag === tag).length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Resource list */}
         <div className="space-y-4">
-          {resources.map((r, i) => (
+          {filtered.map((r, i) => (
             <a
               key={i}
               href={r.url}

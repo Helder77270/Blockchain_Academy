@@ -1062,20 +1062,6 @@ export function Section1() {
           <PrevHashExercise />
         </div>
 
-        {/* Quiz: block alteration */}
-        <div className="h-full">
-          <QuizSlide
-            question="What happens if someone tries to alter a transaction in a previous block?"
-            options={[
-              { text: "The block's hash would change, breaking the chain", correct: true },
-              { text: "Nothing, previous blocks can be freely edited", correct: false },
-              { text: "Only the miner who created the block would notice", correct: false },
-              { text: "The network would automatically repair the chain", correct: false }
-            ]}
-            explanation="Because each block's hash is included in the next block, changing any data would change the hash and break the cryptographic link. The network would reject the altered chain."
-          />
-        </div>
-
         {/* ═══════ 7. WALLETS & SIGNATURES ═══════ */}
         <div id="s1-wallets" className="h-full">
           <ComparisonSlide
@@ -1181,20 +1167,6 @@ export function Section1() {
               "Every Bitcoin transaction includes a digital signature",
               "ECDSA (Elliptic Curve Digital Signature Algorithm) is used in Bitcoin"
             ]}
-          />
-        </div>
-
-        {/* Quiz: seed phrase */}
-        <div className="h-screen">
-          <QuizSlide
-            question="In a self-custodial wallet, what happens if you lose your seed phrase?"
-            options={[
-              { text: "You can contact customer support to recover your funds", correct: false },
-              { text: "Your funds are permanently lost — no one can recover them", correct: true },
-              { text: "The blockchain automatically generates a new seed phrase", correct: false },
-              { text: "Your funds are returned to the sender", correct: false }
-            ]}
-            explanation="In self-custodial wallets, the seed phrase is the only way to derive your private keys. There is no company or authority that can recover them. This is the trade-off for full control: total responsibility."
           />
         </div>
 
@@ -1511,7 +1483,7 @@ export function Section1() {
         </div>
 
         {/* Quiz: transactions */}
-        <div className="h-screen">
+        <div className="h-full">
           <QuizSlide
             question="In Bitcoin's UTXO model, what represents the transaction fee?"
             options={[
@@ -1525,7 +1497,7 @@ export function Section1() {
         </div>
 
         {/* Quiz: hashing */}
-        <div className="h-screen">
+        <div className="h-full">
           <QuizSlide
             question="What happens if you change a single character in the input of a SHA-256 hash?"
             options={[
@@ -1539,7 +1511,7 @@ export function Section1() {
         </div>
 
         {/* Quiz: Merkle trees */}
-        <div className="h-screen">
+        <div className="h-full">
           <QuizSlide
             question="Why are Merkle trees used in blockchains instead of hashing all transactions together?"
             options={[
@@ -1553,7 +1525,7 @@ export function Section1() {
         </div>
 
         {/* Quiz: wallets & keys */}
-        <div className="h-screen">
+        <div className="h-full">
           <QuizSlide
             question="What does a cryptocurrency wallet actually store?"
             options={[
@@ -1567,7 +1539,7 @@ export function Section1() {
         </div>
 
         {/* Quiz: blockchain trilemma */}
-        <div className="h-screen">
+        <div className="h-full">
           <QuizSlide
             question="According to the blockchain trilemma, which property does DPoS/BFT typically sacrifice?"
             options={[
@@ -1581,7 +1553,7 @@ export function Section1() {
         </div>
 
         {/* Quiz: blocks */}
-        <div className="h-screen">
+        <div className="h-full">
           <QuizSlide
             question="What is the purpose of the 'previous hash' field in a block header?"
             options={[
@@ -1591,6 +1563,34 @@ export function Section1() {
               { text: "It determines the block reward amount", correct: false }
             ]}
             explanation="Each block header contains the hash of the previous block, creating a cryptographic chain. If anyone tampers with an earlier block, its hash changes, breaking the link and invalidating every subsequent block."
+          />
+        </div>
+
+        {/* Quiz: block alteration — relocated from blocks section */}
+        <div className="h-full">
+          <QuizSlide
+            question="What happens if someone tries to alter a transaction in a previous block?"
+            options={[
+              { text: "The block's hash would change, breaking the chain", correct: true },
+              { text: "Nothing, previous blocks can be freely edited", correct: false },
+              { text: "Only the miner who created the block would notice", correct: false },
+              { text: "The network would automatically repair the chain", correct: false }
+            ]}
+            explanation="Because each block's hash is included in the next block, changing any data would change the hash and break the cryptographic link. The network would reject the altered chain."
+          />
+        </div>
+
+        {/* Quiz: seed phrase — relocated from wallets section */}
+        <div className="h-full">
+          <QuizSlide
+            question="In a self-custodial wallet, what happens if you lose your seed phrase?"
+            options={[
+              { text: "You can contact customer support to recover your funds", correct: false },
+              { text: "Your funds are permanently lost — no one can recover them", correct: true },
+              { text: "The blockchain automatically generates a new seed phrase", correct: false },
+              { text: "Your funds are returned to the sender", correct: false }
+            ]}
+            explanation="In self-custodial wallets, the seed phrase is the only way to derive your private keys. There is no company or authority that can recover them. This is the trade-off for full control: total responsibility."
           />
         </div>
 
