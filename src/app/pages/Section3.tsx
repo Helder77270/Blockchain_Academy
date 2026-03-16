@@ -5,10 +5,22 @@ import { DiscussionSlide } from '../components/templates/DiscussionSlide';
 import { TakeawaySlide } from '../components/templates/TakeawaySlide';
 import { QuizSlide } from '../components/templates/QuizSlide';
 import { CalloutBox } from '../components/shared/CalloutBox';
-import { Rocket } from 'lucide-react';
+import { Rocket, ExternalLink } from 'lucide-react';
 import { SectionNav } from '../components/navigation/SectionNav';
+import ethereumLogo from '../../ethereum-eth-logo.svg';
+import vitalikPhoto from '../../vitalik-buterin.jpg';
+import amazonLogo from '../../amazon.png';
+import msnLogo from '../../msn.png';
+import netscapeLogo from '../../netscape.png';
+import tiktokLogo from '../../tiktok.jpg';
+import youtubeLogo from '../../youtube.png';
+import xLogo from '../../x-logo.jpg';
+import bitcoinLogo from '../../bitcoin-btc-logo.svg';
+import uniswapLogo from '../../uniswap-uni-logo.svg';
+import usdcLogo from '../../usd-coin-usdc-logo.svg';
 
 const section3Chapters = [
+  { id: 's3-ethereum', label: 'Ethereum' },
   { id: 's3-usecases', label: 'Use Cases' },
   { id: 's3-ecosystem', label: 'Web3 Ecosystem' },
   { id: 's3-web3', label: 'Web1 → Web3' },
@@ -40,68 +52,170 @@ export function Section3() {
           />
         </div>
 
-        {/* ═══════ 1. BLOCKCHAIN USE CASES — HUB & SPOKE MAP ═══════ */}
-        <div id="s3-usecases" className="h-full flex items-center justify-center p-8">
-          <div className="max-w-5xl w-full">
-            <h2 className="text-3xl font-bold text-foreground mb-1 text-center">Blockchain Use Cases</h2>
-            <p className="text-sm text-muted-foreground text-center mb-7">
-              Blockchain technology extends far beyond cryptocurrency — it can transform any industry that relies on trust, records, or intermediaries.
-            </p>
+        {/* ═══════ 1. ETHEREUM & VITALIK BUTERIN ═══════ */}
+        <div id="s3-ethereum" className="h-full flex flex-col p-5 lg:p-8">
 
-            {/* 3×3 hub-and-spoke grid */}
-            <div className="grid grid-cols-3 gap-4 items-center">
+          <div className="shrink-0 mb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <img src={ethereumLogo} alt="Ethereum" className="h-8 object-contain" />
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Ethereum — The Programmable Blockchain</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">Bitcoin proved decentralised money was possible. Ethereum asked: what if you could run <em>any</em> program on a blockchain?</p>
+          </div>
 
-              {/* Row 1 */}
-              <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/40 text-center">
-                <div className="text-2xl mb-1">💰</div>
-                <h4 className="font-bold text-[#f59e0b] text-sm">Finance & DeFi</h4>
-                <p className="text-xs text-muted-foreground mt-1">Payments, lending, trading without banks</p>
-              </div>
-              <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/40 text-center">
-                <div className="text-2xl mb-1">🏥</div>
-                <h4 className="font-bold text-[#ED1C24] text-sm">Healthcare</h4>
-                <p className="text-xs text-muted-foreground mt-1">Patient records, drug traceability</p>
-              </div>
-              <div className="p-4 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/40 text-center">
-                <div className="text-2xl mb-1">🗳️</div>
-                <h4 className="font-bold text-[#6366f1] text-sm">Voting & Governance</h4>
-                <p className="text-xs text-muted-foreground mt-1">Tamper-proof elections & DAOs</p>
-              </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
 
-              {/* Row 2 — center node */}
-              <div className="p-4 bg-gradient-to-br from-[#22d3ee]/20 to-transparent rounded-xl border border-[#22d3ee]/40 text-center">
-                <div className="text-2xl mb-1">🚚</div>
-                <h4 className="font-bold text-[#22d3ee] text-sm">Supply Chain</h4>
-                <p className="text-xs text-muted-foreground mt-1">Track & trace, authenticity verification</p>
-              </div>
-              <div className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-[#39B54A]/30 to-[#ED1C24]/10 rounded-2xl border-2 border-[#39B54A] shadow-[0_0_30px_rgba(57,181,74,0.2)]">
-                <div className="text-3xl mb-2">⛓️</div>
-                <div className="font-black text-foreground text-base tracking-wide text-center">BLOCKCHAIN</div>
-                <div className="text-xs text-[#39B54A] mt-1 font-medium">8+ industries</div>
-              </div>
-              <div className="p-4 bg-gradient-to-br from-[#8b5cf6]/20 to-transparent rounded-xl border border-[#8b5cf6]/40 text-center">
-                <div className="text-2xl mb-1">🪪</div>
-                <h4 className="font-bold text-[#8b5cf6] text-sm">Digital Identity</h4>
-                <p className="text-xs text-muted-foreground mt-1">Self-sovereign identity, credentials</p>
-              </div>
-
-              {/* Row 3 */}
-              <div className="p-4 bg-gradient-to-br from-[#10b981]/20 to-transparent rounded-xl border border-[#10b981]/40 text-center">
-                <div className="text-2xl mb-1">🌍</div>
-                <h4 className="font-bold text-[#10b981] text-sm">Sustainability</h4>
-                <p className="text-xs text-muted-foreground mt-1">Carbon credits, renewable certificates</p>
-              </div>
-              <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/40 text-center">
-                <div className="text-2xl mb-1">🏠</div>
-                <h4 className="font-bold text-[#ED1C24] text-sm">Real Estate</h4>
-                <p className="text-xs text-muted-foreground mt-1">Property records, fractional ownership</p>
-              </div>
-              <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/40 text-center">
-                <div className="text-2xl mb-1">🎨</div>
-                <h4 className="font-bold text-[#f59e0b] text-sm">Digital Art & NFTs</h4>
-                <p className="text-xs text-muted-foreground mt-1">Provable ownership of digital assets</p>
+            {/* Vitalik card */}
+            <div className="bg-card border border-border rounded-xl overflow-hidden flex flex-col">
+              <img src={vitalikPhoto} alt="Vitalik Buterin" className="w-full object-cover object-top flex-1 min-h-0" />
+              <div className="p-4 shrink-0">
+                <div className="font-black text-foreground text-lg leading-tight">Vitalik Buterin</div>
+                <div className="text-xs text-[#627EEA] font-medium mt-0.5">Co-founder of Ethereum</div>
+                <div className="text-xs text-muted-foreground mt-2">Born 1994 in Russia, raised in Canada. Published the Ethereum whitepaper in late 2013 — aged <span className="text-foreground font-bold">19</span>.</div>
               </div>
             </div>
+
+            {/* Timeline + why */}
+            <div className="col-span-2 flex flex-col gap-3 min-h-0">
+
+              <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+                <h3 className="font-bold text-foreground text-sm">Why Ethereum Existed</h3>
+                <p className="text-sm text-muted-foreground">
+                  Vitalik was an early Bitcoin contributor and journalist. He saw that Bitcoin's scripting language was <span className="text-foreground font-medium">deliberately limited</span> — great for currency, useless for building applications. Several projects had tried to layer features on top of Bitcoin (Colored Coins, Mastercoin) but all hit the same ceiling.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  His proposal: a new blockchain with a <span className="text-foreground font-medium">Turing-complete virtual machine</span> (the EVM) that could execute any arbitrary program — called a <span className="text-foreground font-medium">smart contract</span>. Developers would finally be able to build decentralised applications without a trusted server.
+                </p>
+              </div>
+
+              <div className="flex gap-3 flex-1 min-h-0">
+
+                <div className="flex flex-col gap-2 flex-1">
+                  {[
+                    { year: '2013', label: 'Whitepaper published', color: '#627EEA' },
+                    { year: '2014', label: 'Crowdsale raises $18M — largest at the time', color: '#627EEA' },
+                    { year: '2015', label: 'Ethereum mainnet launches (Frontier)', color: '#39B54A' },
+                    { year: '2016', label: 'The DAO hack — first major test of governance', color: '#ED1C24' },
+                    { year: '2022', label: 'The Merge — switches from PoW to Proof of Stake', color: '#8b5cf6' },
+                    { year: '2025', label: 'Pectra upgrade — smart accounts, higher validator limits, blob scaling', color: '#8b5cf6' },
+                    { year: '2026 →', label: 'Fusaka upgrade — full PeerDAS, EOF, and deeper L2 scaling', color: '#22d3ee', soon: true },
+                  ].map(ev => (
+                    <div key={ev.year} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${'soon' in ev && ev.soon ? 'bg-[#22d3ee]/10 border border-dashed border-[#22d3ee]/50' : 'bg-card border border-border'}`}>
+                      <span className="font-black text-sm shrink-0" style={{ color: ev.color }}>{ev.year}</span>
+                      <span className="text-sm text-muted-foreground flex-1">{ev.label}</span>
+                      {'soon' in ev && ev.soon && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#22d3ee]/20 text-[#22d3ee] shrink-0">SOON</span>
+                      )}
+                    </div>
+                  ))}
+                  <a
+                    href="https://metamask.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-3 py-2.5 bg-[#F6851B]/10 border border-[#F6851B]/40 rounded-lg hover:bg-[#F6851B]/20 hover:border-[#F6851B]/70 transition-all group mt-1"
+                  >
+                    <span className="text-xl shrink-0">🦊</span>
+                    <div className="flex-1">
+                      <div className="text-sm font-bold text-[#F6851B]">Create your first wallet</div>
+                      <div className="text-xs text-muted-foreground">metamask.io</div>
+                    </div>
+                    <ExternalLink className="size-4 text-[#F6851B]/60 group-hover:text-[#F6851B] transition-colors shrink-0" />
+                  </a>
+                </div>
+
+                <div className="w-40 shrink-0 flex flex-col gap-2">
+                  <div className="bg-gradient-to-br from-[#627EEA]/20 to-transparent border border-[#627EEA]/40 rounded-xl p-3 flex flex-col items-center text-center flex-1">
+                    <img src={ethereumLogo} alt="ETH" className="h-10 object-contain mb-2" />
+                    <div className="text-xl font-black text-[#627EEA]">#2</div>
+                    <div className="text-xs text-muted-foreground mt-1">Largest blockchain by market cap and developer activity</div>
+                  </div>
+                  <div className="bg-card border border-border rounded-xl p-3 text-center">
+                    <div className="text-lg font-black text-foreground">4,000+</div>
+                    <div className="text-xs text-muted-foreground">dApps live on Ethereum today</div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        {/* ═══════ 2. BLOCKCHAIN USE CASES ═══════ */}
+        <div id="s3-usecases" className="h-full flex flex-col p-5 lg:p-8">
+
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-1">Blockchain Use Cases</h2>
+            <p className="text-sm text-muted-foreground">Blockchain extends far beyond cryptocurrency — any industry built on trust, records, or intermediaries is a candidate for transformation.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-4 gap-3">
+            {[
+              {
+                emoji: '💰', title: 'Finance & DeFi', color: '#f59e0b',
+                points: ['Peer-to-peer lending, trading, and payments with no bank', 'Smart contracts replace brokers and clearing houses', 'Open 24/7 — no business hours, no jurisdiction limits'],
+              },
+              {
+                emoji: '📈', title: 'Capital Markets', color: '#627EEA',
+                points: ['Tokenised securities settle in seconds vs T+2 days', 'Transparent audit trail reduces counterparty risk', 'Fractional ownership opens markets to retail investors'],
+              },
+              {
+                emoji: '🏦', title: 'Insurance', color: '#8b5cf6',
+                points: ['Parametric insurance: smart contracts auto-pay on verified events', 'Shared fraud databases prevent double-claiming across insurers', 'Streamlined claims cut processing time from weeks to hours'],
+              },
+              {
+                emoji: '🪙', title: 'CBDCs', color: '#22d3ee',
+                points: ['Central bank digital currencies for instant interbank settlement', 'Programmable money for targeted fiscal stimulus', 'Financial inclusion for the 1.4B unbanked population'],
+              },
+              {
+                emoji: '🚚', title: 'Supply Chain', color: '#39B54A',
+                points: ['End-to-end track & trace from raw material to consumer', 'Immutable provenance — fight counterfeits in luxury and pharma', 'Automated supplier payments via smart contracts on delivery'],
+              },
+              {
+                emoji: '🌐', title: 'Global Trade', color: '#22d3ee',
+                points: ['Digitise letters of credit and trade documents', 'Reduce 5-day paper processes to near real-time', 'Single shared ledger replaces dozens of siloed systems'],
+              },
+              {
+                emoji: '🏥', title: 'Healthcare', color: '#ED1C24',
+                points: ['Patient-controlled health records shared across providers', 'Drug supply chain authentication — prevent counterfeits', 'Clinical trial data integrity and transparent reporting'],
+              },
+              {
+                emoji: '🪪', title: 'Digital Identity', color: '#8b5cf6',
+                points: ['Self-sovereign identity — you own and control your credentials', 'Tamper-proof KYC reusable across services (do it once)', 'Privacy-preserving proofs: prove age without revealing birthdate'],
+              },
+              {
+                emoji: '🗳️', title: 'Government', color: '#6366f1',
+                points: ['Tamper-proof voting systems with verifiable results', 'Land registry and public records on an immutable ledger', 'Transparent public procurement to reduce corruption'],
+              },
+              {
+                emoji: '🌍', title: 'Energy & Sustainability', color: '#10b981',
+                points: ['Verifiable carbon credits — prevent double-counting', 'Peer-to-peer renewable energy trading between households', 'ESG reporting with on-chain proof, not self-reported data'],
+              },
+              {
+                emoji: '🎬', title: 'Media & Entertainment', color: '#f59e0b',
+                points: ['Creators receive royalties instantly via smart contracts', 'NFTs prove ownership and authenticity of digital works', 'Piracy prevention through on-chain content licensing'],
+              },
+              {
+                emoji: '⚖️', title: 'Law & Real Estate', color: '#ED1C24',
+                points: ['Smart contracts auto-execute clauses (escrow, transfers)', 'Fractional real estate ownership lowers investment barriers', 'Immutable records reduce title fraud and legal disputes'],
+              },
+            ].map(item => (
+              <div key={item.title} className="bg-card border border-border rounded-xl p-3 flex flex-col hover:border-opacity-60 transition-colors" style={{ borderColor: item.color + '40' }}>
+                <div className="flex items-center gap-2 shrink-0 mb-2">
+                  <span className="text-lg">{item.emoji}</span>
+                  <h4 className="font-bold text-sm" style={{ color: item.color }}>{item.title}</h4>
+                </div>
+                <ul className="flex flex-col justify-between flex-1">
+                  {item.points.map(p => (
+                    <li key={p} className="flex gap-1.5 text-xs text-muted-foreground flex-1 items-center">
+                      <span className="shrink-0" style={{ color: item.color }}>•</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -185,17 +299,17 @@ export function Section3() {
         </div>
 
         {/* ═══════ 3. EVOLUTION OF THE INTERNET — WEB1 / WEB2 / WEB3 ═══════ */}
-        <div id="s3-web3" className="h-full flex items-center justify-center p-8">
-          <div className="max-w-5xl w-full">
-            <h2 className="text-3xl font-bold text-foreground mb-1 text-center">The Evolution of the Internet</h2>
-            <p className="text-sm text-muted-foreground text-center mb-7">
+        <div id="s3-web3" className="h-full flex flex-col items-center p-8">
+          <div className="max-w-5xl w-full flex-1 flex flex-col min-h-0">
+            <h2 className="text-3xl font-bold text-foreground mb-1 text-center shrink-0">The Evolution of the Internet</h2>
+            <p className="text-sm text-muted-foreground text-center mb-4 shrink-0">
               Each era defined by what users could do — and who owned the data.
             </p>
 
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-3 gap-5 flex-1 min-h-0">
 
               {/* Web1 */}
-              <div className="p-6 bg-card rounded-2xl border-2 border-[#9ca3af]/40 flex flex-col gap-3">
+              <div className="p-6 bg-card rounded-2xl border-2 border-[#9ca3af]/40 flex flex-col gap-3 h-full overflow-y-auto">
                 <div className="flex items-center gap-3">
                   <div className="size-10 rounded-full bg-[#9ca3af]/20 border border-[#9ca3af]/40 flex items-center justify-center text-lg">🌐</div>
                   <div>
@@ -203,8 +317,13 @@ export function Section3() {
                     <div className="text-xs text-muted-foreground">1991 – 2004</div>
                   </div>
                 </div>
+                <div className="flex items-center justify-around gap-2 py-2 px-3 bg-[#9ca3af]/10 rounded-xl">
+                  <img src={amazonLogo} alt="Amazon" className="h-7 object-contain" />
+                  <img src={msnLogo} alt="MSN" className="h-7 object-contain" />
+                  <img src={netscapeLogo} alt="Netscape" className="h-7 object-contain" />
+                </div>
                 <div className="px-3 py-1.5 bg-[#9ca3af]/20 rounded-full text-center text-xs font-bold text-muted-foreground tracking-widest">📖 READ ONLY</div>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                <ul className="space-y-1.5 text-sm text-muted-foreground flex-1">
                   <li className="flex gap-2"><span className="text-[#9ca3af] shrink-0">•</span>Static HTML pages</li>
                   <li className="flex gap-2"><span className="text-[#9ca3af] shrink-0">•</span>No user interaction or accounts</li>
                   <li className="flex gap-2"><span className="text-[#9ca3af] shrink-0">•</span>Information flows one-way</li>
@@ -217,7 +336,7 @@ export function Section3() {
               </div>
 
               {/* Web2 */}
-              <div className="p-6 bg-card rounded-2xl border-2 border-[#6366f1]/50 flex flex-col gap-3">
+              <div className="p-6 bg-card rounded-2xl border-2 border-[#6366f1]/50 flex flex-col gap-3 h-full overflow-y-auto">
                 <div className="flex items-center gap-3">
                   <div className="size-10 rounded-full bg-[#6366f1]/20 border border-[#6366f1]/40 flex items-center justify-center text-lg">📱</div>
                   <div>
@@ -225,8 +344,13 @@ export function Section3() {
                     <div className="text-xs text-muted-foreground">2004 – Present</div>
                   </div>
                 </div>
+                <div className="flex items-center justify-around gap-2 py-2 px-3 bg-[#6366f1]/10 rounded-xl">
+                  <img src={tiktokLogo} alt="TikTok" className="h-7 object-contain" />
+                  <img src={youtubeLogo} alt="YouTube" className="h-7 object-contain" />
+                  <img src={xLogo} alt="X" className="h-7 object-contain rounded" />
+                </div>
                 <div className="px-3 py-1.5 bg-[#6366f1]/20 rounded-full text-center text-xs font-bold text-[#6366f1] tracking-widest">✏️ READ + WRITE</div>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                <ul className="space-y-1.5 text-sm text-muted-foreground flex-1">
                   <li className="flex gap-2"><span className="text-[#6366f1] shrink-0">•</span>Social media & user-generated content</li>
                   <li className="flex gap-2"><span className="text-[#6366f1] shrink-0">•</span>Platforms own and monetize your data</li>
                   <li className="flex gap-2"><span className="text-[#6366f1] shrink-0">•</span>Free services — you are the product</li>
@@ -239,7 +363,7 @@ export function Section3() {
               </div>
 
               {/* Web3 */}
-              <div className="p-6 bg-card rounded-2xl border-2 border-[#39B54A]/60 flex flex-col gap-3 shadow-[0_0_20px_rgba(57,181,74,0.1)]">
+              <div className="p-6 bg-card rounded-2xl border-2 border-[#39B54A]/60 flex flex-col gap-3 shadow-[0_0_20px_rgba(57,181,74,0.1)] h-full overflow-y-auto">
                 <div className="flex items-center gap-3">
                   <div className="size-10 rounded-full bg-[#39B54A]/20 border border-[#39B54A]/50 flex items-center justify-center text-lg">🔐</div>
                   <div>
@@ -247,8 +371,13 @@ export function Section3() {
                     <div className="text-xs text-[#39B54A]">Now → Future</div>
                   </div>
                 </div>
+                <div className="flex items-center justify-around gap-2 py-2 px-3 bg-[#39B54A]/10 rounded-xl">
+                  <img src={bitcoinLogo} alt="Bitcoin" className="h-7 object-contain" />
+                  <img src={uniswapLogo} alt="Uniswap" className="h-7 object-contain" />
+                  <img src={usdcLogo} alt="USDC" className="h-7 object-contain" />
+                </div>
                 <div className="px-3 py-1.5 bg-[#39B54A]/20 rounded-full text-center text-xs font-bold text-[#39B54A] tracking-widest">🔑 READ + WRITE + OWN</div>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                <ul className="space-y-1.5 text-sm text-muted-foreground flex-1">
                   <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>User-owned data & assets via wallets</li>
                   <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Decentralized applications (dApps)</li>
                   <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Token-based economies & governance</li>
@@ -306,42 +435,118 @@ export function Section3() {
         </div>
 
         {/* ═══════ 5. ETHICAL CONSIDERATIONS ═══════ */}
-        <div id="s3-ethics" className="h-full">
-          <ConceptSlide
-            title="Ethical Considerations"
-            description="Blockchain is not inherently good or bad — its impact depends on how it is designed, governed, and used."
-            visual={
-              <div className="space-y-4 w-full">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-5 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
-                    <h4 className="font-bold text-[#ED1C24] mb-2">⚡ Energy Consumption</h4>
-                    <p className="text-sm text-muted-foreground">Bitcoin's Proof of Work uses more electricity than some countries. Ethereum's move to PoS reduced its energy use by ~99.95%.</p>
-                  </div>
-                  <div className="p-5 bg-gradient-to-br from-[#8b5cf6]/20 to-transparent rounded-xl border border-[#8b5cf6]/30">
-                    <h4 className="font-bold text-[#8b5cf6] mb-2">👁️ Surveillance vs Privacy</h4>
-                    <p className="text-sm text-muted-foreground">Public blockchains are transparent by default. Every transaction is visible forever — creating tension between accountability and privacy.</p>
-                  </div>
-                  <div className="p-5 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
-                    <h4 className="font-bold text-[#f59e0b] mb-2">🔒 Irreversibility</h4>
-                    <p className="text-sm text-muted-foreground">On-chain transactions cannot be reversed. What about fraud victims? The "code is law" philosophy has limits when real people are harmed.</p>
-                  </div>
-                  <div className="p-5 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
-                    <h4 className="font-bold text-[#39B54A] mb-2">🌍 Dual-Use Reality</h4>
-                    <p className="text-sm text-muted-foreground">Blockchain helped Ukrainians receive donations and Venezuelans preserve savings — but also enabled ransomware payments and sanctions evasion.</p>
-                  </div>
-                </div>
-                <CalloutBox type="warning" title="No Technology is Neutral">
-                  The same properties that make blockchain valuable — censorship resistance, immutability, pseudonymity — can be exploited. Critical thinking about trade-offs is essential.
-                </CalloutBox>
+        <div id="s3-ethics" className="h-full flex flex-col p-5 lg:p-8">
+
+          {/* Header */}
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-1">Ethical Considerations</h2>
+            <p className="text-sm text-muted-foreground">Blockchain is not inherently good or bad — its impact depends on how it is designed, governed, and used.</p>
+          </div>
+
+          {/* Top row — 4 compact ethical themes */}
+          <div className="grid grid-cols-4 gap-3 shrink-0 mb-3">
+            <div className="p-5 bg-gradient-to-br from-[#ED1C24]/15 to-transparent rounded-xl border border-[#ED1C24]/30">
+              <div className="font-bold text-[#ED1C24] text-sm mb-2">⚡ Energy</div>
+              <p className="text-sm text-muted-foreground">Bitcoin PoW uses as much power as some countries. Ethereum's PoS cut its footprint by 99.95%.</p>
+            </div>
+            <div className="p-5 bg-gradient-to-br from-[#8b5cf6]/15 to-transparent rounded-xl border border-[#8b5cf6]/30">
+              <div className="font-bold text-[#8b5cf6] text-sm mb-2">👁️ Surveillance vs Privacy</div>
+              <p className="text-sm text-muted-foreground">Public chains are transparent forever — accountability and privacy are in direct tension.</p>
+            </div>
+            <div className="p-5 bg-gradient-to-br from-[#f59e0b]/15 to-transparent rounded-xl border border-[#f59e0b]/30">
+              <div className="font-bold text-[#f59e0b] text-sm mb-2">🔒 Irreversibility</div>
+              <p className="text-sm text-muted-foreground">"Code is law" has limits. Transactions can't be reversed, even when real people are harmed.</p>
+            </div>
+            <div className="p-5 bg-gradient-to-br from-[#39B54A]/15 to-transparent rounded-xl border border-[#39B54A]/30">
+              <div className="font-bold text-[#39B54A] text-sm mb-2">🌍 Access & Inclusion</div>
+              <p className="text-sm text-muted-foreground">1.4 billion unbanked adults could access financial services with just a smartphone and a wallet.</p>
+            </div>
+          </div>
+
+          {/* Bottom row — Promise vs Peril with real projects */}
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
+
+            {/* Positive projects */}
+            <div className="flex flex-col min-h-0">
+              <div className="flex items-center gap-2 mb-2 shrink-0">
+                <div className="size-5 rounded-full bg-[#39B54A] flex items-center justify-center text-white text-xs font-black">+</div>
+                <h3 className="font-bold text-[#39B54A] text-sm tracking-wide">BLOCKCHAIN FOR GOOD</h3>
               </div>
-            }
-            keyPoints={[
-              "Energy debates must distinguish between PoW and PoS",
-              "Privacy vs transparency is one of blockchain's core tensions",
-              "Irreversibility protects integrity but punishes human error",
-              "Real-world impact is both positive and negative — context matters"
-            ]}
-          />
+
+              <div className="bg-card border border-[#39B54A]/40 rounded-xl p-4 flex flex-col flex-1 min-h-0 gap-0">
+
+                <div className="flex-1 flex flex-col min-h-0 pb-3">
+                  <div className="flex items-center gap-2 mb-2 shrink-0">
+                    <span className="text-xl shrink-0">🌍</span>
+                    <div className="font-bold text-foreground text-sm">GiveDirectly — Transparent Humanitarian Aid</div>
+                  </div>
+                  <ul className="text-xs text-muted-foreground space-y-1.5">
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>NGO operating in Kenya and Uganda — sends cash <span className="text-foreground font-medium ml-1">directly</span> to people in extreme poverty via blockchain wallets</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Zero intermediaries — every transfer is <span className="text-foreground font-medium ml-1">traceable on-chain</span>; donors can verify their money arrived</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>In traditional aid, up to <span className="text-foreground font-medium mx-1">30%</span> is lost to administration, NGO salaries, and corruption — blockchain cuts this to near zero</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Recipients spend freely — no government or NGO can dictate what the money is used for</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Smart contracts automate disbursements — no bank account required, just a mobile wallet</li>
+                  </ul>
+                </div>
+
+                <div className="flex-1 flex flex-col min-h-0 border-t border-border pt-3">
+                  <div className="flex items-center gap-2 mb-2 shrink-0">
+                    <span className="text-xl shrink-0">🤝</span>
+                    <div className="font-bold text-foreground text-sm">Proof of Humanity — Identity Without Institutions</div>
+                  </div>
+                  <ul className="text-xs text-muted-foreground space-y-1.5">
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Ethereum-based registry: prove you are a real human via a short video + vouching by existing members</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>No government, bank, or company controls the list — <span className="text-foreground font-medium ml-1">no one can delete you</span></li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Foundation for UBI experiments: verified humans receive a monthly <span className="text-foreground font-medium ml-1">UBI token</span> airdrop automatically</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Enables bot-free social networks and one-person-one-vote governance on-chain</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Used by Kleros (decentralised court) and other dApps as a sybil-resistance layer</li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Negative / concerning projects */}
+            <div className="flex flex-col min-h-0">
+              <div className="flex items-center gap-2 mb-2 shrink-0">
+                <div className="size-5 rounded-full bg-[#ED1C24] flex items-center justify-center text-white text-xs font-black">!</div>
+                <h3 className="font-bold text-[#ED1C24] text-sm tracking-wide">BLOCKCHAIN AS CONTROL</h3>
+              </div>
+
+              <div className="bg-card border border-[#ED1C24]/40 rounded-xl p-4 flex flex-col flex-1 min-h-0 gap-0">
+
+                <div className="flex-1 flex flex-col min-h-0 pb-3">
+                  <div className="flex items-center gap-2 mb-2 shrink-0">
+                    <span className="text-xl shrink-0">🇨🇳</span>
+                    <div className="font-bold text-foreground text-sm">Digital Yuan (e-CNY) — Programmable Money, Programmable Control</div>
+                  </div>
+                  <ul className="text-xs text-muted-foreground space-y-1.5">
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span><span className="text-foreground font-medium">Expiry dates</span> — government stimulus yuan must be spent within a deadline or it disappears</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span><span className="text-foreground font-medium">Geographic restrictions</span> — funds can be locked to specific regions or districts</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span><span className="text-foreground font-medium">Category bans</span> — purchases like alcohol, gambling, or political donations can be auto-blocked</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span><span className="text-foreground font-medium">Instant freezing</span> — any wallet disabled in seconds, no court order needed</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>Full real-time surveillance — every transaction visible to the state by design</li>
+                  </ul>
+                </div>
+
+                <div className="flex-1 flex flex-col min-h-0 border-t border-border pt-3">
+                  <div className="flex items-center gap-2 mb-2 shrink-0">
+                    <span className="text-xl shrink-0">🇪🇺</span>
+                    <div className="font-bold text-foreground text-sm">Digital Euro — Coming Soon, Questions Remain</div>
+                  </div>
+                  <ul className="text-xs text-muted-foreground space-y-1.5">
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>ECB plans to launch a CBDC — marketed as a convenient, modern form of cash</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>Proposed <span className="text-foreground font-medium ml-1">€3,000 holding cap</span> prevents using it as savings — steering behaviour by design</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>Unlike physical cash — <span className="text-foreground font-medium ml-1">anonymous and unconditional</span> — every CBDC transaction is permanently logged</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>Infrastructure built for "features" today can silently add restrictions tomorrow</li>
+                    <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>Civil society groups and MEPs have raised formal concerns about financial sovereignty</li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
         </div>
 
         {/* ═══════ 6. FUTURE TRENDS ═══════ */}

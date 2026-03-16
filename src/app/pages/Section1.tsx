@@ -20,6 +20,7 @@ const section1Chapters = [
   { id: 's1-vocab', label: 'Vocabulary Wall' },
   { id: 's1-dlt', label: 'DLT Models' },
   { id: 's1-trust', label: 'Trusted Third Parties' },
+  { id: 's1-blockchain-types', label: 'Blockchain Types' },
   { id: 's1-hashing', label: 'Cryptographic Hashing' },
   { id: 's1-merkle', label: 'Merkle Trees' },
   { id: 's1-blocks', label: 'Blocks & Composition' },
@@ -793,22 +794,44 @@ export function Section1() {
             title="Why Blockchain Challenges Trusted Third Parties"
             description="Blockchain combines distribution, cryptography, and incentive design to create systems that need no trusted authority."
             visual={
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-5 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
-                  <h4 className="font-bold text-[#ED1C24] mb-2">🔗 Immutability</h4>
-                  <p className="text-sm text-muted-foreground">Once data is committed to the chain, altering it requires rewriting every subsequent block — practically impossible</p>
+              <div className="flex flex-col gap-4">
+                {/* IRL examples strip */}
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Who are trusted third parties today?</p>
+                  <div className="grid grid-cols-5 gap-2">
+                    {[
+                      { emoji: '🏦', label: 'Banks', sub: 'Hold & move money' },
+                      { emoji: '⚖️', label: 'Notaries', sub: 'Certify documents' },
+                      { emoji: '🏛️', label: 'Land Registry', sub: 'Prove ownership' },
+                      { emoji: '💳', label: 'PayPal / Visa', sub: 'Process payments' },
+                      { emoji: '🔐', label: 'Certificate Auth.', sub: 'Verify identities' },
+                    ].map(ex => (
+                      <div key={ex.label} className="p-2.5 bg-muted rounded-lg text-center">
+                        <div className="text-xl mb-1">{ex.emoji}</div>
+                        <div className="text-xs font-bold text-foreground">{ex.label}</div>
+                        <div className="text-[10px] text-muted-foreground mt-0.5">{ex.sub}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="p-5 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
-                  <h4 className="font-bold text-[#39B54A] mb-2">🤝 Trustless Consensus</h4>
-                  <p className="text-sm text-muted-foreground">Participants agree on the state of the ledger through mathematical proofs, not reputation</p>
-                </div>
-                <div className="p-5 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/30">
-                  <h4 className="font-bold text-[#6366f1] mb-2">💡 Transparency</h4>
-                  <p className="text-sm text-muted-foreground">Anyone can verify the full history of transactions — no hidden ledgers or secret changes</p>
-                </div>
-                <div className="p-5 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
-                  <h4 className="font-bold text-[#f59e0b] mb-2">🛡️ Censorship Resistance</h4>
-                  <p className="text-sm text-muted-foreground">No central entity can block, reverse, or freeze transactions on a public blockchain</p>
+                {/* Properties grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
+                    <h4 className="font-bold text-[#ED1C24] mb-1.5">🔗 Immutability</h4>
+                    <p className="text-sm text-muted-foreground">Once data is committed to the chain, altering it requires rewriting every subsequent block — practically impossible</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
+                    <h4 className="font-bold text-[#39B54A] mb-1.5">🤝 Trustless Consensus</h4>
+                    <p className="text-sm text-muted-foreground">Participants agree on the state of the ledger through mathematical proofs, not reputation</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/30">
+                    <h4 className="font-bold text-[#6366f1] mb-1.5">💡 Transparency</h4>
+                    <p className="text-sm text-muted-foreground">Anyone can verify the full history of transactions — no hidden ledgers or secret changes</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
+                    <h4 className="font-bold text-[#f59e0b] mb-1.5">🛡️ Censorship Resistance</h4>
+                    <p className="text-sm text-muted-foreground">No central entity can block, reverse, or freeze transactions on a public blockchain</p>
+                  </div>
                 </div>
               </div>
             }
@@ -821,7 +844,50 @@ export function Section1() {
           />
         </div>
 
-        {/* ═══════ 4. HASHING ═══════ */}
+        {/* ═══════ 4. BLOCKCHAIN TYPES ═══════ */}
+        <div id="s1-blockchain-types" className="h-full">
+          <ComparisonSlide
+            title="Blockchain Types — Public, Private & Permission Models"
+            featureLabel="Criteria"
+            option1Label="Public · Permissionless"
+            option2Label="Consortium · Semi-private"
+            option3Label="Private · Permissioned"
+            items={[
+              {
+                feature: "Who can read?",
+                option1: "Anyone — the full ledger is publicly visible to every participant on Earth",
+                option2: "Members of the consortium, sometimes also the public (read-only)",
+                option3: "Only invited and approved organisations or users",
+              },
+              {
+                feature: "Who can transact?",
+                option1: "Anyone with an address — no registration, no approval",
+                option2: "Authorised member organisations only",
+                option3: "Only pre-approved identities inside the network",
+              },
+              {
+                feature: "Who validates?",
+                option1: "Anyone — open mining or staking (Bitcoin PoW, Ethereum PoS)",
+                option2: "A defined set of known nodes agreed upon by the members (BFT variants)",
+                option3: "One organisation or a fixed set of internal nodes",
+              },
+              {
+                feature: "Transparency",
+                option1: "Fully transparent — every transaction is auditable by everyone",
+                option2: "Selective — members see relevant data; outsiders may see a subset",
+                option3: "Private — data visible only to permissioned participants",
+              },
+              {
+                feature: "Examples",
+                option1: "Bitcoin · Ethereum · Solana · Litecoin · Monero · Polygon",
+                option2: "R3 Corda · Quorum · Marco Polo · IBM Food Trust · Baseline Protocol",
+                option3: "Hyperledger Fabric · JP Morgan Quorum · Corda Enterprise · DAML",
+              },
+            ]}
+          />
+        </div>
+
+        {/* ═══════ 5. HASHING ═══════ */}
         <div id="s1-hashing" className="h-full">
           <ConceptSlide
             title="Cryptographic Hashing"

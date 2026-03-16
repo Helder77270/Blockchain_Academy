@@ -20,6 +20,7 @@ const section2Chapters = [
   { id: 's2-nodes', label: 'Node Distribution' },
   { id: 's2-security', label: 'Security Model' },
   { id: 's2-lightning', label: 'Lightning Network' },
+  { id: 's2-programmability', label: 'Programmability' },
   { id: 's2-quiz', label: 'Quizzes' },
   { id: 's2-takeaways', label: 'Takeaways' },
 ];
@@ -316,6 +317,75 @@ export function Section2() {
           />
         </div>
 
+        {/* ═══════ NODE DISTRIBUTION — CLOUD CENTRALISATION RISK ═══════ */}
+        <div className="h-full flex flex-col p-6 lg:p-10">
+          <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-1 shrink-0">Node Distribution & Roles</h2>
+          <p className="text-muted-foreground text-sm mb-5 shrink-0">Blockchain is decentralized by design — but who actually <span className="text-foreground font-semibold">runs</span> the nodes matters just as much as the protocol rules.</p>
+
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+
+            {/* Left: cloud concentration */}
+            <div className="flex flex-col gap-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">The hidden centralisation risk</p>
+
+              <div className="p-4 bg-gradient-to-br from-[#f59e0b]/15 to-[#ED1C24]/10 border border-[#f59e0b]/40 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">☁️</span>
+                  <h4 className="font-black text-foreground text-base">Cloud Hosting Concentration</h4>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Even though anyone can run a node, in practice a large share of nodes are rented virtual machines hosted on a handful of cloud providers — not personal servers at home.
+                </p>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {[
+                    { provider: 'AWS', share: '~48 %', color: '#f59e0b' },
+                    { provider: 'Azure', share: '~15 %', color: '#6366f1' },
+                    { provider: 'GCP', share: '~10 %', color: '#39B54A' },
+                  ].map(p => (
+                    <div key={p.provider} className="bg-muted rounded-lg p-2 text-center">
+                      <div className="font-black text-sm" style={{ color: p.color }}>{p.share}</div>
+                      <div className="text-xs text-muted-foreground">{p.provider}</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground italic">
+                  Estimated share of Ethereum nodes by cloud provider (2023–2024 data).
+                </p>
+              </div>
+
+              <div className="p-4 bg-gradient-to-br from-[#ED1C24]/15 to-transparent border border-[#ED1C24]/30 rounded-xl flex-1">
+                <h4 className="font-bold text-[#ED1C24] mb-2">⚠️ What could go wrong?</h4>
+                <ul className="space-y-1.5 text-xs text-muted-foreground">
+                  <li>• <span className="text-foreground font-semibold">AWS outage (Dec 2021)</span> — briefly took down large parts of Solana, Ethereum RPC endpoints, and major DeFi front-ends</li>
+                  <li>• A cloud provider can <span className="text-foreground font-semibold">ban accounts</span>, removing nodes overnight</li>
+                  <li>• Geo-regulatory risk: US sanctions could force AWS to cut off certain regions or protocols</li>
+                  <li>• The protocol stays decentralized — but the <span className="text-foreground font-semibold">infrastructure layer</span> is not</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Right: solutions & mitigations */}
+            <div className="flex flex-col gap-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">How the ecosystem responds</p>
+              {[
+                { color: '#39B54A', emoji: '🏠', title: 'Home Node Initiatives', desc: 'Projects like Ethereum\'s "Run the Majority Client" campaign and Raspberry Pi node guides actively push users to self-host nodes at home.' },
+                { color: '#6366f1', emoji: '🌍', title: 'Geographic Diversity', desc: 'Node diversity across countries reduces the risk that any single jurisdiction can shut down the network. Nodes in 80+ countries run Bitcoin today.' },
+                { color: '#f59e0b', emoji: '🔗', title: 'Decentralized RPC', desc: 'Projects like Pocket Network and Ankr distribute RPC access across many independent operators instead of relying on a single provider like Infura.' },
+                { color: '#ED1C24', emoji: '📊', title: 'Client Diversity', desc: 'Running multiple independent software implementations (Geth, Nethermind, Besu for Ethereum) prevents a single bug from taking down the whole network.' },
+              ].map(n => (
+                <div key={n.title} className="flex items-start gap-3 p-3 bg-card border border-border rounded-xl flex-1" style={{ borderColor: n.color + '30' }}>
+                  <div className="text-xl shrink-0">{n.emoji}</div>
+                  <div>
+                    <div className="font-bold text-sm mb-0.5" style={{ color: n.color }}>{n.title}</div>
+                    <div className="text-xs text-muted-foreground">{n.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+
         {/* ═══════ 7. SECURITY MODEL ═══════ */}
         <div id="s2-security" className="h-full">
           <ConceptSlide
@@ -558,6 +628,99 @@ export function Section2() {
                   Lightning doesn't replace Bitcoin — it sits on top of it. The base layer provides the trust; Lightning provides the speed. Same model as the internet: TCP/IP underneath, HTTP on top.
                 </CalloutBox>
               </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ═══════ 9. BITCOIN'S PROGRAMMABILITY LIMITS ═══════ */}
+        <div id="s2-programmability" className="h-full flex flex-col p-5 lg:p-8">
+
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-1">Bitcoin Wasn't Built to Be Programmable</h2>
+            <p className="text-sm text-muted-foreground">By design, Bitcoin prioritises security and simplicity over flexibility — but that left a gap others tried to fill.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
+
+            {/* Left column */}
+            <div className="flex flex-col gap-4 min-h-0">
+
+              <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-2">
+                <h3 className="font-bold text-foreground flex items-center gap-2">
+                  <span className="size-7 rounded-lg bg-[#f59e0b]/20 flex items-center justify-center text-sm">📜</span>
+                  Bitcoin Script — Simple by Design
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Bitcoin does have a built-in scripting language called <span className="text-foreground font-medium">Bitcoin Script</span>. It can handle conditions like "spend only with two signatures" or "unlock after a time delay". But it is intentionally <span className="text-foreground font-medium">not Turing-complete</span> — there are no loops, no persistent state, and no complex logic.
+                </p>
+                <div className="px-3 py-2 bg-[#f59e0b]/10 border border-[#f59e0b]/30 rounded-lg text-xs text-muted-foreground italic">
+                  Satoshi's reasoning: a simpler language has a smaller attack surface. The fewer things it can do, the fewer ways it can go wrong.
+                </div>
+              </div>
+
+              <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-2">
+                <h3 className="font-bold text-foreground flex items-center gap-2">
+                  <span className="size-7 rounded-lg bg-[#6366f1]/20 flex items-center justify-center text-sm">🧪</span>
+                  Early Attempts to Build on Bitcoin
+                </h3>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li className="flex gap-2">
+                    <span className="text-[#f59e0b] shrink-0 font-bold">2012</span>
+                    <span><span className="text-foreground font-medium">Colored Coins</span> — encode metadata in Bitcoin transactions to represent real-world assets. Clever, but very limited.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#f59e0b] shrink-0 font-bold">2013</span>
+                    <span><span className="text-foreground font-medium">Mastercoin / Omni Layer</span> — a protocol layer on top of Bitcoin. Enabled token creation. Still constrained by Bitcoin Script.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#f59e0b] shrink-0 font-bold">2014</span>
+                    <span><span className="text-foreground font-medium">Counterparty</span> — added smart contract-like features by encoding data into Bitcoin transactions. Functional, but hacky and slow.</span>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            {/* Right column */}
+            <div className="flex flex-col gap-4 min-h-0">
+
+              <div className="bg-card border-2 border-[#ED1C24]/40 rounded-xl p-4 flex flex-col gap-2">
+                <h3 className="font-bold text-foreground flex items-center gap-2">
+                  <span className="size-7 rounded-lg bg-[#ED1C24]/20 flex items-center justify-center text-sm">🚧</span>
+                  What You Simply Cannot Do on Bitcoin
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: 'Complex smart contracts', why: 'No loops, no state' },
+                    { label: 'Decentralised apps (dApps)', why: 'No persistent logic' },
+                    { label: 'On-chain tokens & NFTs', why: 'No native token standard' },
+                    { label: 'Autonomous on-chain rules', why: 'Script too restrictive' },
+                  ].map(item => (
+                    <div key={item.label} className="bg-muted/50 rounded-lg p-2">
+                      <div className="text-xs font-bold text-foreground">✗ {item.label}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">{item.why}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-[#627EEA]/15 to-[#39B54A]/10 border border-[#627EEA]/40 rounded-xl p-4 flex flex-col gap-2 flex-1">
+                <h3 className="font-bold text-foreground flex items-center gap-2">
+                  <span className="size-7 rounded-lg bg-[#627EEA]/20 flex items-center justify-center text-sm">💡</span>
+                  The Question That Started Everything
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  In 2013, a 19-year-old named <span className="text-foreground font-medium">Vitalik Buterin</span> asked: <em>"What if instead of adding features on top of Bitcoin, we built a new blockchain designed from the ground up to run any program?"</em>
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Bitcoin's core community largely rejected adding more programmability — they wanted to keep it simple and focused. That rejection became the direct motivation for <span className="text-foreground font-medium">Ethereum</span>.
+                </p>
+                <div className="mt-auto px-3 py-2 bg-[#627EEA]/10 border border-[#627EEA]/30 rounded-lg text-xs text-[#627EEA] font-medium text-center">
+                  → The story continues in Section 3
+                </div>
+              </div>
+
             </div>
 
           </div>

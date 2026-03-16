@@ -20,66 +20,52 @@ const instructors = [
       'Won a hackathon prize at Hacking Paris 2025 by Chiliz (Content creation & interaction track)',
       'Currently Blockchain Specialist @ NovaSBE',
     ],
-  },
-  {
-    photo: helderPhoto,
-    nickname: 'The Crypto "Jack of all trades"',
-    name: 'Shayan ESKANDARI',
-    role: 'TO DO',
-    gradient: 'from-[#ED1C24] to-[#39B54A]' as const,
-    accentColor: '#ED1C24',
-    highlights: [
-      'Started in blockchain in 2017 / 2018, drawn in by the finance side of things',
-      'Now focused on user-centered use cases and real-world adoption',
-      'Directed a blockchain master programme in Paris',
-      'Explored the full stack — product owner, infrastructure, smart contracts',
-      'Won a hackathon prize at Hacking Paris 2025 by Chiliz (Content creation & interaction track)',
-      'Currently Blockchain Specialist @ NovaSBE',
-    ],
   }
 ];
+
+const BASE = '/blockchain-fundamentals';
 
 const sections = [
   {
     number: '🎯',
     title: 'Learning Objectives',
     description: 'What you will learn and be able to do by the end of this course',
-    path: '/learning-objectives',
+    path: `${BASE}/learning-objectives`,
     gradient: 'from-[#ED1C24] to-[#6366f1]'
   },
   {
     number: '🗺️',
     title: 'Course Summary',
     description: 'Your roadmap through blockchain technology — four parts, one coherent journey',
-    path: '/course-summary',
+    path: `${BASE}/course-summary`,
     gradient: 'from-[#39B54A] to-[#ED1C24]'
   },
   {
     number: '00',
     title: 'Prologue — The History of Blockchain',
     description: 'From the cypherpunk movement to the birth of Bitcoin',
-    path: '/prologue',
+    path: `${BASE}/prologue`,
     gradient: 'from-[#8b5cf6] to-[#6366f1]'
   },
   {
     number: '01',
     title: 'Introduction to Blockchain Technology',
     description: 'DLT, hashing, Merkle trees, blocks, wallets, transactions, and consensus mechanisms',
-    path: '/section-1',
+    path: `${BASE}/section-1`,
     gradient: 'from-[#ED1C24] to-[#39B54A]'
   },
   {
     number: '02',
     title: 'Bitcoin and Beyond',
     description: 'A deep dive into the world\'s first cryptocurrency and its network',
-    path: '/section-2',
+    path: `${BASE}/section-2`,
     gradient: 'from-[#f59e0b] to-[#ED1C24]'
   },
   {
     number: '03',
     title: 'What\'s Next for Blockchain?',
     description: 'Applications, Web3, ethics, and the future of decentralized technology',
-    path: '/section-3',
+    path: `${BASE}/section-3`,
     gradient: 'from-[#39B54A] to-[#22d3ee]'
   }
 ];
@@ -118,7 +104,7 @@ export function Home() {
           </div>
           
           <Link
-            to="/learning-objectives"
+            to={`${BASE}/learning-objectives`}
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#ED1C24] to-[#39B54A] text-white rounded-lg font-bold hover:shadow-lg hover:shadow-[#ED1C24]/30 transition-all"
           >
             Start Learning
