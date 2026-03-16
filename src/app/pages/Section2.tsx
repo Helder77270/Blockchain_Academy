@@ -13,6 +13,7 @@ import { SectionNav } from '../components/navigation/SectionNav';
 const section2Chapters = [
   { id: 's2-breakthrough', label: 'Bitcoin Breakthrough' },
   { id: 's2-byzantine', label: 'Byzantine Problem' },
+  { id: 's2-doublespend', label: 'Double-Spending' },
   { id: 's2-what', label: 'What is Bitcoin?' },
   { id: 's2-immutability', label: 'Immutability' },
   { id: 's2-supply', label: 'Supply Model' },
@@ -79,22 +80,70 @@ export function Section2() {
         <div id="s2-byzantine" className="h-full">
           <ConceptSlide
             title="The Byzantine Generals Problem"
-            description="Before Bitcoin, computer scientists had no practical solution to reaching agreement in a network where some participants might be malicious or unreliable — a problem formalized in 1982."
+            description="How do you reach agreement when you can't trust every participant? A 27-year-old computer science puzzle — solved by Bitcoin in 2009."
             visual={
               <div className="space-y-4 w-full">
-                <CalloutBox type="important" title="The Problem">
-                  Imagine several generals surrounding a city who must agree on a common battle plan. They can only communicate via messengers — but some generals (or messengers) may be traitors sending contradictory orders. How do loyal generals reach consensus?
-                </CalloutBox>
-                <CalloutBox type="tip" title="Why It Matters for Bitcoin">
-                  In a decentralized network, nodes are the "generals." Any node can lie, go offline, or send conflicting data. Bitcoin's Proof of Work is the first practical solution that makes cheating economically irrational rather than just theoretically impossible.
-                </CalloutBox>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
+                    <h4 className="font-bold text-[#ED1C24] mb-2">⚔️ The Problem</h4>
+                    <p className="text-sm text-muted-foreground">Generals surrounding a city must agree on one plan — but some are traitors sending conflicting orders. No trusted messenger exists to verify who is lying.</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
+                    <h4 className="font-bold text-[#f59e0b] mb-2">💻 In Computing Terms</h4>
+                    <p className="text-sm text-muted-foreground">Generals = nodes. Messengers = internet packets. Traitors = malicious nodes. Battle plan = shared transaction history. Any node can lie or go offline.</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
+                    <h4 className="font-bold text-[#39B54A] mb-2">⛏️ Bitcoin's Solution</h4>
+                    <p className="text-sm text-muted-foreground">Proof of Work makes lying expensive. Every block costs real energy — so cheating costs more than cooperating. The longest chain always represents the honest majority.</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/30">
+                    <h4 className="font-bold text-[#6366f1] mb-2">🔢 The 51% Rule</h4>
+                    <p className="text-sm text-muted-foreground">The network tolerates up to ⅓ of nodes being malicious. As long as honest nodes hold the majority of hash power, consensus is always reached correctly.</p>
+                  </div>
+                </div>
               </div>
             }
             keyPoints={[
               "Problem formalized by Lamport, Shostak & Pease in 1982",
-              "A network tolerates up to ⅓ of participants being malicious (Byzantine Fault Tolerance)",
-              "Proof of Work makes attacks prohibitively expensive — dishonest nodes waste real energy",
-              "Bitcoin achieves consensus without trusting any individual participant"
+              "Before Bitcoin, no practical solution existed for open, untrusted networks",
+              "Proof of Work is the first mechanism where dishonesty is economically irrational",
+              "Bitcoin achieves consensus without any central authority or trusted party"
+            ]}
+          />
+        </div>
+
+        {/* ═══════ DOUBLE-SPENDING ═══════ */}
+        <div id="s2-doublespend" className="h-full">
+          <ConceptSlide
+            title="The Double-Spending Problem"
+            description="Digital money can be copied like any file. Before Bitcoin, only a bank could guarantee you hadn't already spent the same coin twice."
+            visual={
+              <div className="space-y-4 w-full">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
+                    <h4 className="font-bold text-[#ED1C24] mb-2">📋 The Attack</h4>
+                    <p className="text-sm text-muted-foreground">Alice has 1 BTC. She broadcasts two transactions simultaneously — one paying Bob, one paying herself. Without a referee, both look valid. Who gets the coin?</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
+                    <h4 className="font-bold text-[#f59e0b] mb-2">🏦 The Old Fix — Trust a Bank</h4>
+                    <p className="text-sm text-muted-foreground">Banks keep a central ledger. When you pay, they debit your account instantly. No double-spend possible — but you must trust them 100% with your money.</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
+                    <h4 className="font-bold text-[#39B54A] mb-2">🔗 Bitcoin's Fix — UTXO + Chain</h4>
+                    <p className="text-sm text-muted-foreground">Every coin is a specific Unspent Transaction Output. Spending it destroys it and creates new outputs. A UTXO can only be consumed once — miners reject any transaction referencing an already-spent output.</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/30">
+                    <h4 className="font-bold text-[#6366f1] mb-2">⛏️ Confirmed = Final</h4>
+                    <p className="text-sm text-muted-foreground">Once a transaction is included in a block and buried under more blocks, rewriting it would require outpacing the entire network's hash power. After 6 confirmations, it's economically irreversible.</p>
+                  </div>
+                </div>
+              </div>
+            }
+            keyPoints={[
+              "Digital cash without a bank was impossible before Bitcoin — copies are free",
+              "UTXO are destroyed when spent — there is no 'balance', only unspent outputs",
+              "Miners validate that every input UTXO exists and hasn't been spent yet",
+              "The blockchain is a globally shared, ordered log that makes double-spending publicly visible"
             ]}
           />
         </div>
@@ -353,13 +402,21 @@ export function Section2() {
                 </p>
               </div>
 
-              <div className="p-4 bg-gradient-to-br from-[#ED1C24]/15 to-transparent border border-[#ED1C24]/30 rounded-xl flex-1">
-                <h4 className="font-bold text-[#ED1C24] mb-2">⚠️ What could go wrong?</h4>
-                <ul className="space-y-1.5 text-xs text-muted-foreground">
-                  <li>• <span className="text-foreground font-semibold">AWS outage (Dec 2021)</span> — briefly took down large parts of Solana, Ethereum RPC endpoints, and major DeFi front-ends</li>
-                  <li>• A cloud provider can <span className="text-foreground font-semibold">ban accounts</span>, removing nodes overnight</li>
-                  <li>• Geo-regulatory risk: US sanctions could force AWS to cut off certain regions or protocols</li>
-                  <li>• The protocol stays decentralized — but the <span className="text-foreground font-semibold">infrastructure layer</span> is not</li>
+              <div className="p-5 bg-gradient-to-br from-[#ED1C24]/15 to-transparent border border-[#ED1C24]/30 rounded-xl flex-1 flex flex-col">
+                <h4 className="font-bold text-[#ED1C24] text-base mb-4">⚠️ What could go wrong?</h4>
+
+                {/* Real-life incident */}
+                <div className="mb-4 p-4 bg-[#ED1C24]/10 border border-[#ED1C24]/40 rounded-lg">
+                  <p className="text-sm font-bold text-foreground mb-2">🔴 Real incident — December 7, 2021</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    AWS us-east-1 suffered a major outage. Within hours, <span className="text-foreground font-semibold">Solana validators went offline</span>, Ethereum RPC providers like <span className="text-foreground font-semibold">Infura and Alchemy became unreachable</span>, and front-ends for Uniswap, OpenSea and dozens of DeFi apps stopped loading — even though the underlying protocols were perfectly fine. Users couldn't interact with "decentralized" apps because the access layer was centralized on a single AWS region.
+                  </p>
+                </div>
+
+                <ul className="space-y-3 text-sm text-muted-foreground flex-1">
+                  <li>• A cloud provider can <span className="text-foreground font-semibold">suspend accounts</span>, removing nodes and RPC endpoints overnight with no recourse</li>
+                  <li>• US sanctions could legally force AWS, Azure or GCP to <span className="text-foreground font-semibold">block entire protocols</span> or geographic regions</li>
+                  <li>• The blockchain protocol stays decentralized — but the <span className="text-foreground font-semibold">infrastructure layer most users rely on</span> is not</li>
                 </ul>
               </div>
             </div>
