@@ -27,6 +27,7 @@ const section1Chapters = [
   { id: 's1-wallets', label: 'Wallets & Signatures' },
   { id: 's1-tx', label: 'Transaction Lifecycle' },
   { id: 's1-consensus', label: 'Consensus Mechanisms' },
+  { id: 's1-chain-builder', label: 'Chain Builder' },
   { id: 's1-quiz', label: 'Quizzes' },
   { id: 's1-takeaways', label: 'Takeaways' },
 ];
@@ -659,6 +660,324 @@ function TrilemmaExercise() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+/* ── Chain Builder Exercise ──────────────────────────────── */
+
+const BUILDER_BLOCKS = [
+  {
+    id: 'b0',
+    data: 'The Times 03/Jan/2009 — Genesis',
+    hash:     '0x0000ab',
+    prevHash: '0x000000 (start of chain)',
+  },
+  {
+    id: 'b1',
+    data: 'Alice → Bob: 10 BTC',
+    hash:     '0x1a2b3c',
+    prevHash: '0x0000ab',
+  },
+  {
+    id: 'b2',
+    data: 'Bob → Carol: 5 BTC',
+    hash:     '0x4d5e6f',
+    prevHash: '0x1a2b3c',
+  },
+  {
+    id: 'b3',
+    data: 'Carol → Dave: 3 BTC',
+    hash:     '0x7c8d9e',
+    prevHash: '0x4d5e6f',
+  },
+] as const;
+
+type BuilderBlockId = typeof BUILDER_BLOCKS[number]['id'];
+
+// The scrambled order students see — block numbers are hidden so they must use hash clues
+const SCRAMBLED_IDS: BuilderBlockId[] = ['b2', 'b0', 'b3', 'b1'];
+
+function BuilderBlockCard({ block }: { block: typeof BUILDER_BLOCKS[number] }) {
+  return (
+    <div className="p-3 space-y-2.5 text-xs">
+      <div>
+        <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-0.5">Data</div>
+        <div className="font-mono text-foreground truncate">{block.data}</div>
+      </div>
+      <div>
+        <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-0.5">Prev Hash</div>
+        <div className="font-mono text-[#6366f1]">{block.prevHash}</div>
+      </div>
+      <div>
+        <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-0.5">Hash</div>
+        <div className="font-mono text-[#39B54A]">{block.hash}</div>
+      </div>
+    </div>
+  );
+}
+
+function ChainBuilderExercise() {
+  // slot index (0–3) → block id
+  const [placements, setPlacements] = useState<Partial<Record<number, BuilderBlockId>>>({});
+  const [selected, setSelected]     = useState<BuilderBlockId | null>(null);
+  const [checked, setChecked]       = useState(false);
+  const [showHint, setShowHint]     = useState(false);
+
+  const placedIds = Object.values(placements) as BuilderBlockId[];
+  const pool      = SCRAMBLED_IDS.filter(id => !placedIds.includes(id));
+  const allFilled = placedIds.length === BUILDER_BLOCKS.length;
+
+  const getBlock = (id: BuilderBlockId) => BUILDER_BLOCKS.find(b => b.id === id)!;
+
+  // Slot i is correct when the placed block is b{i} (correct chain order)
+  const isSlotCorrect = (i: number) => placements[i] === `b${i}`;
+
+  // Link between slot i and i+1 is valid when the hashes connect
+  const isLinkValid = (i: number) => {
+    const from = placements[i];
+    const to   = placements[i + 1];
+    if (!from || !to) return false;
+    return getBlock(to).prevHash === getBlock(from).hash;
+  };
+
+  const score = checked ? [0, 1, 2, 3].filter(i => isSlotCorrect(i)).length : 0;
+
+  const handlePoolClick = (id: BuilderBlockId) => {
+    if (checked) return;
+    setSelected(prev => (prev === id ? null : id));
+  };
+
+  const handleSlotClick = (slotIndex: number) => {
+    if (checked) return;
+    if (selected) {
+      setPlacements(prev => {
+        const next = { ...prev };
+        // Remove the selected block from any slot it's already in
+        for (const k in next) { if (next[+k] === selected) delete next[+k]; }
+        // Place it (any previous occupant implicitly returns to pool)
+        next[slotIndex] = selected;
+        return next;
+      });
+      setSelected(null);
+    } else {
+      // Pick up whatever is in this slot
+      const blockId = placements[slotIndex];
+      if (blockId) {
+        setPlacements(prev => { const next = { ...prev }; delete next[slotIndex]; return next; });
+        setSelected(blockId);
+      }
+    }
+  };
+
+  const reset = () => { setPlacements({}); setSelected(null); setChecked(false); setShowHint(false); };
+
+  const resultColor = score === 4 ? '#10b981' : score >= 2 ? '#f59e0b' : '#ef4444';
+  const resultMsg   = score === 4
+    ? 'Perfect — chain reconstructed!'
+    : score >= 2
+    ? 'Almost! One or more blocks are out of place.'
+    : 'Review how Prev Hash links blocks together.';
+
+  return (
+    <div className="max-w-5xl w-full">
+
+      {/* Header */}
+      <div className="text-center mb-6">
+        <div className="size-14 rounded-full bg-[#6366f1]/20 flex items-center justify-center mx-auto mb-3 text-2xl">🔗</div>
+        <h2 className="text-3xl font-bold text-foreground mb-2">Reconstruct the Chain</h2>
+        <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+          These 4 blocks are <span className="text-[#ED1C24] font-semibold">scrambled</span>.
+          Use the <span className="font-mono text-[#6366f1] font-semibold">Prev Hash</span> and{' '}
+          <span className="font-mono text-[#39B54A] font-semibold">Hash</span> fields to figure out the correct order.
+          <br /><span className="text-muted-foreground/60 text-xs">Click a block to select it, then click a slot to place it.</span>
+        </p>
+      </div>
+
+      {/* ── Slots ── */}
+      <div className="mb-1">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold text-center">
+          ← Place blocks here in the correct order →
+        </p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {[0, 1, 2, 3].map(slotIndex => {
+            const blockId    = placements[slotIndex];
+            const isOccupied = !!blockId;
+            const isRight    = checked && isSlotCorrect(slotIndex);
+            const isWrong    = checked && isOccupied && !isSlotCorrect(slotIndex);
+
+            return (
+              <div
+                key={slotIndex}
+                onClick={() => handleSlotClick(slotIndex)}
+                className={`
+                  rounded-xl border-2 transition-all min-h-[148px]
+                  ${!checked ? 'cursor-pointer' : ''}
+                  ${!isOccupied ? 'border-dashed' : ''}
+                  ${!isOccupied && selected  ? 'border-[#f59e0b] bg-[#f59e0b]/5 hover:bg-[#f59e0b]/10' : ''}
+                  ${!isOccupied && !selected ? 'border-border/60 bg-muted/5' : ''}
+                  ${isOccupied && !checked   ? 'border-[#6366f1]/50 bg-card hover:border-[#6366f1]' : ''}
+                  ${isRight  ? 'border-[#10b981] bg-[#10b981]/5' : ''}
+                  ${isWrong  ? 'border-[#ef4444] bg-[#ef4444]/5' : ''}
+                `}
+              >
+                {/* Slot header */}
+                <div className="px-3 py-2 border-b border-border/50 flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                    Slot {slotIndex + 1}
+                  </span>
+                  {checked && isOccupied && (
+                    <span className="text-sm font-bold" style={{ color: isRight ? '#10b981' : '#ef4444' }}>
+                      {isRight ? '✓' : '✗'}
+                    </span>
+                  )}
+                </div>
+
+                {isOccupied
+                  ? <BuilderBlockCard block={getBlock(blockId)} />
+                  : (
+                    <div className="flex items-center justify-center h-24 text-xs text-muted-foreground/40">
+                      {selected ? '← drop here' : 'empty'}
+                    </div>
+                  )
+                }
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Hash link indicators — shown after Check */}
+      {checked && (
+        <div className="flex items-center justify-around px-2 py-2 mb-3">
+          {[0, 1, 2].map(i => {
+            const valid    = isLinkValid(i);
+            const fromHash = placements[i] ? getBlock(placements[i]!).hash : '—';
+            const toNext   = placements[i + 1] ? getBlock(placements[i + 1]!).prevHash : '—';
+            return (
+              <div key={i} className="flex items-center gap-1 text-[10px] font-mono" style={{ color: valid ? '#10b981' : '#ef4444' }}>
+                <span>{fromHash}</span>
+                <span className="text-xs font-sans">{valid ? ' ⟶✓' : ' ⟶✗'}</span>
+                <span>{toNext}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Pool ── */}
+      <div className="mb-4">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold text-center">
+          Block Pool — click to select
+        </p>
+        <div className={`grid gap-3 min-h-[60px] ${pool.length > 0 ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-1'}`}>
+          {pool.length === 0 ? (
+            <div className="col-span-4 flex items-center justify-center text-sm text-muted-foreground/40 italic py-3">
+              All blocks placed ✓
+            </div>
+          ) : pool.map(id => {
+            const isSelected = selected === id;
+            return (
+              <div
+                key={id}
+                onClick={() => handlePoolClick(id)}
+                className={`
+                  rounded-xl border-2 cursor-pointer transition-all
+                  ${isSelected
+                    ? 'border-[#f59e0b] bg-[#f59e0b]/15 shadow-lg shadow-[#f59e0b]/20 scale-[1.02]'
+                    : 'border-border bg-card hover:border-[#6366f1]/50'
+                  }
+                `}
+              >
+                <div className="px-3 py-2 border-b border-border/50">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                    {isSelected ? '✦ Selected' : 'Block'}
+                  </span>
+                </div>
+                <BuilderBlockCard block={getBlock(id)} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Hint toggle */}
+      {!checked && (
+        <div className="flex justify-center mb-3">
+          <button
+            onClick={() => setShowHint(h => !h)}
+            className="text-xs text-muted-foreground hover:text-foreground border border-border rounded-lg px-4 py-2 transition-all"
+          >
+            {showHint ? 'Hide hint ▲' : '💡 Show hint'}
+          </button>
+        </div>
+      )}
+      {showHint && !checked && (
+        <div className="max-w-lg mx-auto mb-4 p-4 rounded-xl bg-[#f59e0b]/10 border border-[#f59e0b]/30 text-sm">
+          <p className="font-semibold text-[#f59e0b] mb-1">How to crack it:</p>
+          <p className="text-muted-foreground text-xs">
+            1. Find the <strong>Genesis block</strong> — its{' '}
+            <span className="font-mono text-[#6366f1]">Prev Hash</span> reads{' '}
+            <span className="font-mono bg-muted px-1 rounded">0x000000 (start)</span>.<br />
+            2. Match each block's <span className="font-mono text-[#6366f1]">Prev Hash</span> to
+            the previous block's <span className="font-mono text-[#39B54A]">Hash</span> — like connecting puzzle pieces.
+          </p>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex items-center justify-center gap-4">
+        {!checked ? (
+          <button
+            onClick={() => setChecked(true)}
+            disabled={!allFilled}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              allFilled
+                ? 'bg-[#39B54A] text-white hover:opacity-90 shadow-lg shadow-[#39B54A]/30'
+                : 'bg-muted text-muted-foreground cursor-not-allowed'
+            }`}
+          >
+            Check chain ✓
+          </button>
+        ) : (
+          <div className="flex items-center gap-6">
+            <div className="text-center">
+              <div className="text-3xl font-black" style={{ color: resultColor }}>{score}/4</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{resultMsg}</div>
+            </div>
+            <button
+              onClick={reset}
+              className="px-4 py-2 rounded-xl border border-border text-sm text-muted-foreground hover:text-foreground hover:border-foreground transition-all"
+            >
+              Try again
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Post-check insight */}
+      {checked && (
+        <div className={`mt-5 p-4 rounded-xl border text-sm text-center max-w-xl mx-auto ${
+          score === 4
+            ? 'bg-[#10b981]/10 border-[#10b981]/30 text-muted-foreground'
+            : 'bg-[#6366f1]/10 border-[#6366f1]/30 text-muted-foreground'
+        }`}>
+          {score === 4 ? (
+            <>
+              🎉 <span className="font-semibold text-[#10b981]">Chain reconstructed!</span>{' '}
+              Every Prev Hash matched the previous block's Hash exactly — that cryptographic
+              linkage is what makes blockchain tamper-evident and immutable.
+            </>
+          ) : (
+            <>
+              💡 <span className="font-semibold text-[#6366f1]">Key insight:</span>{' '}
+              Start with the Genesis block (<span className="font-mono text-xs">Prev Hash = 0x000000</span>),
+              then trace each Hash → Prev Hash connection. The chain can only be assembled one way.
+            </>
+          )}
+        </div>
+      )}
+
     </div>
   );
 }
@@ -1532,6 +1851,11 @@ export function Section1() {
         {/* Pedagogical note — The Trilemma (interactive exercise) */}
         <div className="h-full flex items-center justify-center p-12">
           <TrilemmaExercise />
+        </div>
+
+        {/* ═══════ CAPSTONE: CHAIN BUILDER ═══════ */}
+        <div id="s1-chain-builder" className="h-full flex items-center justify-center p-8 lg:p-12">
+          <ChainBuilderExercise />
         </div>
 
         {/* Final quiz */}

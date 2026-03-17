@@ -9,6 +9,7 @@ import { SectionNav } from '../components/navigation/SectionNav';
 
 const prologueChapters = [
   { id: 'p-cypherpunks', label: 'The Cypherpunks' },
+  { id: 'p-cypherpunk-values', label: 'By the People' },
   { id: 'p-timeline', label: 'Timeline' },
   { id: 'p-why', label: 'Why It Matters' },
   { id: 'p-takeaways', label: 'Takeaways' },
@@ -81,7 +82,58 @@ export function Prologue() {
           />
         </div>
 
-        {/* ═══════ 2. TIMELINE ═══════ */}
+        {/* ═══════ 2. CYPHERPUNK VALUES ═══════ */}
+        <div id="p-cypherpunk-values" className="h-full">
+          <ConceptSlide
+            title="Technology by the People, for the People"
+            description="The Cypherpunks weren't building products. They were building liberation tools — and they gave them away for free."
+            visual={
+              <div className="space-y-4 w-full">
+                <div className="p-5 bg-gradient-to-br from-[#8b5cf6]/15 to-[#ED1C24]/10 rounded-xl border-2 border-[#8b5cf6]/50">
+                  <p className="text-base font-bold text-foreground mb-1">The Manifesto in Three Words</p>
+                  <div className="flex gap-3 mt-3">
+                    <div className="flex-1 text-center p-3 bg-[#8b5cf6]/20 rounded-lg border border-[#8b5cf6]/40">
+                      <div className="text-2xl font-black text-[#8b5cf6]">PRIVACY</div>
+                      <div className="text-xs text-muted-foreground mt-1">is a right, not a feature</div>
+                    </div>
+                    <div className="flex-1 text-center p-3 bg-[#ED1C24]/20 rounded-lg border border-[#ED1C24]/40">
+                      <div className="text-2xl font-black text-[#ED1C24]">AUTONOMY</div>
+                      <div className="text-xs text-muted-foreground mt-1">over your own data and money</div>
+                    </div>
+                    <div className="flex-1 text-center p-3 bg-[#39B54A]/20 rounded-lg border border-[#39B54A]/40">
+                      <div className="text-2xl font-black text-[#39B54A]">CODE</div>
+                      <div className="text-xs text-muted-foreground mt-1">is the law that can't be lobbied</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-card rounded-xl border border-border">
+                  <p className="text-sm italic text-muted-foreground leading-relaxed">
+                    "We are writing code. We know that software can't be destroyed and that a widely dispersed system can't be shut down."
+                  </p>
+                  <p className="text-xs text-[#8b5cf6] font-bold mt-2">— Eric Hughes, A Cypherpunk's Manifesto (1993)</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-muted/20 rounded-lg border border-border text-center">
+                    <div className="text-lg font-black text-foreground">👤 → 🌍</div>
+                    <div className="text-xs text-muted-foreground mt-1">Individual tools with global reach</div>
+                  </div>
+                  <div className="p-3 bg-muted/20 rounded-lg border border-border text-center">
+                    <div className="text-lg font-black text-foreground">🔓 Free</div>
+                    <div className="text-xs text-muted-foreground mt-1">Open-source, no gatekeepers, no cost</div>
+                  </div>
+                </div>
+              </div>
+            }
+            keyPoints={[
+              "Anyone, anywhere could use or audit the tools — no permission needed",
+              "Designed to be censorship-resistant: no single point of shutdown",
+              "The enemy wasn't technology — it was centralised power over information",
+              "Bitcoin inherited this DNA: no CEO, no headquarters, no off switch",
+            ]}
+          />
+        </div>
+
+        {/* ═══════ 3. TIMELINE ═══════ */}
         <div id="p-timeline" className="h-full">
           <TimelineSlide
             title="From Cypherpunks to Bitcoin"
@@ -125,7 +177,7 @@ export function Prologue() {
           />
         </div>
 
-        {/* ═══════ 3. WHY THIS HISTORY MATTERS ═══════ */}
+        {/* ═══════ 4. WHY THIS HISTORY MATTERS ═══════ */}
         <div id="p-why" className="h-full">
           <ConceptSlide
             title="Why This History Matters"
@@ -167,7 +219,7 @@ export function Prologue() {
           />
         </div>
 
-        {/* ═══════ 4. TAKEAWAYS ═══════ */}
+        {/* ═══════ 5. TAKEAWAYS ═══════ */}
         <div id="p-takeaways" className="h-full">
           <TakeawaySlide
             title="Prologue Takeaways"
@@ -181,7 +233,7 @@ export function Prologue() {
           />
         </div>
 
-        {/* ═══════ 5. QUIZZES ═══════ */}
+        {/* ═══════ 6. QUIZZES ═══════ */}
         <div id="p-quiz" className="h-full">
           <QuizSlide
             question="What was the core belief of the Cypherpunk movement?"
