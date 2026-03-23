@@ -12,9 +12,9 @@ import { SectionNav } from '../components/navigation/SectionNav';
 
 const section2Chapters = [
   { id: 's2-breakthrough', label: 'Bitcoin Breakthrough' },
+  { id: 's2-what', label: 'What is Bitcoin?' },
   { id: 's2-byzantine', label: 'Byzantine Problem' },
   { id: 's2-doublespend', label: 'Double-Spending' },
-  { id: 's2-what', label: 'What is Bitcoin?' },
   { id: 's2-immutability', label: 'Immutability' },
   { id: 's2-supply', label: 'Supply Model' },
   { id: 's2-stats', label: 'Network Statistics' },
@@ -72,6 +72,46 @@ export function Section2() {
               "Designed a transparent public ledger system",
               "Implemented cryptographic security for transactions",
               "Established fixed supply and predictable issuance schedule"
+            ]}
+          />
+        </div>
+
+        {/* ═══════ 3. WHAT IS BITCOIN ═══════ */}
+        <div id="s2-what" className="h-full">
+          <ConceptSlide
+            title="What is Bitcoin?"
+            description="Bitcoin is the first decentralized digital currency — a peer-to-peer electronic cash system that operates without banks, governments, or intermediaries."
+            visual={
+              <div className="space-y-4 w-full">
+                <DefinitionBox
+                  term="Bitcoin (BTC)"
+                  definition="A decentralized digital currency created in 2009 by Satoshi Nakamoto. It runs on a public blockchain where transactions are verified by a global network of nodes and miners."
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
+                    <h4 className="font-bold text-[#f59e0b] mb-2">🌐 Permissionless</h4>
+                    <p className="text-sm text-muted-foreground">Anyone can send, receive, or validate transactions without asking permission</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
+                    <h4 className="font-bold text-[#ED1C24] mb-2">🔓 Open Source</h4>
+                    <p className="text-sm text-muted-foreground">The code is public — anyone can audit, fork, or contribute to Bitcoin Core</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
+                    <h4 className="font-bold text-[#39B54A] mb-2">💎 Scarce</h4>
+                    <p className="text-sm text-muted-foreground">Hard-capped at 21 million coins — enforced by code, not promises</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/30">
+                    <h4 className="font-bold text-[#6366f1] mb-2">⚡ Censorship Resistant</h4>
+                    <p className="text-sm text-muted-foreground">No entity can freeze, reverse, or block a valid Bitcoin transaction</p>
+                  </div>
+                </div>
+              </div>
+            }
+            keyPoints={[
+              "Bitcoin is both a payment network and a unit of currency (BTC)",
+              "It solved the double-spending problem without a central authority",
+              "Transactions are irreversible once confirmed on-chain",
+              "Bitcoin pioneered the entire cryptocurrency industry"
             ]}
           />
         </div>
@@ -144,46 +184,6 @@ export function Section2() {
               "UTXO are destroyed when spent — there is no 'balance', only unspent outputs",
               "Miners validate that every input UTXO exists and hasn't been spent yet",
               "The blockchain is a globally shared, ordered log that makes double-spending publicly visible"
-            ]}
-          />
-        </div>
-
-        {/* ═══════ 3. WHAT IS BITCOIN ═══════ */}
-        <div id="s2-what" className="h-full">
-          <ConceptSlide
-            title="What is Bitcoin?"
-            description="Bitcoin is the first decentralized digital currency — a peer-to-peer electronic cash system that operates without banks, governments, or intermediaries."
-            visual={
-              <div className="space-y-4 w-full">
-                <DefinitionBox
-                  term="Bitcoin (BTC)"
-                  definition="A decentralized digital currency created in 2009 by Satoshi Nakamoto. It runs on a public blockchain where transactions are verified by a global network of nodes and miners."
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
-                    <h4 className="font-bold text-[#f59e0b] mb-2">🌐 Permissionless</h4>
-                    <p className="text-sm text-muted-foreground">Anyone can send, receive, or validate transactions without asking permission</p>
-                  </div>
-                  <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
-                    <h4 className="font-bold text-[#ED1C24] mb-2">🔓 Open Source</h4>
-                    <p className="text-sm text-muted-foreground">The code is public — anyone can audit, fork, or contribute to Bitcoin Core</p>
-                  </div>
-                  <div className="p-4 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
-                    <h4 className="font-bold text-[#39B54A] mb-2">💎 Scarce</h4>
-                    <p className="text-sm text-muted-foreground">Hard-capped at 21 million coins — enforced by code, not promises</p>
-                  </div>
-                  <div className="p-4 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/30">
-                    <h4 className="font-bold text-[#6366f1] mb-2">⚡ Censorship Resistant</h4>
-                    <p className="text-sm text-muted-foreground">No entity can freeze, reverse, or block a valid Bitcoin transaction</p>
-                  </div>
-                </div>
-              </div>
-            }
-            keyPoints={[
-              "Bitcoin is both a payment network and a unit of currency (BTC)",
-              "It solved the double-spending problem without a central authority",
-              "Transactions are irreversible once confirmed on-chain",
-              "Bitcoin pioneered the entire cryptocurrency industry"
             ]}
           />
         </div>

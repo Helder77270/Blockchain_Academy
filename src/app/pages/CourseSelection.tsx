@@ -26,13 +26,13 @@ const courses: Course[] = [
   },
   {
     number: '02',
-    title: 'Smart Contracts',
-    description: 'Learn to design, write, and deploy smart contracts on the Ethereum Virtual Machine using Solidity.',
-    topics: ['Solidity Basics', 'EVM Deep Dive', 'ERC Standards', 'Security & Auditing', 'DeFi Protocols'],
+    title: 'Business Applications for Smart Contracts',
+    description: 'From theory to industry disruption — understand what smart contracts can and cannot do for your business, with real case studies and a team project.',
+    topics: ['Smart Contract Fundamentals', 'EVM & Web3 Landscape', 'Case Studies', 'Oracle Problem', 'Team Project'],
     gradient: 'from-[#6366f1] to-[#8b5cf6]',
     accentColor: '#6366f1',
     path: '/smart-contracts',
-    available: false,
+    available: true,
   },
   {
     number: '03',

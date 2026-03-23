@@ -8,9 +8,9 @@ import { RefreshCw } from 'lucide-react';
 const chapters = [
   { id: 's0-centralization', label: 'Centralization' },
   { id: 's0-types', label: 'Blockchain Types' },
-  { id: 's0-usecases', label: 'Use of Blockchain' },
   { id: 's0-permissioned', label: 'Permissioned' },
   { id: 's0-comparison', label: 'Comparison' },
+  { id: 's0-usecases', label: 'Use of Blockchain' },
   { id: 's0-takeaways', label: 'Takeaways' },
 ];
 
@@ -165,48 +165,6 @@ export function Section0() {
         </div>
 
         {/* ═══════ USE OF BLOCKCHAIN ═══════ */}
-        <div id="s0-usecases" className="h-full flex items-center justify-center p-5 lg:p-8">
-          <div className="w-full max-w-6xl">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-1 text-center">The Use of Blockchain</h2>
-            <p className="text-sm text-muted-foreground text-center mb-6">When does blockchain actually add value — and when doesn't it?</p>
-
-            <div className="grid grid-cols-3 gap-5">
-              <div className="bg-card border border-[#39B54A]/40 rounded-xl p-7">
-                <div className="font-bold text-[#39B54A] text-base mb-5">✅ Use blockchain when…</div>
-                <ul className="space-y-4 text-sm text-muted-foreground">
-                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Multiple parties share data without trusting each other</li>
-                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>An immutable audit trail is required</li>
-                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Intermediaries add cost without adding value</li>
-                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Rules need to be enforced automatically (smart contracts)</li>
-                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Censorship resistance or permissionless access is required</li>
-                </ul>
-              </div>
-
-              <div className="bg-card border border-[#ED1C24]/40 rounded-xl p-7">
-                <div className="font-bold text-[#ED1C24] text-base mb-5">❌ Don't use blockchain when…</div>
-                <ul className="space-y-4 text-sm text-muted-foreground">
-                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>A central authority is already trusted by all parties</li>
-                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>Data privacy is paramount — public chains expose everything</li>
-                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>High-volume, low-latency transactions are needed</li>
-                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>You control all participants — just use a database</li>
-                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>On-chain data integrity can't be guaranteed (oracle problem)</li>
-                </ul>
-              </div>
-
-              <div className="bg-card border border-[#f59e0b]/40 rounded-xl p-7">
-                <div className="font-bold text-[#f59e0b] text-base mb-5">🏭 Real-World Value Drivers</div>
-                <ul className="space-y-4 text-sm text-muted-foreground">
-                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Finance:</span> DeFi, cross-border payments, tokenised assets</li>
-                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Supply chain:</span> provenance, anti-counterfeiting, compliance</li>
-                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Healthcare:</span> patient records portability, drug traceability</li>
-                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Identity:</span> self-sovereign credentials, KYC once</li>
-                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Government:</span> land registries, voting, procurement</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* ═══════ PERMISSIONED BLOCKCHAINS ═══════ */}
         <div id="s0-permissioned" className="h-full">
           <ConceptSlide
@@ -281,6 +239,49 @@ export function Section0() {
               },
             ]}
           />
+        </div>
+
+        {/* ═══════ USE OF BLOCKCHAIN ═══════ */}
+        <div id="s0-usecases" className="h-full flex items-center justify-center p-5 lg:p-8">
+          <div className="w-full max-w-6xl">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-1 text-center">The Use of Blockchain</h2>
+            <p className="text-sm text-muted-foreground text-center mb-6">When does blockchain actually add value — and when doesn't it?</p>
+
+            <div className="grid grid-cols-3 gap-5">
+              <div className="bg-card border border-[#39B54A]/40 rounded-xl p-7">
+                <div className="font-bold text-[#39B54A] text-base mb-5">✅ Use blockchain when…</div>
+                <ul className="space-y-4 text-sm text-muted-foreground">
+                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Multiple parties share data without trusting each other</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>An immutable audit trail is required</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Intermediaries add cost without adding value</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Rules need to be enforced automatically (smart contracts)</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Censorship resistance or permissionless access is required</li>
+                </ul>
+              </div>
+
+              <div className="bg-card border border-[#ED1C24]/40 rounded-xl p-7">
+                <div className="font-bold text-[#ED1C24] text-base mb-5">❌ Don't use blockchain when…</div>
+                <ul className="space-y-4 text-sm text-muted-foreground">
+                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>A central authority is already trusted by all parties</li>
+                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>Data privacy is paramount — public chains expose everything</li>
+                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>High-volume, low-latency transactions are needed</li>
+                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>You control all participants — just use a database</li>
+                  <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">•</span>On-chain data integrity can't be guaranteed (oracle problem)</li>
+                </ul>
+              </div>
+
+              <div className="bg-card border border-[#f59e0b]/40 rounded-xl p-7">
+                <div className="font-bold text-[#f59e0b] text-base mb-5">🏭 Real-World Value Drivers</div>
+                <ul className="space-y-4 text-sm text-muted-foreground">
+                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Finance:</span> DeFi, cross-border payments, tokenised assets</li>
+                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Supply chain:</span> provenance, anti-counterfeiting, compliance</li>
+                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Healthcare:</span> patient records portability, drug traceability</li>
+                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Identity:</span> self-sovereign credentials, KYC once</li>
+                  <li className="flex gap-2"><span className="text-[#f59e0b] shrink-0">•</span><span className="font-medium text-foreground">Government:</span> land registries, voting, procurement</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* ═══════ TAKEAWAYS ═══════ */}

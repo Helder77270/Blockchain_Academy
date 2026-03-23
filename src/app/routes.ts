@@ -2,6 +2,7 @@ import { createBrowserRouter, redirect } from "react-router";
 import { AcademyRoot } from "./AcademyRoot";
 import { Root } from "./Root";
 import { BlockchainPlatformsRoot } from "./BlockchainPlatformsRoot";
+import { SmartContractsRoot } from "./SmartContractsRoot";
 import { CourseSelection } from "./pages/CourseSelection";
 import { Home } from "./pages/Home";
 import { LearningObjectives } from "./pages/LearningObjectives";
@@ -20,6 +21,13 @@ import { BP_Section2 } from "./pages/blockchain-platforms/Section2";
 import { BP_Section3 } from "./pages/blockchain-platforms/Section3";
 import { BP_Section4 } from "./pages/blockchain-platforms/Section4";
 import { Conclusion } from "./pages/blockchain-platforms/Conclusion";
+import { SmartContractsHome } from "./pages/smart-contracts/Home";
+import { SC_Section1 } from "./pages/smart-contracts/Section1";
+import { SC_Section2 } from "./pages/smart-contracts/Section2";
+import { SC_Section3 } from "./pages/smart-contracts/Section3";
+import { SC_Section4 } from "./pages/smart-contracts/Section4";
+import { SC_Section5 } from "./pages/smart-contracts/Section5";
+import { SC_Conclusion } from "./pages/smart-contracts/Conclusion";
 
 export const router = createBrowserRouter([
   {
@@ -47,7 +55,20 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // Course 02 — Smart Contracts (coming soon)
+      // Course 02 — Smart Contracts
+      {
+        path: "smart-contracts",
+        Component: SmartContractsRoot,
+        children: [
+          { index: true, Component: SmartContractsHome },
+          { path: "section-1", Component: SC_Section1 },
+          { path: "section-2", Component: SC_Section2 },
+          { path: "section-3", Component: SC_Section3 },
+          { path: "section-4", Component: SC_Section4 },
+          { path: "section-5", Component: SC_Section5 },
+          { path: "conclusion", Component: SC_Conclusion },
+        ],
+      },
 
       // Course 03 — Blockchain Platforms
       {
