@@ -1,5 +1,6 @@
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { Cog } from 'lucide-react';
 
@@ -13,6 +14,7 @@ const chapters = [
   { id: 's2-capabilities', label: 'New Capabilities' },
   { id: 's2-why',          label: 'Why Build with SC?' },
   { id: 's2-gas',          label: 'Gas & Tx Economics' },
+  { id: 's2-quiz',         label: 'Quizzes' },
   { id: 's2-takeaways',    label: 'Takeaways' },
 ];
 
@@ -480,56 +482,60 @@ export function SC_Section2() {
           <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
 
             {/* App infrastructure comparison */}
-            <div className="flex flex-col">
-              <div className="text-xs font-semibold text-[#6366f1] uppercase tracking-widest mb-2">App Infrastructure</div>
-              <div className="flex-1 bg-card border border-border rounded-xl overflow-hidden">
+            <div className="flex flex-col min-h-0">
+              <div className="text-xs font-semibold text-[#6366f1] uppercase tracking-widest mb-2 shrink-0">App Infrastructure</div>
+              <div className="flex-1 min-h-0 bg-card border border-border rounded-xl overflow-hidden flex flex-col">
                 {/* Header */}
-                <div className="grid grid-cols-3 text-[11px] font-bold uppercase tracking-widest">
+                <div className="grid grid-cols-3 text-[11px] font-bold uppercase tracking-widest shrink-0">
                   <div className="p-2.5 bg-muted border-b border-r border-border text-muted-foreground">Property</div>
                   <div className="p-2.5 bg-[#ED1C24]/08 border-b border-r border-[#ED1C24]/20 text-[#ED1C24] text-center">Traditional App</div>
                   <div className="p-2.5 bg-[#39B54A]/08 border-b border-[#39B54A]/20 text-[#39B54A] text-center">dApp</div>
                 </div>
-                {[
-                  { prop: '🏗️ Infrastructure', trad: 'Centralised servers (AWS, GCP)', dapp: 'Distributed nodes worldwide' },
-                  { prop: '🔐 Trust model', trad: 'Trust the company', dapp: 'Trust the protocol & code' },
-                  { prop: '⏱️ Uptime', trad: 'SLA-based, can go down', dapp: 'Protocol runs 24/7/365' },
-                  { prop: '🗄️ Data storage', trad: 'Private databases', dapp: 'On-chain state + IPFS' },
-                  { prop: '💰 Cost model', trad: 'Subscription / ads', dapp: 'Gas per transaction' },
-                  { prop: '🚫 Censorship', trad: 'Platform can ban users', dapp: 'No one can block valid txs' },
-                ].map((r, i) => (
-                  <div key={r.prop} className={`grid grid-cols-3 text-xs ${i < 5 ? 'border-b border-border' : ''}`}>
-                    <div className="p-2.5 border-r border-border font-medium text-muted-foreground">{r.prop}</div>
-                    <div className="p-2.5 border-r border-border text-muted-foreground text-center">{r.trad}</div>
-                    <div className="p-2.5 text-muted-foreground text-center">{r.dapp}</div>
-                  </div>
-                ))}
+                <div className="flex-1 min-h-0 flex flex-col">
+                  {[
+                    { prop: '🏗️ Infrastructure', trad: 'Centralised servers (AWS, GCP)', dapp: 'Distributed nodes worldwide' },
+                    { prop: '🔐 Trust model', trad: 'Trust the company', dapp: 'Trust the protocol & code' },
+                    { prop: '⏱️ Uptime', trad: 'SLA-based, can go down', dapp: 'Protocol runs 24/7/365' },
+                    { prop: '🗄️ Data storage', trad: 'Private databases', dapp: 'On-chain state + IPFS' },
+                    { prop: '💰 Cost model', trad: 'Subscription / ads', dapp: 'Gas per transaction' },
+                    { prop: '🚫 Censorship', trad: 'Platform can ban users', dapp: 'No one can block valid txs' },
+                  ].map((r, i, arr) => (
+                    <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
+                      <div className="px-2.5 flex items-center border-r border-border font-medium text-muted-foreground">{r.prop}</div>
+                      <div className="px-2.5 flex items-center justify-center border-r border-border text-muted-foreground text-center">{r.trad}</div>
+                      <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center">{r.dapp}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Contract comparison */}
-            <div className="flex flex-col">
-              <div className="text-xs font-semibold text-[#8b5cf6] uppercase tracking-widest mb-2">Contract Execution</div>
-              <div className="flex-1 bg-card border border-border rounded-xl overflow-hidden">
+            <div className="flex flex-col min-h-0">
+              <div className="text-xs font-semibold text-[#8b5cf6] uppercase tracking-widest mb-2 shrink-0">Contract Execution</div>
+              <div className="flex-1 min-h-0 bg-card border border-border rounded-xl overflow-hidden flex flex-col">
                 {/* Header */}
-                <div className="grid grid-cols-3 text-[11px] font-bold uppercase tracking-widest">
+                <div className="grid grid-cols-3 text-[11px] font-bold uppercase tracking-widest shrink-0">
                   <div className="p-2.5 bg-muted border-b border-r border-border text-muted-foreground">Property</div>
                   <div className="p-2.5 bg-[#ED1C24]/08 border-b border-r border-[#ED1C24]/20 text-[#ED1C24] text-center">Traditional Contract</div>
                   <div className="p-2.5 bg-[#6366f1]/08 border-b border-[#6366f1]/20 text-[#6366f1] text-center">Smart Contract</div>
                 </div>
-                {[
-                  { prop: '⚙️ Execution',    trad: 'Manual — requires human action', smart: 'Automatic when conditions met' },
-                  { prop: '⏱️ Speed',        trad: 'Days to weeks', smart: 'Seconds to minutes' },
-                  { prop: '💸 Cost',         trad: 'Legal fees, intermediaries', smart: 'Gas fee only' },
-                  { prop: '🔐 Trust',        trad: 'Trust both parties + courts', smart: 'Trust the code only' },
-                  { prop: '👁️ Transparency', trad: 'Private, often ambiguous', smart: 'Public, deterministic code' },
-                  { prop: '🌍 Geography',    trad: 'Jurisdiction-dependent', smart: 'Borderless, always enforceable' },
-                ].map((r, i) => (
-                  <div key={r.prop} className={`grid grid-cols-3 text-xs ${i < 5 ? 'border-b border-border' : ''}`}>
-                    <div className="p-2.5 border-r border-border font-medium text-muted-foreground">{r.prop}</div>
-                    <div className="p-2.5 border-r border-border text-muted-foreground text-center">{r.trad}</div>
-                    <div className="p-2.5 text-muted-foreground text-center">{r.smart}</div>
-                  </div>
-                ))}
+                <div className="flex-1 min-h-0 flex flex-col">
+                  {[
+                    { prop: '⚙️ Execution',    trad: 'Manual — requires human action', smart: 'Automatic when conditions met' },
+                    { prop: '⏱️ Speed',        trad: 'Days to weeks', smart: 'Seconds to minutes' },
+                    { prop: '💸 Cost',         trad: 'Legal fees, intermediaries', smart: 'Gas fee only' },
+                    { prop: '🔐 Trust',        trad: 'Trust both parties + courts', smart: 'Trust the code only' },
+                    { prop: '👁️ Transparency', trad: 'Private, often ambiguous', smart: 'Public, deterministic code' },
+                    { prop: '🌍 Geography',    trad: 'Jurisdiction-dependent', smart: 'Borderless, always enforceable' },
+                  ].map((r, i, arr) => (
+                    <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
+                      <div className="px-2.5 flex items-center border-r border-border font-medium text-muted-foreground">{r.prop}</div>
+                      <div className="px-2.5 flex items-center justify-center border-r border-border text-muted-foreground text-center">{r.trad}</div>
+                      <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center">{r.smart}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -600,6 +606,93 @@ export function SC_Section2() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* ═══════ WHY BUILD WITH SMART CONTRACTS? ═══════ */}
+        <div id="s2-why" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Why Build Using Smart Contracts?</h2>
+            <p className="text-muted-foreground text-sm mt-1">The case for choosing smart contracts over traditional software — and when not to.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+
+            {/* Column 1: Core reasons */}
+            <div className="flex flex-col gap-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Core reasons to build</p>
+              {[
+                { color: '#6366f1', emoji: '🤝', title: 'Eliminate Intermediaries', desc: 'No bank, notary, or escrow agent needed. The contract enforces the rules and releases funds automatically — reducing cost and counterparty risk.' },
+                { color: '#39B54A', emoji: '🌍', title: 'Global by Default', desc: 'Deploy once, accessible to anyone on Earth with an internet connection. No geographic restrictions, no foreign exchange friction, no banking requirements.' },
+                { color: '#f59e0b', emoji: '🔍', title: 'Radical Transparency', desc: 'Every rule is public, readable, and auditable. Users don\'t have to trust a company\'s promises — they can verify the code themselves.' },
+                { color: '#8b5cf6', emoji: '⚡', title: 'Always-On Automation', desc: 'Code executes the moment conditions are met — no office hours, no approval queues, no human latency. Payouts, transfers, and state changes happen in seconds.' },
+              ].map(r => (
+                <div key={r.title} className="flex-1 flex gap-2.5 p-3 bg-card border border-border rounded-xl" style={{ borderColor: r.color + '30' }}>
+                  <div className="size-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: r.color + '18' }}>{r.emoji}</div>
+                  <div>
+                    <div className="font-bold text-xs mb-0.5" style={{ color: r.color }}>{r.title}</div>
+                    <div className="text-xs text-muted-foreground leading-snug">{r.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Column 2: Business impact */}
+            <div className="flex flex-col gap-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Business impact</p>
+              {[
+                { color: '#ED1C24', emoji: '💰', title: 'Programmable Money', desc: 'Revenue splits, royalties, and conditional payments execute automatically on every transaction. Superfluid streams salary per second. Mirror splits publication revenue by ownership.' },
+                { color: '#6366f1', emoji: '🧩', title: 'Composable Ecosystem', desc: 'Your contract can instantly integrate with Uniswap, Aave, Chainlink — no partnerships, no API keys. This "money lego" model accelerates product development exponentially.' },
+                { color: '#39B54A', emoji: '📜', title: 'Immutable Commitments', desc: 'Once deployed, the rules cannot be changed by any party — not even you. This removes the risk of unilateral platform changes that destroy user trust overnight.' },
+                { color: '#f59e0b', emoji: '🏛️', title: 'DAO Governance', desc: 'Smart contracts enable token-weighted voting, on-chain treasuries, and automatic execution of governance proposals — organisations without a legal entity or board.' },
+              ].map(r => (
+                <div key={r.title} className="flex-1 flex gap-2.5 p-3 bg-card border border-border rounded-xl" style={{ borderColor: r.color + '30' }}>
+                  <div className="size-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: r.color + '18' }}>{r.emoji}</div>
+                  <div>
+                    <div className="font-bold text-xs mb-0.5" style={{ color: r.color }}>{r.title}</div>
+                    <div className="text-xs text-muted-foreground leading-snug">{r.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Column 3: When to use & when not to */}
+            <div className="flex flex-col gap-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Decision framework</p>
+
+              <div className="flex-1 p-3 bg-[#39B54A]/08 border border-[#39B54A]/30 rounded-xl flex flex-col">
+                <div className="font-bold text-xs text-[#39B54A] mb-2">✅ Use smart contracts when…</div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground flex-1">
+                  {[
+                    'Multiple untrusting parties need to transact',
+                    'Rules must be transparent and tamper-proof',
+                    'Automation replaces a human intermediary',
+                    'You need programmable, conditional payments',
+                    'Global access with no permission required',
+                    'Composability with other on-chain protocols is valuable',
+                  ].map(l => (
+                    <li key={l} className="flex gap-1.5"><span className="text-[#39B54A] shrink-0">›</span>{l}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex-1 p-3 bg-[#ED1C24]/08 border border-[#ED1C24]/30 rounded-xl flex flex-col">
+                <div className="font-bold text-xs text-[#ED1C24] mb-2">❌ Avoid smart contracts when…</div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground flex-1">
+                  {[
+                    'Data is private and shouldn\'t be public',
+                    'You need to update logic frequently',
+                    'Speed is critical (sub-second responses)',
+                    'Storage requirements are large (images, video)',
+                    'Regulatory compliance requires reversibility',
+                    'A simple database and API would suffice',
+                  ].map(l => (
+                    <li key={l} className="flex gap-1.5"><span className="text-[#ED1C24] shrink-0">›</span>{l}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -681,6 +774,77 @@ export function SC_Section2() {
             </div>
 
           </div>
+        </div>
+
+        {/* ═══════ QUIZZES ═══════ */}
+        {/* Quiz 1: Workflow */}
+        <div id="s2-quiz" className="h-full">
+          <QuizSlide
+            question="In the smart contract execution workflow, what triggers a contract to run?"
+            options={[
+              { text: "A scheduled cron job on the blockchain's servers", correct: false },
+              { text: "A transaction sent to the contract's address on the blockchain", correct: true },
+              { text: "The developer manually calling the contract from their machine", correct: false },
+              { text: "The Ethereum Foundation approving the execution request", correct: false },
+            ]}
+            explanation="Smart contracts are passive — they sit on the blockchain and do nothing until triggered. A transaction sent to the contract address kicks off execution on the EVM. The contract then runs, updates state, and emits events — all within that single transaction."
+          />
+        </div>
+
+        {/* Quiz 2: Execution environment */}
+        <div className="h-full">
+          <QuizSlide
+            question="Why must smart contract execution be deterministic?"
+            options={[
+              { text: "So the developer can predict gas costs in advance", correct: false },
+              { text: "To keep execution fast on validator hardware", correct: false },
+              { text: "Because every node runs the same code — different results would break consensus", correct: true },
+              { text: "Because Solidity doesn't support randomness as a language feature", correct: false },
+            ]}
+            explanation="Thousands of nodes around the world execute every smart contract independently. If the same inputs could produce different outputs, nodes would disagree on the blockchain state and consensus would fail. Determinism is not a convenience — it's a fundamental requirement for a distributed system."
+          />
+        </div>
+
+        {/* Quiz 3: Web3 vs Traditional */}
+        <div className="h-full">
+          <QuizSlide
+            question="Compared to a traditional legal contract, what is a unique advantage of a smart contract?"
+            options={[
+              { text: "It is legally binding in all jurisdictions without any additional steps", correct: false },
+              { text: "It executes automatically when conditions are met — no court or intermediary required", correct: true },
+              { text: "It can be amended by either party at any time after deployment", correct: false },
+              { text: "It stores unlimited off-chain data for free", correct: false },
+            ]}
+            explanation="The core value proposition of smart contracts is automatic, trustless enforcement. A traditional contract requires human action and a legal system to enforce it — this takes days and costs money. A smart contract self-executes the moment conditions are satisfied, with no intermediary and no geographic limitation."
+          />
+        </div>
+
+        {/* Quiz 4: New capabilities */}
+        <div className="h-full">
+          <QuizSlide
+            question="What does 'atomic transaction' mean in the context of smart contracts?"
+            options={[
+              { text: "Transactions are processed using atomic-level cryptography for security", correct: false },
+              { text: "Only one transaction can run on the blockchain at any given time", correct: false },
+              { text: "A multi-step operation either completes entirely or reverts entirely — no partial states", correct: true },
+              { text: "Transactions are automatically split into smaller units to save gas", correct: false },
+            ]}
+            explanation="Atomicity means 'all or nothing'. In a smart contract, if any step of a complex operation fails, the entire transaction reverts as if it never happened. This eliminates the risk of partial execution — a problem common in traditional multi-system workflows where one step can succeed while another fails."
+          />
+        </div>
+
+        {/* Quiz 5: Gas economics */}
+        <div className="h-full">
+          <QuizSlide
+            question="If a smart contract transaction runs out of gas mid-execution, what happens?"
+            options={[
+              { text: "The transaction pauses and resumes when the user pays more gas", correct: false },
+              { text: "The completed steps are kept but the remaining steps are skipped", correct: false },
+              { text: "The transaction reverts completely, but the gas already consumed is not refunded", correct: true },
+              { text: "The network automatically increases the gas limit to complete it", correct: false },
+            ]}
+            explanation="Gas-out causes a full revert — all state changes are undone as if the transaction never happened. However, the gas already used for computation is burned and not returned to the sender. This is why setting an appropriate gas limit matters: too low and you waste fees on a failed transaction."
+          />
         </div>
 
         <div id="s2-takeaways" className="h-full">

@@ -1,5 +1,6 @@
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
+import { TimelineSlide } from '../../components/templates/TimelineSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { FileCode2 } from 'lucide-react';
 
@@ -10,7 +11,6 @@ const chapters = [
   { id: 's1-takeaways', label: 'Takeaways' },
 ];
 
-const ACCENT = '#6366f1';
 
 export function SC_Section1() {
   return (
@@ -176,83 +176,52 @@ export function SC_Section1() {
         </div>
 
         {/* ═══════ 3. HISTORICAL EVOLUTION ═══════ */}
-        <div id="s1-history" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Historical Evolution</h2>
-            <p className="text-muted-foreground text-sm mt-1">30 years from a paper concept to $100B+ locked in code.</p>
-          </div>
-
-          <div className="flex-1 min-h-0 flex gap-6">
-
-            {/* Timeline */}
-            <div className="flex flex-col gap-0 w-72 shrink-0 relative">
-              <div className="absolute left-[22px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-[#6366f1] to-[#ED1C24] opacity-30" />
-              {[
-                { year: '1994', color: '#6366f1', event: 'Nick Szabo coins "smart contract"', detail: 'Published in Extropy magazine — no blockchain exists yet.' },
-                { year: '1998', color: '#8b5cf6', event: 'Szabo designs Bit Gold', detail: 'Closest precursor to Bitcoin: proof-of-work, chain of ownership.' },
-                { year: '2009', color: '#f59e0b', event: 'Bitcoin launches', detail: 'Limited smart contracts via Bitcoin Script — no Turing completeness.' },
-                { year: '2013', color: '#6366f1', event: 'Ethereum whitepaper', detail: 'Vitalik Buterin proposes a Turing-complete programmable blockchain.' },
-                { year: '2015', color: '#627EEA', event: 'Ethereum mainnet', detail: 'Solidity launches. First general-purpose smart contract platform.' },
-                { year: '2016', color: '#ED1C24', event: 'The DAO hack', detail: '$60M drained via reentrancy bug. Ethereum hard-forks to recover funds.' },
-                { year: '2017', color: '#f59e0b', event: 'ICO boom', detail: 'ERC-20 tokens let anyone raise capital via smart contracts.' },
-                { year: '2020', color: '#39B54A', event: 'DeFi Summer', detail: 'Uniswap, Compound, Aave — $1B+ locked. Protocols replace banks.' },
-                { year: '2021', color: '#8b5cf6', event: 'NFT explosion', detail: 'ERC-721 goes mainstream. $41B NFT market. Ownership on-chain.' },
-                { year: 'Now', color: '#6366f1', event: '$100B+ in smart contracts', detail: 'Ethereum, Solana, BNB Chain, L2s — multi-chain ecosystem.' },
-              ].map((e, i) => (
-                <div key={i} className="flex gap-3 items-start pb-3 relative">
-                  <div
-                    className="size-11 rounded-full flex items-center justify-center text-white text-[10px] font-black shrink-0 z-10"
-                    style={{ backgroundColor: e.color }}
-                  >
-                    {e.year}
-                  </div>
-                  <div className="pt-1">
-                    <div className="font-bold text-xs text-foreground leading-tight">{e.event}</div>
-                    <div className="text-[11px] text-muted-foreground leading-snug">{e.detail}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Key insight panel */}
-            <div className="flex-1 min-w-0 flex flex-col gap-4">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Three eras of smart contracts</div>
-
-              {[
-                {
-                  era: 'Era 1 — The Idea (1994–2008)',
-                  color: '#6366f1',
-                  desc: 'Smart contracts exist only on paper. Szabo understands the concept but lacks the infrastructure to implement it. No trusted, decentralized execution environment exists.',
-                  tag: 'Theory',
-                },
-                {
-                  era: 'Era 2 — The Primitive (2009–2014)',
-                  color: '#f59e0b',
-                  desc: 'Bitcoin proves that trustless digital value transfer is possible, but its scripting language is intentionally limited. Smart contracts need a Turing-complete environment.',
-                  tag: 'Infrastructure',
-                },
-                {
-                  era: 'Era 3 — The Platform (2015–today)',
-                  color: '#39B54A',
-                  desc: 'Ethereum enables arbitrary logic on-chain. DeFi, NFTs, DAOs, and real-world asset tokenization emerge. Security becomes the primary battleground.',
-                  tag: 'Ecosystem',
-                },
-              ].map(e => (
-                <div key={e.era} className="flex-1 p-4 bg-card border border-border rounded-xl flex flex-col gap-2" style={{ borderColor: e.color + '30' }}>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ color: e.color, backgroundColor: e.color + '15' }}>{e.tag}</span>
-                    <div className="font-bold text-sm text-foreground">{e.era}</div>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{e.desc}</p>
-                </div>
-              ))}
-
-              <div className="p-3 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-xl text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Today's challenge:</span> smart contract security. Over <span className="text-[#ED1C24] font-semibold">$6B+ has been lost</span> to smart contract exploits since 2016. Code is law — but code can have bugs.
-              </div>
-            </div>
-
-          </div>
+        <div id="s1-history" className="h-full">
+          <TimelineSlide
+            title="Historical Evolution of Smart Contracts"
+            events={[
+              {
+                year: '1998',
+                title: 'Szabo designs Bit Gold',
+                description: 'The closest precursor to Bitcoin: proof-of-work chains of ownership. Still lacks a decentralized execution environment to run contracts.',
+              },
+              {
+                year: '2009',
+                title: 'Bitcoin launches — limited scripting',
+                description: 'Bitcoin Script enables basic conditional logic (multisig, timelocks) but is intentionally non-Turing-complete. Smart contracts remain constrained.',
+              },
+              {
+                year: '2015',
+                title: 'Ethereum mainnet — Solidity launches',
+                description: 'The first general-purpose smart contract platform goes live. Developers can now write arbitrary business logic on a global, trustless computer.',
+              },
+              {
+                year: '2016',
+                title: 'The DAO hack — $60M drained',
+                description: 'A reentrancy bug is exploited repeatedly before anyone can react. Ethereum hard-forks to recover funds. "Code is law" meets its first major stress test.',
+              },
+              {
+                year: '2017',
+                title: 'ICO boom — ERC-20 tokens',
+                description: 'ERC-20 lets anyone issue a token and raise capital via smart contract in minutes. Billions raised; most projects fail. Regulation follows.',
+              },
+              {
+                year: '2020',
+                title: 'DeFi Summer — protocols replace banks',
+                description: 'Uniswap, Compound, Aave lock $1B+ in smart contracts. Permissionless lending, trading, and yield — no banks, no accounts, no KYC.',
+              },
+              {
+                year: '2021',
+                title: 'NFT explosion — ERC-721 goes mainstream',
+                description: '$41B NFT market. On-chain ownership of art, collectibles, and gaming assets. Smart contracts enforce royalties automatically on every resale.',
+              },
+              {
+                year: 'Today',
+                title: '$100B+ locked — multi-chain ecosystem',
+                description: 'Ethereum, Solana, BNB Chain, Avalanche, and L2s host thousands of live contracts. Security is now the primary battleground — $6B+ lost to exploits since 2016.',
+              },
+            ]}
+          />
         </div>
 
         {/* ═══════ TAKEAWAYS ═══════ */}

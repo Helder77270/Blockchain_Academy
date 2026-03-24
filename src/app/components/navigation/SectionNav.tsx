@@ -47,13 +47,13 @@ export function SectionNav({ chapters }: SectionNavProps) {
           key={ch.id}
           onClick={() => scrollTo(ch.id)}
           className={`
-            flex-1 text-left text-xs leading-snug px-3 rounded-md transition-all truncate cursor-pointer flex items-center
+            flex-1 min-w-0 text-left text-xs leading-snug px-3 rounded-md transition-all cursor-pointer flex items-center
             ${activeId === ch.id
               ? 'bg-[#ED1C24]/15 text-[#ED1C24] font-bold'
               : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}
           `}
         >
-          {ch.label}
+          <span className="truncate block w-full">{ch.label}</span>
         </button>
       ))}
     </nav>
