@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
@@ -7,6 +9,8 @@ const chapters = [
   { id: 's4-oracle',     label: 'The Oracle Problem' },
   { id: 's4-challenges', label: 'Challenges & Limitations' },
   { id: 's4-technical',  label: 'Technical Challenges' },
+  { id: 's4-ex-oracle',  label: '🎯 Exercise: Oracle' },
+  { id: 's4-ex-verdict', label: '🎯 Exercise: Adv/Prob' },
   { id: 's4-takeaways',  label: 'Takeaways' },
 ];
 
@@ -16,6 +20,313 @@ function Stub({ id, label }: { id: string; label: string }) {
       <div className="text-center text-muted-foreground">
         <div className="text-4xl mb-4">⚠️</div>
         <p className="text-lg font-medium">{label} — coming soon</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Exercise: Oracle Attack Scenario ───────────────────────────────────────
+
+// mitigation: null = no tip for this row
+const ORACLE_ROWS = [
+  {
+    emoji: '🌾', actor: 'Farmer',           color: '#39B54A',
+    event: 'Pays $500 premium into smart contract',
+    consequence: 'Contract stores: if rainfall < 50mm in June → pay out $5,000 automatically.',
+    mitigation: null,
+  },
+  {
+    emoji: '🏢', actor: 'Oracle Provider',  color: '#6366f1',
+    event: 'A single company runs the only weather oracle',
+    consequence: "The smart contract trusts this oracle completely. It's the only source of truth for rainfall data.",
+    mitigation: { title: 'Decentralised Oracle (Chainlink)', desc: 'Aggregate from 15+ independent nodes — attacker must compromise a majority simultaneously.' },
+  },
+  {
+    emoji: '🔓', actor: 'Attacker',         color: '#ED1C24',
+    event: "Hacker compromises the oracle's API key",
+    consequence: "The attacker can now submit any rainfall figure they want — the blockchain has no way to verify it.",
+    mitigation: { title: 'Multiple Data Sources', desc: 'Cross-check NOAA + Weather.com + satellite data — one compromised source is caught by the others.' },
+  },
+  {
+    emoji: '📡', actor: 'Attacker',         color: '#ED1C24',
+    event: 'Submits fake data: "rainfall = 10mm"',
+    consequence: 'The smart contract reads this value, sees the condition is met (10 < 50), and executes automatically.',
+    mitigation: { title: 'Dispute Window', desc: 'Add a 24h challenge period before payout — observers can flag suspicious oracle data.' },
+  },
+  {
+    emoji: '💸', actor: 'Smart Contract',   color: '#f59e0b',
+    event: "Releases $5,000 to the attacker's wallet",
+    consequence: "The contract behaved exactly as coded. It did nothing wrong. The vulnerability was the oracle — not the contract.",
+    mitigation: { title: 'Multisig Oracle Control', desc: 'Require 3-of-5 oracle operators to sign the data — no single point of control.' },
+  },
+  {
+    emoji: '🔒', actor: 'Farmer',           color: '#ED1C24',
+    event: 'Tries to dispute the payout',
+    consequence: 'The transaction is immutable. The code has already executed. There is no appeals process, no reversal.',
+    mitigation: null,
+  },
+];
+
+function OracleAttackExercise() {
+  const [revealed, setRevealed] = useState(0);
+  const allDone = revealed >= ORACLE_ROWS.length;
+  const reset = () => setRevealed(0);
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 flex items-center justify-between mb-4">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#ED1C24]/15 border border-[#ED1C24]/40 text-[#ED1C24] text-xs font-bold">🎯 Exercise</span>
+          <h2 className="text-2xl font-bold text-foreground mt-1">Oracle Attack — Step by Step</h2>
+          <p className="text-muted-foreground text-sm">A crop insurance contract is hacked via its oracle. Click through each step — and see how to prevent it.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="text-xs text-muted-foreground">{Math.min(revealed, ORACLE_ROWS.length)} / {ORACLE_ROWS.length} steps</div>
+          {allDone && <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors">↺ Reset</button>}
+        </div>
+      </div>
+
+      {/* Column headers */}
+      <div className="shrink-0 grid grid-cols-2 gap-4 mb-2 px-1">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">What happened</p>
+        <p className="text-xs font-semibold text-[#39B54A] uppercase tracking-widest">How to prevent it</p>
+      </div>
+
+      {/* Paired rows */}
+      <div className="flex-1 min-h-0 flex flex-col gap-2">
+        {ORACLE_ROWS.map((row, i) => (
+          <motion.div
+            key={i}
+            className="flex-1 grid grid-cols-2 gap-4 min-h-0"
+            initial={{ opacity: 0.15 }}
+            animate={{ opacity: i < revealed ? 1 : 0.15 }}
+          >
+            {/* Step */}
+            <div
+              className="flex items-start gap-2.5 p-3 rounded-xl border transition-colors"
+              style={{
+                borderColor: i < revealed ? row.color + '40' : 'var(--border)',
+                backgroundColor: i < revealed ? row.color + '08' : 'transparent',
+              }}
+            >
+              <div className="size-7 rounded-full flex items-center justify-center text-base shrink-0"
+                style={{ backgroundColor: i < revealed ? row.color + '20' : 'var(--muted)' }}>
+                {i < revealed ? row.emoji : '?'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                  <span className="text-xs font-bold shrink-0" style={{ color: i < revealed ? row.color : 'var(--muted-foreground)' }}>{row.actor}</span>
+                  <span className="text-xs font-semibold text-foreground">{i < revealed ? row.event : '···'}</span>
+                </div>
+                {i < revealed && <div className="text-xs text-muted-foreground leading-snug">{row.consequence}</div>}
+              </div>
+            </div>
+
+            {/* Mitigation — aligned to the same row */}
+            <div className="p-3 rounded-xl border transition-colors"
+              style={{
+                borderColor: row.mitigation && allDone ? '#39B54A40' : 'transparent',
+                backgroundColor: row.mitigation && allDone ? '#39B54A08' : 'transparent',
+              }}
+            >
+              {row.mitigation && allDone && (
+                <motion.div initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+                  <div className="font-bold text-xs text-[#39B54A] mb-1">✓ {row.mitigation.title}</div>
+                  <div className="text-xs text-muted-foreground leading-snug">{row.mitigation.desc}</div>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {!allDone && (
+        <div className="shrink-0 mt-3">
+          <button
+            onClick={() => setRevealed(r => r + 1)}
+            className="px-4 py-2 rounded-lg bg-[#ED1C24] text-white text-xs font-bold hover:bg-[#ED1C24]/90 transition-colors"
+          >
+            Reveal next step →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Exercise: Advantages vs Problems ────────────────────────────────────────
+
+const ADV_PROB_ITEMS = [
+  { id: 'trustless',    label: 'Trustless execution',         emoji: '🤝', category: 'advantage', hint: 'No intermediary needed — the code enforces the rules.' },
+  { id: 'global',       label: 'Global by default',           emoji: '🌍', category: 'advantage', hint: 'Deploy once, accessible to anyone on Earth instantly.' },
+  { id: 'transparent',  label: 'Fully transparent code',      emoji: '🔍', category: 'advantage', hint: 'Anyone can read and audit the logic before using it.' },
+  { id: 'automation',   label: 'Always-on automation',        emoji: '⚡', category: 'advantage', hint: 'Executes the moment conditions are met — no office hours.' },
+  { id: 'composable',   label: 'Permissionless composability', emoji: '🧩', category: 'advantage', hint: '"Money legos" — any contract can call any other contract.' },
+  { id: 'programmoney', label: 'Programmable money',          emoji: '💸', category: 'advantage', hint: 'Native value transfer with conditional logic baked in.' },
+  { id: 'immutbug',     label: 'Bugs cannot be patched',      emoji: '🐛', category: 'problem',   hint: 'Code is immutable — a vulnerability found after deployment stays forever.' },
+  { id: 'oracle',       label: 'Oracle dependency',           emoji: '🔮', category: 'problem',   hint: 'Contracts cannot access real-world data without a trusted oracle.' },
+  { id: 'gascost',      label: 'High gas costs',              emoji: '⛽', category: 'problem',   hint: 'Complex logic or storage-heavy operations can cost hundreds of dollars.' },
+  { id: 'slowspeed',    label: 'Slow transaction speed',      emoji: '🐢', category: 'problem',   hint: '12-second block times vs millisecond Web2 responses.' },
+  { id: 'mev',          label: 'MEV / front-running',         emoji: '🤖', category: 'problem',   hint: 'Validators can reorder transactions to extract value from users.' },
+  { id: 'audit',        label: 'Complex security auditing',   emoji: '🔐', category: 'problem',   hint: '$6B+ lost to exploits — every line of code is a potential attack surface.' },
+];
+
+// Shuffled display order
+const ITEM_DISPLAY_ORDER = [2, 7, 0, 10, 4, 8, 1, 11, 5, 6, 3, 9];
+
+function AdvProblExercise() {
+  const [placements, setPlacements] = useState<Record<string, string>>({});
+  const [selected,   setSelected]   = useState<string | null>(null);
+  const [checked,    setChecked]    = useState(false);
+
+  const placed   = Object.keys(placements);
+  const unplaced = ITEM_DISPLAY_ORDER.map(i => ADV_PROB_ITEMS[i]).filter(it => !placed.includes(it.id));
+  const allPlaced = placed.length === ADV_PROB_ITEMS.length;
+
+  const score = Object.entries(placements).filter(([id, cat]) =>
+    ADV_PROB_ITEMS.find(i => i.id === id)?.category === cat
+  ).length;
+
+  const handleItemClick = (id: string) => {
+    if (checked) return;
+    setSelected(id === selected ? null : id);
+  };
+
+  const handleZoneClick = (cat: string) => {
+    if (!selected || checked) return;
+    setPlacements(prev => ({ ...prev, [selected]: cat }));
+    setSelected(null);
+  };
+
+  const handleRemove = (id: string) => {
+    if (checked) return;
+    setPlacements(prev => { const n = { ...prev }; delete n[id]; return n; });
+  };
+
+  const reset = () => { setPlacements({}); setSelected(null); setChecked(false); };
+
+  const zones = [
+    { id: 'advantage', label: '✅ Advantages',   color: '#39B54A', desc: 'Properties that make smart contracts powerful' },
+    { id: 'problem',   label: '⚠️ Problems',      color: '#ED1C24', desc: 'Limitations and risks to keep in mind' },
+  ];
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      {/* Header */}
+      <div className="shrink-0 flex items-center justify-between mb-4">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#8b5cf6]/15 border border-[#8b5cf6]/40 text-[#8b5cf6] text-xs font-bold">🎯 Exercise</span>
+          <h2 className="text-2xl font-bold text-foreground mt-1">Advantages vs Problems</h2>
+          <p className="text-muted-foreground text-sm">
+            {selected
+              ? <span className="text-[#8b5cf6] font-semibold">Now click a box to place <span className="font-black">{ADV_PROB_ITEMS.find(i => i.id === selected)?.label}</span></span>
+              : 'Click a card to select it, then click a box to place it.'}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          {allPlaced && !checked && (
+            <button onClick={() => setChecked(true)} className="px-3 py-1.5 rounded-lg bg-[#8b5cf6] text-white text-xs font-bold hover:bg-[#8b5cf6]/90 transition-colors">
+              Check answers
+            </button>
+          )}
+          {checked && (
+            <>
+              <div className="font-black text-lg" style={{ color: score === ADV_PROB_ITEMS.length ? '#39B54A' : score >= 9 ? '#f59e0b' : '#ED1C24' }}>
+                {score}/{ADV_PROB_ITEMS.length}
+              </div>
+              <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors">↺ Reset</button>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 flex flex-col gap-3">
+
+        {/* Drop zones */}
+        <div className="grid grid-cols-2 gap-4 shrink-0" style={{ height: '42%' }}>
+          {zones.map(zone => {
+            const items = ADV_PROB_ITEMS.filter(it => placements[it.id] === zone.id);
+            return (
+              <motion.div
+                key={zone.id}
+                onClick={() => handleZoneClick(zone.id)}
+                className="rounded-xl border-2 p-3 flex flex-col gap-2 overflow-hidden transition-colors"
+                style={{
+                  borderColor: selected ? zone.color + '80' : zone.color + '30',
+                  backgroundColor: selected ? zone.color + '06' : 'var(--card)',
+                  cursor: selected ? 'pointer' : 'default',
+                }}
+                whileHover={selected ? { scale: 1.01 } : {}}
+              >
+                <div className="shrink-0 flex items-center gap-2">
+                  <span className="text-sm font-black" style={{ color: zone.color }}>{zone.label}</span>
+                  <span className="text-[10px] text-muted-foreground">{zone.desc}</span>
+                  {selected && <span className="ml-auto text-[10px] text-muted-foreground italic animate-pulse">← click to place</span>}
+                </div>
+                <div className="flex-1 min-h-0 flex flex-wrap content-start gap-1.5 overflow-hidden">
+                  <AnimatePresence>
+                    {items.map(item => {
+                      const correct = item.category === zone.id;
+                      return (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          onClick={e => { e.stopPropagation(); handleRemove(item.id); }}
+                          title={checked ? item.hint : 'Click to unplace'}
+                          className="flex items-center gap-1.5 px-2 py-1 rounded-lg border text-xs font-semibold cursor-pointer transition-colors"
+                          style={{
+                            borderColor: !checked ? zone.color + '50' : correct ? '#39B54A' : '#ED1C24',
+                            backgroundColor: !checked ? zone.color + '12' : correct ? '#39B54A12' : '#ED1C2412',
+                            color: !checked ? 'var(--foreground)' : correct ? '#39B54A' : '#ED1C24',
+                          }}
+                        >
+                          <span>{item.emoji}</span>
+                          <span>{item.label}</span>
+                          {checked && (correct
+                            ? <span className="text-[10px] font-black">✓</span>
+                            : <span className="text-[10px] font-black">✗</span>
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                  {items.length === 0 && (
+                    <span className="text-[10px] text-muted-foreground italic">{selected ? 'Drop here' : 'Empty'}</span>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Unplaced cards */}
+        <div className="flex-1 min-h-0 flex flex-col gap-2">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest shrink-0">
+            {unplaced.length > 0 ? `${unplaced.length} remaining — click to select` : 'All placed! Hit "Check answers" above.'}
+          </p>
+          <div className="flex-1 min-h-0 flex flex-wrap content-start gap-2 overflow-y-auto">
+            {unplaced.map(item => (
+              <motion.button
+                key={item.id}
+                onClick={() => handleItemClick(item.id)}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-colors"
+                style={{
+                  borderColor: selected === item.id ? '#8b5cf6' : 'var(--border)',
+                  backgroundColor: selected === item.id ? '#8b5cf615' : 'var(--card)',
+                  color: 'var(--foreground)',
+                }}
+              >
+                <span className="text-base">{item.emoji}</span>
+                {item.label}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
@@ -386,6 +697,16 @@ export function SC_Section4() {
             </div>
 
           </div>
+        </div>
+
+        {/* ═══════ EXERCISE: ORACLE ATTACK ═══════ */}
+        <div id="s4-ex-oracle" className="h-full">
+          <OracleAttackExercise />
+        </div>
+
+        {/* ═══════ EXERCISE: BUILD OR NOT? ═══════ */}
+        <div id="s4-ex-verdict" className="h-full">
+          <AdvProblExercise />
         </div>
 
         <div id="s4-takeaways" className="h-full">

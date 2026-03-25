@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
@@ -7,6 +9,7 @@ const chapters = [
   { id: 's3-homedepot',  label: 'Home Depot Supply Chain' },
   { id: 's3-realestate', label: 'Real-Estate NFT Deeds' },
   { id: 's3-dmv',        label: 'California DMV Titles' },
+  { id: 's3-exercise',   label: '🎯 Exercise' },
   { id: 's3-takeaways',  label: 'Takeaways' },
 ];
 
@@ -16,6 +19,143 @@ function Stub({ id, label }: { id: string; label: string }) {
       <div className="text-center text-muted-foreground">
         <div className="text-4xl mb-4">🏗️</div>
         <p className="text-lg font-medium">{label} — coming soon</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Exercise: Design Your Own Mini-Brief ────────────────────────────────────
+
+const INDUSTRIES = ['Finance', 'Supply Chain', 'Healthcare', 'Real Estate', 'Government', 'Entertainment', 'Insurance', 'Gaming'];
+
+const EXAMPLES: Record<string, { pain: string; parties: string; trigger: string; output: string; risk: string }> = {
+  Finance:       { pain: 'Cross-border payments take 3–5 days and cost 5–8% in fees', parties: 'Sender bank / Receiver bank / Blockchain', trigger: 'Sender deposits funds + recipient KYC confirmed', output: 'Funds released instantly to recipient in local currency', risk: 'Oracle needed for FX rate — potential manipulation' },
+  'Supply Chain':{ pain: 'Invoice disputes between suppliers and retailers take 3–5 weeks to resolve', parties: 'Supplier / Retailer / Logistics provider', trigger: 'Delivery scan confirmed + invoice matched to PO', output: 'Payment auto-released to supplier within 24h', risk: 'IoT sensor data must come from a trusted oracle' },
+  Healthcare:    { pain: 'Patient consent for data sharing is paper-based and slow', parties: 'Patient / Hospital A / Hospital B', trigger: 'Patient signs consent transaction on-chain', output: 'Access token minted — Hospital B can read specific records', risk: 'Medical data itself must stay off-chain (privacy law)' },
+  'Real Estate': { pain: 'Property title transfer takes 30–60 days and costs 6% in intermediary fees', parties: 'Buyer / Seller / Title company', trigger: 'Full payment received + title search clear', output: 'Deed NFT transferred to buyer; funds released to seller', risk: 'Legal recognition of NFT as deed requires legislation' },
+  Government:    { pain: 'Benefit disbursements are slow and subject to fraud', parties: 'Government / Citizens / Verifier', trigger: 'Eligibility criteria confirmed via verified credentials', output: 'Benefit amount sent directly to citizen wallet', risk: 'Off-chain identity verification is the weak point' },
+  Entertainment: { pain: 'Music royalties take 18 months to reach artists through label chains', parties: 'Artist / Streaming platform / Listener', trigger: 'Each stream event recorded on-chain', output: 'Micro-payment split instantly: artist 80%, label 20%', risk: 'High transaction volume — requires L2 or rollup' },
+  Insurance:     { pain: 'Flight delay claims require manual submission and 2–4 week payout', parties: 'Traveller / Insurer / Flight data oracle', trigger: 'Flight delay > 2h confirmed by oracle (FlightAware)', output: 'Fixed payout sent automatically to traveller wallet', risk: 'Oracle data quality is the single point of failure' },
+  Gaming:        { pain: 'In-game assets can be deleted or altered by the developer at any time', parties: 'Player / Game developer / Marketplace', trigger: 'Player purchases or earns item in-game', output: 'NFT minted to player wallet — tradeable and permanent', risk: 'Game server still centralised; contract only covers ownership' },
+};
+
+function DesignYourOwnExercise() {
+  const [selected,  setSelected]  = useState<string | null>(null);
+  const [stepIndex, setStepIndex] = useState(0);
+
+  const ex = selected ? EXAMPLES[selected] : null;
+  const steps = ex ? [
+    { label: 'Pain Point',       emoji: '🩹', value: ex.pain },
+    { label: 'Parties Involved', emoji: '👥', value: ex.parties },
+    { label: 'Trigger',          emoji: '⚡', value: ex.trigger },
+    { label: 'Output / Action',  emoji: '✅', value: ex.output },
+    { label: 'Key Risk',         emoji: '⚠️', value: ex.risk },
+  ] : [];
+
+  const handleSelect = (ind: string) => { setSelected(ind); setStepIndex(0); };
+  const next = () => setStepIndex(i => Math.min(i + 1, steps.length - 1));
+  const prev = () => setStepIndex(i => Math.max(i - 1, 0));
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 mb-4">
+        <span className="px-2.5 py-0.5 rounded-full bg-[#39B54A]/15 border border-[#39B54A]/40 text-[#39B54A] text-xs font-bold">🎯 Exercise</span>
+        <h2 className="text-2xl font-bold text-foreground mt-1">Design Your Own Smart Contract</h2>
+        <p className="text-muted-foreground text-sm">Pick an industry, then think through each prompt before revealing the example answer.</p>
+      </div>
+
+      <div className="flex-1 min-h-0 flex gap-6">
+
+        {/* Industry selector */}
+        <div className="flex flex-col gap-2 w-44 shrink-0 justify-center">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Choose industry</p>
+          {INDUSTRIES.map(ind => (
+            <motion.button key={ind} onClick={() => handleSelect(ind)} whileHover={{ x: 4 }} whileTap={{ scale: 0.97 }}
+              className="px-3 py-2 rounded-xl border-2 text-left text-xs font-semibold transition-colors"
+              style={{
+                borderColor: selected === ind ? '#39B54A' : 'var(--border)',
+                backgroundColor: selected === ind ? '#39B54A18' : 'var(--card)',
+                color: selected === ind ? '#39B54A' : 'var(--foreground)',
+              }}>
+              {ind}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Step-through panel */}
+        <div className="flex-1 min-w-0 flex flex-col">
+          {!selected ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center text-muted-foreground">
+                <div className="text-5xl mb-3">👈</div>
+                <p className="text-sm">Select an industry to begin</p>
+              </div>
+            </div>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.div key={selected} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="flex-1 flex flex-col gap-4">
+
+                {/* Progress dots */}
+                <div className="flex items-center gap-2 shrink-0">
+                  {steps.map((s, i) => (
+                    <button key={i} onClick={() => setStepIndex(i)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold transition-colors"
+                      style={{
+                        backgroundColor: i <= stepIndex ? '#39B54A20' : 'var(--muted)',
+                        color: i <= stepIndex ? '#39B54A' : 'var(--muted-foreground)',
+                        border: `1px solid ${i === stepIndex ? '#39B54A' : 'transparent'}`,
+                      }}>
+                      {s.emoji} {s.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Prompt card — show question first, reveal on click */}
+                <motion.div key={stepIndex} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                  className="flex-1 flex flex-col gap-4">
+
+                  <div className="p-5 rounded-xl border-2 border-[#39B54A]/30 bg-[#39B54A]/06 flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{steps[stepIndex].emoji}</span>
+                      <div className="font-black text-lg text-foreground">{steps[stepIndex].label}</div>
+                      <span className="ml-auto text-xs text-muted-foreground">{stepIndex + 1} / {steps.length}</span>
+                    </div>
+
+                    {/* Question prompt */}
+                    <div className="p-3 bg-muted rounded-lg text-sm text-muted-foreground italic">
+                      {{
+                        0: `What problem exists in ${selected} that requires trust in an intermediary?`,
+                        1: `Who are the 2–3 parties involved? Who holds the funds or assets?`,
+                        2: `What event or condition triggers the smart contract to execute?`,
+                        3: `What does the contract do automatically when triggered?`,
+                        4: `What could go wrong? What is the single weakest point in this design?`,
+                      }[stepIndex]}
+                    </div>
+
+                    {/* Example answer */}
+                    <div className="p-3 bg-[#39B54A]/10 border border-[#39B54A]/30 rounded-lg">
+                      <div className="text-[10px] font-bold text-[#39B54A] uppercase tracking-widest mb-1">Example answer — {selected}</div>
+                      <div className="text-sm text-foreground">{steps[stepIndex].value}</div>
+                    </div>
+                  </div>
+
+                  {/* Nav */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <button onClick={prev} disabled={stepIndex === 0}
+                      className="px-4 py-2 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 disabled:opacity-30 transition-colors">← Previous</button>
+                    <button onClick={next} disabled={stepIndex === steps.length - 1}
+                      className="px-4 py-2 rounded-lg bg-[#39B54A] text-white text-xs font-bold hover:bg-[#39B54A]/90 disabled:opacity-30 transition-colors">Next →</button>
+                    {stepIndex === steps.length - 1 && (
+                      <span className="text-xs text-[#39B54A] font-semibold ml-2">✓ Brief complete! Now try another industry.</span>
+                    )}
+                  </div>
+                </motion.div>
+
+              </motion.div>
+            </AnimatePresence>
+          )}
+        </div>
+
       </div>
     </div>
   );
@@ -329,6 +469,11 @@ export function SC_Section3() {
             </div>
 
           </div>
+        </div>
+
+        {/* ═══════ EXERCISE: DESIGN YOUR OWN ═══════ */}
+        <div id="s3-exercise" className="h-full">
+          <DesignYourOwnExercise />
         </div>
 
         <div id="s3-takeaways" className="h-full">

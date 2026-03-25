@@ -1,16 +1,138 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { TimelineSlide } from '../../components/templates/TimelineSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
-import { FileCode2 } from 'lucide-react';
+import { FileCode2, Check, X } from 'lucide-react';
 
 const chapters = [
   { id: 's1-what',     label: 'What is a Smart Contract?' },
   { id: 's1-szabo',    label: 'Nick Szabo\'s Vending Machine' },
   { id: 's1-history',  label: 'Historical Evolution' },
+  { id: 's1-exercise', label: '🎯 Exercise' },
   { id: 's1-takeaways', label: 'Takeaways' },
 ];
 
+
+// ─── Exercise: Is this a Smart Contract? ────────────────────────────────────
+
+const SCENARIOS = [
+  { title: 'Vending Machine', desc: 'Insert coins → get snack automatically', answer: true,  reason: 'Self-executing logic with automatic conditional payout — the original analogy Szabo used.' },
+  { title: 'Airbnb Escrow',   desc: 'Platform holds payment until host confirms check-in', answer: true,  reason: 'Conditional fund release based on a confirmed event — a textbook smart contract use case.' },
+  { title: 'Hospital Records', desc: 'Store & share medical history across doctors', answer: false, reason: 'Data is private, frequently updated, and legally sensitive. On-chain storage is 50,000× more expensive than a database.' },
+  { title: 'Concert Ticket Resale', desc: 'NFT tickets — artist royalty enforced on every resale', answer: true,  reason: 'Automatic royalty on every transfer is impossible in traditional ticketing — smart contracts enforce it natively.' },
+  { title: 'Company Expenses', desc: 'Submit receipts for manager approval', answer: false, reason: 'Internal process, single trusted party. No decentralisation needed — a simple approval workflow is cheaper and faster.' },
+  { title: 'Crop Insurance',  desc: 'Auto-payout when rainfall falls below threshold', answer: true,  reason: 'Parametric insurance: oracle provides data, contract executes payout. No claims adjuster, no delay.' },
+  { title: 'Social Media Likes', desc: 'Track likes and followers in real-time', answer: false, reason: 'Millisecond updates + massive data volume. Gas costs alone would make each like cost dollars.' },
+  { title: 'DAO Treasury',    desc: 'Token holders vote; funds released if proposal passes', answer: true,  reason: 'Multi-party conditional payment with no board or legal entity needed. This is exactly what DAOs do.' },
+  { title: 'Streaming Service', desc: 'Pay monthly fee to access video library', answer: false, reason: 'Storing a 2-hour movie on-chain would cost billions. Off-chain storage + access token is the right model.' },
+  { title: 'Trade Finance',   desc: 'Letter of credit: pay importer when goods are confirmed delivered', answer: true,  reason: 'Multiple untrusting parties + conditional cross-border payment. Banks already pilot this with Hyperledger.' },
+];
+
+function SmartContractSortingExercise() {
+  const [answers, setAnswers]   = useState<Record<number, boolean | null>>({});
+  const [revealed, setRevealed] = useState<Record<number, boolean>>({});
+  const total   = SCENARIOS.length;
+  const done    = Object.keys(revealed).length;
+  const correct = Object.entries(answers).filter(([i, a]) => a === SCENARIOS[+i].answer).length;
+
+  const handlePick = (i: number, pick: boolean) => {
+    if (revealed[i]) return;
+    setAnswers(prev => ({ ...prev, [i]: pick }));
+    setRevealed(prev => ({ ...prev, [i]: true }));
+  };
+
+  const reset = () => { setAnswers({}); setRevealed({}); };
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      {/* Header */}
+      <div className="shrink-0 flex items-center justify-between mb-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Exercise</span>
+          </div>
+          <h2 className="text-2xl font-bold text-foreground">Is this a Smart Contract?</h2>
+          <p className="text-muted-foreground text-sm mt-0.5">Click YES or NO for each scenario, then see the explanation.</p>
+        </div>
+        <div className="flex items-center gap-4">
+          {done > 0 && (
+            <div className="text-right">
+              <div className="text-2xl font-black" style={{ color: correct === done ? '#39B54A' : '#f59e0b' }}>{correct}/{done}</div>
+              <div className="text-xs text-muted-foreground">correct so far</div>
+            </div>
+          )}
+          {done === total && (
+            <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted hover:bg-muted/80 text-xs font-semibold text-muted-foreground transition-colors">↺ Reset</button>
+          )}
+        </div>
+      </div>
+
+      {/* Grid */}
+      <div className="flex-1 min-h-0 grid grid-cols-5 grid-rows-2 gap-3">
+        {SCENARIOS.map((s, i) => {
+          const picked  = answers[i];
+          const isRight = picked === s.answer;
+          const isOpen  = !!revealed[i];
+          return (
+            <motion.div
+              key={i}
+              layout
+              className="relative rounded-xl border-2 overflow-hidden flex flex-col transition-colors"
+              style={{
+                borderColor: !isOpen ? 'var(--border)' : isRight ? '#39B54A' : '#ED1C24',
+                backgroundColor: !isOpen ? 'var(--card)' : isRight ? '#39B54A10' : '#ED1C2410',
+              }}
+            >
+              {/* Card body */}
+              <div className="flex-1 p-4 flex flex-col gap-2">
+                <div className="font-black text-sm text-foreground leading-tight">{s.title}</div>
+                <div className="text-xs text-muted-foreground leading-snug flex-1">{s.desc}</div>
+
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-xs leading-snug font-medium"
+                      style={{ color: isRight ? '#39B54A' : '#ED1C24' }}
+                    >
+                      {isRight ? '✓ ' : '✗ '}{s.reason}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Buttons or result badge */}
+              {!isOpen ? (
+                <div className="flex border-t border-border shrink-0">
+                  <button
+                    onClick={() => handlePick(i, true)}
+                    className="flex-1 py-2 text-sm font-black text-[#39B54A] hover:bg-[#39B54A]/15 transition-colors border-r border-border"
+                  >YES</button>
+                  <button
+                    onClick={() => handlePick(i, false)}
+                    className="flex-1 py-2 text-sm font-black text-[#ED1C24] hover:bg-[#ED1C24]/15 transition-colors"
+                  >NO</button>
+                </div>
+              ) : (
+                <div className="shrink-0 flex items-center justify-center py-2 gap-1.5 border-t" style={{ borderColor: isRight ? '#39B54A40' : '#ED1C2440' }}>
+                  {isRight
+                    ? <Check className="size-4 text-[#39B54A]" strokeWidth={3} />
+                    : <X     className="size-4 text-[#ED1C24]" strokeWidth={3} />}
+                  <span className="text-xs font-bold" style={{ color: isRight ? '#39B54A' : '#ED1C24' }}>
+                    {s.answer ? 'Smart Contract' : 'Not a SC'}
+                  </span>
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export function SC_Section1() {
   return (
@@ -222,6 +344,11 @@ export function SC_Section1() {
               },
             ]}
           />
+        </div>
+
+        {/* ═══════ EXERCISE ═══════ */}
+        <div id="s1-exercise" className="h-full">
+          <SmartContractSortingExercise />
         </div>
 
         {/* ═══════ TAKEAWAYS ═══════ */}

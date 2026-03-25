@@ -1,8 +1,10 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
-import { Cog } from 'lucide-react';
+import { Cog, Check, X } from 'lucide-react';
 
 const chapters = [
   { id: 's2-workflow',      label: 'Workflow' },
@@ -15,6 +17,8 @@ const chapters = [
   { id: 's2-why',          label: 'Why Build with SC?' },
   { id: 's2-gas',          label: 'Gas & Tx Economics' },
   { id: 's2-quiz',         label: 'Quizzes' },
+  { id: 's2-ex-gas',       label: '🎯 Exercise: Gas' },
+  { id: 's2-ex-stack',     label: '🎯 Exercise: Stack' },
   { id: 's2-takeaways',    label: 'Takeaways' },
 ];
 
@@ -24,6 +28,305 @@ function Stub({ id, label }: { id: string; label: string }) {
       <div className="text-center text-muted-foreground">
         <div className="text-4xl mb-4">🔧</div>
         <p className="text-lg font-medium">{label} — coming soon</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Exercise: Gas Ranking ───────────────────────────────────────────────────
+
+// Displayed in shuffled order; CORRECT_ORDER tracks cheapest→expensive by id
+const GAS_OPS = [
+  { id: 0, label: 'Read a public variable',      detail: 'View call — never hits the chain',             gasUnits: 0,      gasLabel: 'FREE',        color: '#39B54A' },
+  { id: 1, label: 'Emit an event',               detail: 'Logged on-chain but not in state',              gasUnits: 375,    gasLabel: '~375 gas',    color: '#6366f1' },
+  { id: 2, label: 'Transfer ETH (simple send)',  detail: 'Base cost for moving ETH between accounts',    gasUnits: 21000,  gasLabel: '~21,000 gas', color: '#f59e0b' },
+  { id: 3, label: 'Write to a new storage slot', detail: 'Most expensive regular operation on the EVM',  gasUnits: 22100,  gasLabel: '~22,100 gas', color: '#ED1C24' },
+  { id: 4, label: 'Deploy a new contract',        detail: 'Pays for every byte of bytecode stored',       gasUnits: 500000, gasLabel: '500k+ gas',   color: '#8b5cf6' },
+];
+const CORRECT_ORDER = [0, 1, 2, 3, 4];
+// Shuffled display order so the answer isn't already obvious
+const DISPLAY_ORDER = [3, 0, 4, 1, 2];
+
+function GasRankingExercise() {
+  const [picked, setPicked]   = useState<number[]>([]);
+  const [done, setDone]       = useState(false);
+  const [showHint, setShowHint] = useState(false);
+
+  const handlePick = (id: number) => {
+    if (done || picked.includes(id)) return;
+    const next = [...picked, id];
+    setPicked(next);
+    if (next.length === GAS_OPS.length) setDone(true);
+  };
+  const reset = () => { setPicked([]); setDone(false); setShowHint(false); };
+
+  const isCorrect = done && picked.every((id, i) => id === CORRECT_ORDER[i]);
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 flex items-center justify-between mb-5">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#f59e0b] text-xs font-bold">🎯 Exercise</span>
+          <h2 className="text-2xl font-bold text-foreground mt-1">Gas Estimation Challenge</h2>
+          <p className="text-muted-foreground text-sm">Click the 5 operations in order from <span className="text-[#39B54A] font-semibold">cheapest</span> to <span className="text-[#ED1C24] font-semibold">most expensive</span>.</p>
+        </div>
+        {done && <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors">↺ Try again</button>}
+      </div>
+
+      <div className="flex-1 min-h-0 flex gap-6 items-stretch">
+
+        {/* Clickable operations */}
+        <div className="flex-1 flex flex-col gap-3 justify-center">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Operations — click to rank</p>
+          {DISPLAY_ORDER.map(id => {
+            const op = GAS_OPS[id];
+            const rank = picked.indexOf(op.id);
+            const selected = rank !== -1;
+            const correct  = done && picked[rank] === CORRECT_ORDER[rank];
+            return (
+              <motion.button
+                key={op.id}
+                onClick={() => handlePick(op.id)}
+                disabled={selected}
+                whileHover={!selected ? { x: 4 } : {}}
+                whileTap={!selected ? { scale: 0.98 } : {}}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-colors"
+                style={{
+                  borderColor: !selected ? 'var(--border)' : done ? (correct ? '#39B54A' : '#ED1C24') : op.color + '60',
+                  backgroundColor: !selected ? 'var(--card)' : done ? (correct ? '#39B54A12' : '#ED1C2412') : op.color + '12',
+                  cursor: selected ? 'default' : 'pointer',
+                }}
+              >
+                <div className="size-7 rounded-full flex items-center justify-center font-black text-sm shrink-0"
+                  style={{ backgroundColor: selected ? (done ? (correct ? '#39B54A' : '#ED1C24') : op.color) : 'var(--muted)', color: selected ? 'white' : 'var(--muted-foreground)' }}>
+                  {selected ? rank + 1 : '?'}
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-foreground">{op.label}</div>
+                  <div className="text-xs text-muted-foreground">{op.detail}</div>
+                </div>
+                {done && selected && (
+                  correct
+                    ? <Check className="size-4 text-[#39B54A] shrink-0" strokeWidth={3} />
+                    : <X     className="size-4 text-[#ED1C24] shrink-0" strokeWidth={3} />
+                )}
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Answer reveal */}
+        <div className="w-64 shrink-0 flex flex-col justify-center gap-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              {done ? 'Correct ranking' : `${picked.length} / ${GAS_OPS.length} placed`}
+            </p>
+            {!done && (
+              <button
+                onClick={() => setShowHint(h => !h)}
+                className="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-colors"
+                style={{
+                  backgroundColor: showHint ? '#f59e0b20' : 'var(--muted)',
+                  color: showHint ? '#f59e0b' : 'var(--muted-foreground)',
+                  border: `1px solid ${showHint ? '#f59e0b60' : 'transparent'}`,
+                }}
+              >
+                {showHint ? '🙈 Hide hint' : '💡 Hint'}
+              </button>
+            )}
+          </div>
+          {CORRECT_ORDER.map((id, rank) => {
+            const op = GAS_OPS[id];
+            const visible = done || showHint;
+            return (
+              <motion.div
+                key={id}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: visible ? 1 : 0, x: 0, scale: visible ? 1 : 0.95 }}
+                transition={{ delay: visible ? rank * 0.07 : 0, duration: 0.2 }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                style={{ backgroundColor: op.color + '15', border: `1px solid ${op.color}40` }}
+              >
+                <span className="text-xs font-black w-4 text-center" style={{ color: op.color }}>{rank + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-semibold text-foreground truncate">{op.label}</div>
+                  <div className="text-[10px] font-bold" style={{ color: op.color }}>{op.gasLabel}</div>
+                </div>
+              </motion.div>
+            );
+          })}
+          {done && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-1 p-3 rounded-xl text-center"
+              style={{ backgroundColor: isCorrect ? '#39B54A15' : '#f59e0b15', border: `1px solid ${isCorrect ? '#39B54A' : '#f59e0b'}40` }}
+            >
+              <div className="font-black text-sm" style={{ color: isCorrect ? '#39B54A' : '#f59e0b' }}>
+                {isCorrect ? '🏆 Perfect!' : '📚 Review the order above'}
+              </div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                Storage writes are expensive because they modify global state on every full node permanently.
+              </div>
+            </motion.div>
+          )}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ─── Exercise: dApp Stack ────────────────────────────────────────────────────
+
+const LAYERS = [
+  { id: 'frontend',   label: 'Frontend Layer',    color: '#6366f1', desc: 'What the user sees and interacts with' },
+  { id: 'blockchain', label: 'Blockchain Layer',   color: '#f59e0b', desc: 'On-chain logic, state, and consensus' },
+  { id: 'offchain',   label: 'Off-Chain Layer',    color: '#39B54A', desc: 'External data, storage, and indexing' },
+];
+
+const STACK_ITEMS = [
+  { id: 'metamask',  label: 'MetaMask',       emoji: '🦊', layer: 'frontend',   hint: 'Browser wallet — runs in the frontend' },
+  { id: 'react',     label: 'React / Next.js', emoji: '⚛️', layer: 'frontend',   hint: 'UI framework — always frontend' },
+  { id: 'infura',    label: 'Infura RPC',      emoji: '🔌', layer: 'blockchain', hint: 'RPC endpoint — a gateway node that exposes the blockchain to applications' },
+  { id: 'solidity',  label: 'Solidity Contract', emoji: '📜', layer: 'blockchain', hint: 'Smart contract code — lives on-chain' },
+  { id: 'evm',       label: 'EVM',             emoji: '⚙️', layer: 'blockchain', hint: 'Execution environment — part of every node' },
+  { id: 'pos',       label: 'PoS Validators',  emoji: '🏦', layer: 'blockchain', hint: 'Consensus mechanism — on-chain' },
+  { id: 'ipfs',      label: 'IPFS',            emoji: '📦', layer: 'offchain',   hint: 'Decentralised file storage — off-chain' },
+  { id: 'thegraph',  label: 'The Graph',       emoji: '📊', layer: 'offchain',   hint: 'Blockchain indexer — off-chain' },
+  { id: 'chainlink', label: 'Chainlink Oracle', emoji: '🌉', layer: 'offchain',   hint: 'Oracle — brings external data to the chain' },
+];
+
+function DAppStackExercise() {
+  const [placements, setPlacements] = useState<Record<string, string>>({});
+  const [revealed,   setRevealed]   = useState(false);
+  const [selected,   setSelected]   = useState<string | null>(null);
+
+  const placed   = Object.keys(placements);
+  const unplaced = STACK_ITEMS.filter(i => !placed.includes(i.id));
+  const allDone  = placed.length === STACK_ITEMS.length;
+
+  const handleItemClick = (id: string) => {
+    if (revealed) return;
+    setSelected(id === selected ? null : id);
+  };
+
+  const handleLayerClick = (layerId: string) => {
+    if (!selected || revealed) return;
+    setPlacements(prev => ({ ...prev, [selected]: layerId }));
+    setSelected(null);
+  };
+
+  const handleRemove = (itemId: string) => {
+    if (revealed) return;
+    setPlacements(prev => { const n = { ...prev }; delete n[itemId]; return n; });
+  };
+
+  const reset = () => { setPlacements({}); setRevealed(false); setSelected(null); };
+
+  const score = Object.entries(placements).filter(([id, layer]) => STACK_ITEMS.find(i => i.id === id)?.layer === layer).length;
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 flex items-center justify-between mb-4">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Exercise</span>
+          <h2 className="text-2xl font-bold text-foreground mt-1">Build the dApp Stack</h2>
+          <p className="text-muted-foreground text-sm">
+            {selected ? <span className="text-[#6366f1] font-semibold">Now click a layer to place <span className="font-black">{STACK_ITEMS.find(i=>i.id===selected)?.label}</span></span>
+              : 'Click a component, then click its layer to place it.'}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          {allDone && !revealed && (
+            <button onClick={() => setRevealed(true)} className="px-3 py-1.5 rounded-lg bg-[#6366f1] text-white text-xs font-bold hover:bg-[#6366f1]/90 transition-colors">Check answers</button>
+          )}
+          {revealed && <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors">↺ Try again</button>}
+          {revealed && <div className="font-black text-lg" style={{ color: score === STACK_ITEMS.length ? '#39B54A' : score >= 6 ? '#f59e0b' : '#ED1C24' }}>{score}/{STACK_ITEMS.length}</div>}
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 flex gap-4">
+
+        {/* Unplaced items */}
+        <div className="w-44 shrink-0 flex flex-col gap-2">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest shrink-0">Components</p>
+          <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-1.5">
+            {unplaced.map(item => (
+              <motion.button
+                key={item.id}
+                onClick={() => handleItemClick(item.id)}
+                whileHover={{ x: 3 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-2.5 py-2 rounded-lg border-2 text-left transition-colors"
+                style={{
+                  borderColor: selected === item.id ? '#6366f1' : 'var(--border)',
+                  backgroundColor: selected === item.id ? '#6366f115' : 'var(--card)',
+                }}
+              >
+                <span className="text-base shrink-0">{item.emoji}</span>
+                <span className="text-xs font-semibold text-foreground truncate">{item.label}</span>
+              </motion.button>
+            ))}
+            {unplaced.length === 0 && <div className="text-xs text-muted-foreground italic text-center mt-4">All placed!</div>}
+          </div>
+        </div>
+
+        {/* Drop zones */}
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
+          {LAYERS.map(layer => {
+            const items = STACK_ITEMS.filter(i => placements[i.id] === layer.id);
+            return (
+              <motion.div
+                key={layer.id}
+                onClick={() => handleLayerClick(layer.id)}
+                className="flex-1 rounded-xl border-2 p-3 transition-colors flex flex-col gap-2"
+                style={{
+                  borderColor: selected ? layer.color + '80' : layer.color + '30',
+                  backgroundColor: selected ? layer.color + '08' : 'var(--card)',
+                  cursor: selected ? 'pointer' : 'default',
+                }}
+                whileHover={selected ? { scale: 1.01 } : {}}
+              >
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: layer.color }} />
+                  <span className="text-xs font-bold" style={{ color: layer.color }}>{layer.label}</span>
+                  <span className="text-[10px] text-muted-foreground">{layer.desc}</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <AnimatePresence>
+                    {items.map(item => {
+                      const correct = item.layer === layer.id;
+                      return (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          onClick={e => { e.stopPropagation(); handleRemove(item.id); }}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold cursor-pointer"
+                          style={{
+                            borderColor: !revealed ? layer.color + '50' : correct ? '#39B54A' : '#ED1C24',
+                            backgroundColor: !revealed ? layer.color + '12' : correct ? '#39B54A12' : '#ED1C2412',
+                            color: !revealed ? 'var(--foreground)' : correct ? '#39B54A' : '#ED1C24',
+                          }}
+                          title={revealed ? item.hint : 'Click to unplace'}
+                        >
+                          <span>{item.emoji}</span> {item.label}
+                          {revealed && (correct ? <Check className="size-3" strokeWidth={3} /> : <X className="size-3" strokeWidth={3} />)}
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                  {items.length === 0 && (
+                    <div className="text-[10px] text-muted-foreground italic">{selected ? '← Click here to place' : 'Empty'}</div>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
       </div>
     </div>
   );
@@ -845,6 +1148,16 @@ export function SC_Section2() {
             ]}
             explanation="Gas-out causes a full revert — all state changes are undone as if the transaction never happened. However, the gas already used for computation is burned and not returned to the sender. This is why setting an appropriate gas limit matters: too low and you waste fees on a failed transaction."
           />
+        </div>
+
+        {/* ═══════ EXERCISE: GAS RANKING ═══════ */}
+        <div id="s2-ex-gas" className="h-full">
+          <GasRankingExercise />
+        </div>
+
+        {/* ═══════ EXERCISE: dAPP STACK ═══════ */}
+        <div id="s2-ex-stack" className="h-full">
+          <DAppStackExercise />
         </div>
 
         <div id="s2-takeaways" className="h-full">
