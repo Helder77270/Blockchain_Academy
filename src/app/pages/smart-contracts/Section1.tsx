@@ -7,11 +7,13 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { FileCode2, Check, X } from 'lucide-react';
 
 const chapters = [
+  { id: 's1-objectives', label: 'Objectives' },
   { id: 's1-what',     label: 'What is a Smart Contract?' },
   { id: 's1-szabo',    label: 'Nick Szabo\'s Vending Machine' },
   { id: 's1-history',  label: 'Historical Evolution' },
   { id: 's1-exercise', label: '🎯 Exercise' },
   { id: 's1-takeaways', label: 'Takeaways' },
+  { id: 's1-summary', label: 'Summary' },
 ];
 
 
@@ -152,6 +154,39 @@ export function SC_Section1() {
             icon={<FileCode2 className="size-20 text-[#6366f1]" />}
             gradient="from-[#6366f1] to-[#8b5cf6]"
           />
+        </div>
+
+        {/* ═══════ OBJECTIVES ═══════ */}
+        <div id="s1-objectives" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#6366f1]">Learning Objectives</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
+            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
+            {[
+              { num: '01', label: 'Define a smart contract', desc: 'Explain self-execution, immutability, and the difference from traditional legal contracts' },
+              { num: '02', label: 'Trace the historical evolution', desc: 'From Szabo\'s 1994 concept through Bitcoin Scripts to Ethereum\'s programmable contracts' },
+              { num: '03', label: 'Identify the key properties', desc: 'Understand autonomy, transparency, trust-minimization, and finality' },
+              { num: '04', label: 'Recognize real limits', desc: 'Assess where "code is law" breaks down — bugs, oracles, and legal grey areas' },
+              { num: '05', label: 'Classify use cases', desc: 'Determine when a smart contract adds value vs when a database is sufficient' },
+            ].map((obj, i) => (
+              <motion.div
+                key={obj.num}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1, duration: 0.35 }}
+                className="flex gap-4 p-5 rounded-2xl border"
+                style={{ borderColor: '#6366f140', backgroundColor: '#6366f108' }}
+              >
+                <div className="text-3xl font-black shrink-0 text-[#6366f1]/40">{obj.num}</div>
+                <div>
+                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* ═══════ 1. WHAT IS A SMART CONTRACT ═══════ */}
@@ -364,6 +399,40 @@ export function SC_Section1() {
               '$6B+ lost to exploits — the power of smart contracts comes with serious security responsibility',
             ]}
           />
+        </div>
+
+        {/* ═══════ SUMMARY ═══════ */}
+        <div id="s1-summary" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Section Summary</h2>
+            <p className="text-sm text-muted-foreground mt-1">Everything covered in this section — at a glance</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-start">
+            {[
+              { icon: '📜', title: 'Nick Szabo (1994)', summary: '"Contractual clauses embedded in hardware and software" — the original idea, 20 years before Ethereum' },
+              { icon: '⛓️', title: 'Bitcoin Scripts', summary: 'Limited but valid smart contracts: multi-sig, time locks, HTLCs — intentionally not Turing-complete' },
+              { icon: '🌐', title: 'Ethereum (2015)', summary: 'Turing-complete EVM enabled arbitrary smart contracts, opening DeFi, NFTs, and DAOs' },
+              { icon: '✅', title: 'Key Properties', summary: 'Immutable, autonomous, transparent, trust-minimized, deterministic — all enforced by the protocol' },
+              { icon: '⚠️', title: 'Code is Law Limits', summary: 'Bugs (The DAO: $60M), oracle failure, no legal standing — code is law until it isn\'t' },
+              { icon: '🎯', title: 'When to Use', summary: 'Multiple untrusting parties + conditional logic + no trusted intermediary = smart contract territory' },
+            ].map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.08, duration: 0.3 }}
+                className="flex flex-col gap-2 p-4 rounded-2xl border bg-card"
+                style={{ borderColor: '#6366f130' }}
+              >
+                <div className="text-3xl">{card.icon}</div>
+                <div className="font-bold text-sm text-foreground">{card.title}</div>
+                <div className="text-xs text-muted-foreground leading-relaxed">{card.summary}</div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-card/50 text-center">
+            <span className="text-xs text-muted-foreground">Proceed to Section 2 to explore the Smart Contract ecosystem →</span>
+          </div>
         </div>
 
         </div>

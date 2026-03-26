@@ -6,11 +6,14 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Bitcoin } from 'lucide-react';
 
 const chapters = [
+  { id: 's1-objectives', label: 'Objectives' },
   { id: 's1-architecture', label: 'Architecture' },
   { id: 's1-transaction', label: 'Transaction' },
+  { id: 's1-utxo-exercise', label: 'UTXO Exercise' },
   { id: 's1-pow', label: 'Proof of Work' },
   { id: 's1-trilemma', label: 'Trilemma' },
   { id: 's1-takeaways', label: 'Takeaways' },
+  { id: 's1-summary', label: 'Summary' },
 ];
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -60,182 +63,181 @@ function BitcoinArchitectureSlide() {
 
   return (
     <div className="h-full flex flex-col p-6 lg:p-10">
-      <div className="shrink-0 mb-5">
+      <div className="shrink-0 mb-4">
         <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Bitcoin Architecture</h2>
-        <p className="text-muted-foreground text-sm mt-1">A layered stack — click any layer to explore it.</p>
+        <p className="text-muted-foreground text-sm mt-1">Four layers power the Bitcoin network — click any layer to explore it in detail.</p>
       </div>
 
-      <div className="flex-1 min-h-0 flex gap-6">
+      <div className="flex-1 min-h-0 flex flex-col gap-4">
 
-        {/* ── Stack diagram ── */}
-        <div className="flex flex-col justify-center gap-3 w-80 shrink-0">
+        {/* ── 4 large layer cards ── */}
+        <div className="grid grid-cols-4 gap-3 shrink-0">
           {LAYERS.map((layer, i) => (
             <motion.button
               key={layer.id}
               onClick={() => setActive(active === layer.id ? null : layer.id)}
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.12, duration: 0.4, ease: 'easeOut' }}
-              whileHover={{ scale: 1.02, x: 4 }}
-              whileTap={{ scale: 0.98 }}
-              className="relative text-left rounded-xl border-2 px-5 py-3 cursor-pointer transition-colors"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.4, ease: 'easeOut' }}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex flex-col items-center gap-2 p-5 rounded-2xl border-2 cursor-pointer transition-all text-center"
               style={{
                 borderColor: active === layer.id ? layer.color : layer.color + '40',
                 backgroundColor: active === layer.id ? layer.color + '18' : layer.color + '08',
               }}
             >
-              {/* left accent bar */}
+              <span className="text-4xl">{layer.icon}</span>
+              <div className="font-bold text-sm lg:text-base text-foreground">{layer.label}</div>
+              <div className="text-xs text-muted-foreground leading-snug">{layer.sublabel}</div>
               <motion.div
-                className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
+                className="w-12 h-1 rounded-full mt-1"
                 style={{ backgroundColor: layer.color }}
-                animate={{ scaleY: active === layer.id ? 1 : 0.4, opacity: active === layer.id ? 1 : 0.5 }}
+                animate={{ scaleX: active === layer.id ? 2 : 1, opacity: active === layer.id ? 1 : 0.4 }}
                 transition={{ duration: 0.2 }}
               />
-              <div className="flex items-center gap-3">
-                <span className="text-xl">{layer.icon}</span>
-                <div>
-                  <div className="font-bold text-sm text-foreground">{layer.label}</div>
-                  <div className="text-xs text-muted-foreground">{layer.sublabel}</div>
-                </div>
-                <motion.div
-                  className="ml-auto text-xs font-bold"
-                  style={{ color: layer.color }}
-                  animate={{ rotate: active === layer.id ? 90 : 0 }}
-                  transition={{ duration: 0.2 }}
-                >▶</motion.div>
-              </div>
             </motion.button>
           ))}
-
-          {/* connector arrows between layers */}
-          <div className="absolute pointer-events-none" />
         </div>
 
         {/* ── Detail panel ── */}
-        <div className="flex-1 min-w-0 relative">
+        <div className="flex-1 min-h-0 relative">
           <AnimatePresence mode="wait">
             {activeLayer ? (
               <motion.div
                 key={activeLayer.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="h-full flex flex-col gap-4"
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="h-full rounded-2xl border-2 p-6 flex gap-8"
+                style={{ borderColor: activeLayer.color + '50', background: `linear-gradient(135deg, ${activeLayer.color}10, transparent)` }}
               >
-                {/* Header */}
-                <div
-                  className="rounded-xl p-5 border-2"
-                  style={{ borderColor: activeLayer.color + '50', background: `linear-gradient(135deg, ${activeLayer.color}18, transparent)` }}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">{activeLayer.icon}</span>
+                {/* Left: description + facts */}
+                <div className="flex flex-col gap-4 w-72 shrink-0">
+                  <div className="flex items-center gap-4">
+                    <span className="text-5xl">{activeLayer.icon}</span>
                     <div>
                       <h3 className="text-xl font-black text-foreground">{activeLayer.label}</h3>
                       <p className="text-xs text-muted-foreground">{activeLayer.sublabel}</p>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{activeLayer.description}</p>
-                </div>
-
-                {/* Examples */}
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Examples & facts</p>
-                  <div className="flex flex-wrap gap-2">
-                    {activeLayer.examples.map(ex => (
-                      <motion.span
-                        key={ex}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.2 }}
-                        className="px-3 py-1.5 rounded-full text-sm font-medium border"
-                        style={{ color: activeLayer.color, borderColor: activeLayer.color + '40', backgroundColor: activeLayer.color + '12' }}
-                      >
-                        {ex}
-                      </motion.span>
-                    ))}
+                  <p className="text-sm text-muted-foreground leading-relaxed flex-1">{activeLayer.description}</p>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Facts</p>
+                    <div className="flex flex-col gap-1.5">
+                      {activeLayer.examples.map(ex => (
+                        <motion.span
+                          key={ex}
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="px-3 py-1.5 rounded-lg text-sm font-medium border"
+                          style={{ color: activeLayer.color, borderColor: activeLayer.color + '40', backgroundColor: activeLayer.color + '10' }}
+                        >
+                          {ex}
+                        </motion.span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Animated block diagram for Data layer */}
-                {activeLayer.id === 'data' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="flex-1 min-h-0 flex flex-col justify-center"
-                  >
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Block chain — hash linking</p>
-                    <div className="flex items-center gap-1 overflow-hidden">
-                      {['#839,998', '#839,999', '#840,000', '#840,001'].map((num, i) => (
-                        <motion.div
-                          key={num}
-                          initial={{ opacity: 0, scale: 0.7 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.1 + i * 0.15 }}
-                          className="flex-1 rounded-lg border-2 p-2 text-center"
-                          style={{ borderColor: '#ED1C2460', backgroundColor: '#ED1C2410' }}
-                        >
-                          <div className="text-xs font-black text-[#ED1C24]">BLOCK</div>
-                          <div className="text-xs font-bold text-foreground">{num}</div>
-                          <div className="text-[9px] text-muted-foreground mt-1 font-mono">prev: 0x…</div>
-                          <div className="text-[9px] text-muted-foreground font-mono">root: 0x…</div>
-                        </motion.div>
-                      ))}
-                    </div>
-                    <div className="flex items-center mt-2 gap-1">
-                      {[0,1,2].map(i => (
-                        <motion.div
-                          key={i}
-                          className="flex-1 flex items-center justify-center"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.5 + i * 0.15 }}
-                        >
-                          <div className="h-px flex-1 bg-[#ED1C24]/40" />
-                          <div className="text-[#ED1C24] text-xs mx-1">→</div>
-                          <div className="h-px flex-1 bg-[#ED1C24]/40" />
-                        </motion.div>
-                      ))}
-                      <div className="flex-1" />
-                    </div>
-                    <p className="text-xs text-muted-foreground text-center mt-1">Each block's header includes the previous block's hash — altering one block invalidates every block after it</p>
-                  </motion.div>
-                )}
-
-                {/* Mempool animation for P2P layer */}
-                {activeLayer.id === 'p2p' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="flex-1 min-h-0 flex flex-col justify-center"
-                  >
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Transaction propagation</p>
-                    <div className="flex items-start gap-4">
-                      {[
-                        { label: 'Alice', emoji: '👩', desc: 'Broadcasts tx to 8 peers' },
-                        { label: 'Peers', emoji: '🔁', desc: 'Each peer relays to their peers' },
-                        { label: 'Network', emoji: '🌐', desc: 'Reaches ~50k nodes in <1s' },
-                        { label: 'Miner', emoji: '⛏️', desc: 'Picks from mempool, mines block' },
-                      ].map((step, i) => (
-                        <motion.div
-                          key={step.label}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.1 + i * 0.18 }}
-                          className="flex-1 text-center"
-                        >
-                          <div className="text-2xl mb-1">{step.emoji}</div>
-                          <div className="text-xs font-bold text-foreground">{step.label}</div>
-                          <div className="text-xs text-muted-foreground leading-tight mt-0.5">{step.desc}</div>
-                          {i < 3 && <div className="absolute" />}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-
+                {/* Right: layer-specific visual */}
+                <div className="flex-1 min-w-0 flex flex-col justify-center gap-3">
+                  {activeLayer.id === 'data' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} className="flex flex-col gap-3">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Block chain — hash linking</p>
+                      <div className="flex items-stretch gap-2">
+                        {['#839,998', '#839,999', '#840,000', '#840,001'].map((num, idx) => (
+                          <div key={num} className="flex items-center gap-2 flex-1">
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.1 + idx * 0.12 }}
+                              className="flex-1 rounded-xl border-2 p-3 text-center"
+                              style={{ borderColor: '#ED1C2460', backgroundColor: '#ED1C2410' }}
+                            >
+                              <div className="text-xs font-black text-[#ED1C24]">BLOCK</div>
+                              <div className="text-sm font-bold text-foreground mt-1">{num}</div>
+                              <div className="text-[10px] text-muted-foreground mt-2 font-mono">prev: 0xa3f…</div>
+                              <div className="text-[10px] text-muted-foreground font-mono">root: 0x7b2…</div>
+                            </motion.div>
+                            {idx < 3 && (
+                              <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.4 + idx * 0.12 }}
+                                className="text-[#ED1C24] font-bold text-lg shrink-0"
+                              >→</motion.div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground">Each block header references the previous hash — altering any block breaks all subsequent blocks.</p>
+                    </motion.div>
+                  )}
+                  {activeLayer.id === 'p2p' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} className="flex flex-col gap-4">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Transaction propagation</p>
+                      <div className="flex items-center gap-2">
+                        {[
+                          { label: 'Alice', emoji: '👩', desc: 'Signs & broadcasts tx to 8 peers' },
+                          { label: 'Peers', emoji: '🔁', desc: 'Each relays to their own peers' },
+                          { label: 'Network', emoji: '🌐', desc: 'Reaches ~50k nodes in <1 sec' },
+                          { label: 'Miner', emoji: '⛏️', desc: 'Picks from mempool & mines block' },
+                        ].map((step, idx) => (
+                          <div key={step.label} className="flex items-center gap-2 flex-1">
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.1 + idx * 0.15 }}
+                              className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl border border-border bg-card text-center"
+                            >
+                              <span className="text-3xl">{step.emoji}</span>
+                              <div className="text-xs font-bold text-foreground">{step.label}</div>
+                              <div className="text-xs text-muted-foreground leading-tight">{step.desc}</div>
+                            </motion.div>
+                            {idx < 3 && <span className="text-muted-foreground font-bold shrink-0">→</span>}
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                  {activeLayer.id === 'consensus' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} className="flex flex-col gap-3">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Mining: find the nonce</p>
+                      <div className="font-mono text-sm p-4 rounded-xl border border-border bg-card">
+                        <div className="text-muted-foreground">SHA256( block_header + <span className="text-[#f59e0b] font-bold">nonce</span> )</div>
+                        <div className="text-[#f59e0b] mt-2 font-bold">= 0000000000000000000abc… ✓</div>
+                        <div className="text-muted-foreground text-xs mt-2">Must start with enough leading zeros to meet current target difficulty</div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['Adjusts every 2,016 blocks', '~2 weeks per adjustment', '10 min block target'].map(fact => (
+                          <div key={fact} className="p-2 rounded-lg border border-[#f59e0b]/40 text-center text-xs font-medium" style={{ backgroundColor: '#f59e0b0d', color: '#f59e0b' }}>{fact}</div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                  {activeLayer.id === 'app' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} className="flex flex-col gap-3">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Applications on Bitcoin</p>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { icon: '💼', name: 'Wallets', ex: 'Electrum, Ledger, Bitcoin Core' },
+                          { icon: '🔍', name: 'Explorers', ex: 'mempool.space, blockstream.info' },
+                          { icon: '🔄', name: 'Exchanges', ex: 'Coinbase, Kraken, Binance' },
+                        ].map(app => (
+                          <div key={app.name} className="p-3 rounded-xl border border-border bg-card text-center">
+                            <div className="text-2xl mb-1">{app.icon}</div>
+                            <div className="font-bold text-sm text-foreground">{app.name}</div>
+                            <div className="text-xs text-muted-foreground mt-1">{app.ex}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground">Apps communicate with the network via RPC calls to Bitcoin Core nodes (port 8332).</p>
+                    </motion.div>
+                  )}
+                </div>
               </motion.div>
             ) : (
               <motion.div
@@ -243,47 +245,234 @@ function BitcoinArchitectureSlide() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="h-full flex flex-col items-center justify-center gap-8"
+                className="h-full rounded-2xl border-2 border-dashed border-border flex items-center justify-center"
               >
-                {/* Animated stack preview */}
-                <div className="flex flex-col gap-2 w-64">
-                  {LAYERS.map((layer, i) => (
-                    <motion.div
-                      key={layer.id}
-                      initial={{ opacity: 0, scaleX: 0 }}
-                      animate={{ opacity: 1, scaleX: 1 }}
-                      transition={{ delay: 0.3 + i * 0.15, duration: 0.5, ease: 'easeOut' }}
-                      className="h-10 rounded-lg flex items-center justify-center gap-2"
-                      style={{ backgroundColor: layer.color + '25', border: `1px solid ${layer.color}50` }}
-                    >
-                      <span>{layer.icon}</span>
-                      <span className="text-xs font-semibold" style={{ color: layer.color }}>{layer.label}</span>
-                    </motion.div>
-                  ))}
-                  {/* animated connecting arrows */}
-                  {[0,1,2].map(i => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: [0, 1, 0] }}
-                      transition={{ delay: 1 + i * 0.2, duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
-                      className="flex justify-center -mt-1 -mb-1 text-muted-foreground text-xs"
-                    >↕</motion.div>
-                  ))}
-                </div>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1 }}
-                  className="text-muted-foreground text-sm"
-                >
-                  ← Click a layer to explore it
-                </motion.p>
+                <p className="text-muted-foreground text-sm">↑ Click a layer above to explore it</p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
+      </div>
+    </div>
+  );
+}
+
+// ─── UTXO Exercise ────────────────────────────────────────────────────────────
+
+const UTXO_SCENARIOS = [
+  {
+    id: 1,
+    title: 'Simple payment',
+    context: 'Alice wants to send 0.4 BTC to Bob. Fee: 0.01 BTC. Which UTXOs should she use?',
+    target: 0.4,
+    fee: 0.01,
+    utxos: [
+      { id: 'u1', amount: 0.3, label: 'UTXO A — 0.3 BTC', from: 'Mining reward (2023)' },
+      { id: 'u2', amount: 0.5, label: 'UTXO B — 0.5 BTC', from: 'Payment received (2024)' },
+      { id: 'u3', amount: 0.1, label: 'UTXO C — 0.1 BTC', from: 'Change output (2024)' },
+    ],
+    bestInputs: ['u2'],
+    explanation: 'UTXO B (0.5 BTC) alone covers 0.4 + 0.01 BTC. Change = 0.5 − 0.4 − 0.01 = 0.09 BTC back to Alice. Using only 1 input keeps fees low.',
+  },
+  {
+    id: 2,
+    title: 'Combining small UTXOs',
+    context: 'Alice wants to send 0.6 BTC to Carol. Fee: 0.01 BTC. No single UTXO covers it.',
+    target: 0.6,
+    fee: 0.01,
+    utxos: [
+      { id: 'u1', amount: 0.35, label: 'UTXO A — 0.35 BTC', from: 'Previous sale (2024)' },
+      { id: 'u2', amount: 0.4, label: 'UTXO B — 0.40 BTC', from: 'Mining reward (2024)' },
+      { id: 'u3', amount: 0.15, label: 'UTXO C — 0.15 BTC', from: 'Tip received (2023)' },
+    ],
+    bestInputs: ['u1', 'u2'],
+    explanation: 'UTXO A + B = 0.75 BTC. Covers 0.6 + 0.01 BTC. Change = 0.75 − 0.6 − 0.01 = 0.14 BTC back to Alice. UTXO C is not needed.',
+  },
+];
+
+function UTXOExercise() {
+  const [scenarioIdx, setScenarioIdx] = useState(0);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [revealed, setRevealed] = useState(false);
+
+  const scenario = UTXO_SCENARIOS[scenarioIdx];
+  const total = selected.reduce((acc, id) => {
+    const u = scenario.utxos.find(x => x.id === id);
+    return acc + (u ? u.amount : 0);
+  }, 0);
+  const needed = scenario.target + scenario.fee;
+  const sufficient = total >= needed;
+  const change = sufficient ? Math.round((total - scenario.target - scenario.fee) * 1000) / 1000 : 0;
+
+  function toggleUTXO(id: string) {
+    if (revealed) return;
+    setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  }
+
+  function nextScenario() {
+    setScenarioIdx(i => (i + 1) % UTXO_SCENARIOS.length);
+    setSelected([]);
+    setRevealed(false);
+  }
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-10">
+      <div className="shrink-0 mb-4">
+        <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Exercise: Build a Bitcoin Transaction</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Select UTXOs to cover the payment + fee. The wallet must spend entire UTXOs — excess becomes change.
+        </p>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {/* Left — scenario + UTXO picker */}
+        <div className="flex flex-col gap-4">
+          {/* Scenario header */}
+          <div className="shrink-0 p-4 rounded-xl border-2 border-[#f59e0b]/40" style={{ backgroundColor: '#f59e0b08' }}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#f59e0b]">Scenario {scenario.id} of {UTXO_SCENARIOS.length}</span>
+              <button
+                onClick={nextScenario}
+                className="text-xs px-2 py-1 rounded-lg border border-border text-muted-foreground hover:bg-card cursor-pointer transition-all"
+              >
+                Next →
+              </button>
+            </div>
+            <div className="font-bold text-base text-foreground mb-1">{scenario.title}</div>
+            <div className="text-sm text-muted-foreground">{scenario.context}</div>
+            <div className="flex gap-4 mt-3 text-sm">
+              <div><span className="text-muted-foreground">Send: </span><span className="font-bold text-foreground">{scenario.target} BTC</span></div>
+              <div><span className="text-muted-foreground">Fee: </span><span className="font-bold text-foreground">{scenario.fee} BTC</span></div>
+              <div><span className="text-muted-foreground">Need: </span><span className="font-bold text-[#f59e0b]">{needed} BTC total</span></div>
+            </div>
+          </div>
+
+          {/* UTXO cards */}
+          <div className="flex flex-col gap-2 flex-1">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Alice's UTXOs — click to select</div>
+            {scenario.utxos.map(u => {
+              const isSelected = selected.includes(u.id);
+              return (
+                <button
+                  key={u.id}
+                  onClick={() => toggleUTXO(u.id)}
+                  className="flex items-center gap-3 p-4 rounded-xl border-2 text-left cursor-pointer transition-all flex-1"
+                  style={{
+                    borderColor: isSelected ? '#f59e0b' : 'var(--border)',
+                    backgroundColor: isSelected ? '#f59e0b14' : 'var(--card)',
+                  }}
+                >
+                  <div
+                    className="size-5 rounded border-2 shrink-0 flex items-center justify-center"
+                    style={{ borderColor: isSelected ? '#f59e0b' : 'var(--border)', backgroundColor: isSelected ? '#f59e0b' : 'transparent' }}
+                  >
+                    {isSelected && <span className="text-white text-xs font-bold">✓</span>}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-base text-foreground">{u.label}</div>
+                    <div className="text-xs text-muted-foreground">{u.from}</div>
+                  </div>
+                  <span className="font-mono font-bold text-sm" style={{ color: isSelected ? '#f59e0b' : 'var(--muted-foreground)' }}>
+                    {u.amount} BTC
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right — transaction summary */}
+        <div className="flex flex-col gap-4">
+          <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0">Transaction preview</div>
+
+          {/* Inputs */}
+          <div className="p-4 rounded-xl border border-border bg-card flex-1">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Inputs</div>
+            {selected.length === 0 ? (
+              <div className="text-sm text-muted-foreground italic">No UTXOs selected yet</div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {selected.map(id => {
+                  const u = scenario.utxos.find(x => x.id === id)!;
+                  return (
+                    <div key={id} className="flex items-center justify-between p-2 rounded-lg" style={{ backgroundColor: '#f59e0b0a', border: '1px solid #f59e0b30' }}>
+                      <span className="text-sm text-foreground">{u.label}</span>
+                      <span className="font-mono text-sm font-bold text-[#f59e0b]">+{u.amount} BTC</span>
+                    </div>
+                  );
+                })}
+                <div className="flex justify-between pt-2 border-t border-border">
+                  <span className="text-xs font-bold text-muted-foreground">Total inputs</span>
+                  <span className="font-mono font-bold text-sm text-foreground">{Math.round(total * 1000) / 1000} BTC</span>
+                </div>
+              </div>
+            )}
+
+            {/* Outputs */}
+            {selected.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Outputs</div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between p-2 rounded-lg" style={{ backgroundColor: '#39B54A0a', border: '1px solid #39B54A30' }}>
+                    <span className="text-sm text-foreground">→ Recipient</span>
+                    <span className="font-mono text-sm font-bold text-[#39B54A]">{scenario.target} BTC</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg" style={{ backgroundColor: '#6366f10a', border: '1px solid #6366f130' }}>
+                    <span className="text-sm text-foreground">← Change to Alice</span>
+                    <span className="font-mono text-sm font-bold text-[#6366f1]">
+                      {sufficient ? `${change} BTC` : '—'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg" style={{ backgroundColor: '#ED1C240a', border: '1px solid #ED1C2430' }}>
+                    <span className="text-sm text-foreground">⛏️ Miner fee</span>
+                    <span className="font-mono text-sm font-bold text-[#ED1C24]">{scenario.fee} BTC</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Status + reveal */}
+          {selected.length > 0 && (
+            <div className="shrink-0 flex flex-col gap-2">
+              <div
+                className="p-3 rounded-xl border text-sm font-semibold text-center"
+                style={{
+                  borderColor: sufficient ? '#39B54A60' : '#ED1C2460',
+                  backgroundColor: sufficient ? '#39B54A0d' : '#ED1C240d',
+                  color: sufficient ? '#39B54A' : '#ED1C24',
+                }}
+              >
+                {sufficient
+                  ? `✓ Valid — inputs cover ${needed} BTC needed`
+                  : `✗ Insufficient — need ${needed} BTC, have ${Math.round(total * 1000) / 1000} BTC`
+                }
+              </div>
+              {sufficient && !revealed && (
+                <button
+                  onClick={() => setRevealed(true)}
+                  className="py-2 px-4 rounded-xl border-2 font-bold text-sm cursor-pointer transition-all"
+                  style={{ borderColor: '#39B54A', backgroundColor: '#39B54A18', color: '#39B54A' }}
+                >
+                  Check optimal solution
+                </button>
+              )}
+              {revealed && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 rounded-xl border border-[#6366f1]/40"
+                  style={{ backgroundColor: '#6366f10d' }}
+                >
+                  <div className="text-xs font-bold text-[#6366f1] mb-1">Optimal answer</div>
+                  <div className="text-xs text-muted-foreground">{scenario.explanation}</div>
+                </motion.div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -307,6 +496,38 @@ export function BP_Section1() {
             icon={<Bitcoin className="size-20 text-[#f59e0b]" />}
             gradient="from-[#f59e0b] to-[#ED1C24]"
           />
+        </div>
+
+        {/* ═══════ OBJECTIVES ═══════ */}
+        <div id="s1-objectives" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#f59e0b]">Learning Objectives</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
+            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
+            {[
+              { num: '01', label: "Map Bitcoin's architecture", desc: 'Describe the four layers: Application, P2P Network, Consensus, and Data Layer' },
+              { num: '02', label: 'Explain the UTXO model', desc: 'Trace how inputs, outputs, change, and fees work in a Bitcoin transaction' },
+              { num: '03', label: 'Understand Proof of Work', desc: 'Explain SHA-256 hash puzzles, nonce finding, difficulty adjustment, and halvings' },
+              { num: '04', label: 'Analyze the Trilemma', desc: "Explain why Bitcoin prioritizes security and decentralization over scalability, and Bitcoin's trade-off strategy" },
+            ].map((obj, i) => (
+              <motion.div
+                key={obj.num}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1, duration: 0.35 }}
+                className="flex gap-4 p-5 rounded-2xl border"
+                style={{ borderColor: '#f59e0b40', backgroundColor: '#f59e0b08' }}
+              >
+                <div className="text-3xl font-black shrink-0 text-[#f59e0b]/40">{obj.num}</div>
+                <div>
+                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* ═══════ ARCHITECTURE ═══════ */}
@@ -494,6 +715,11 @@ export function BP_Section1() {
             </div>
 
           </div>
+        </div>
+
+        {/* ═══════ UTXO EXERCISE ═══════ */}
+        <div id="s1-utxo-exercise" className="h-full">
+          <UTXOExercise />
         </div>
 
         {/* ═══════ PROOF OF WORK ═══════ */}
@@ -769,6 +995,40 @@ export function BP_Section1() {
               'Bitcoin prioritises security and decentralization — scalability is handled by Layer 2 (Lightning)',
             ]}
           />
+        </div>
+
+        {/* ═══════ SUMMARY ═══════ */}
+        <div id="s1-summary" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Section Summary</h2>
+            <p className="text-sm text-muted-foreground mt-1">Everything covered in this section — at a glance</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-start">
+            {[
+              { icon: '💼', title: 'Application Layer', summary: 'Wallets, exchanges, block explorers — communicate with the network via RPC calls to full nodes on port 8332' },
+              { icon: '🌐', title: 'P2P Network', summary: '~50k reachable nodes · Gossip protocol · Mempool holds unconfirmed txs · TCP port 8333' },
+              { icon: '⛏️', title: 'Proof of Work', summary: 'SHA-256 hash puzzle · 2016-block difficulty adjustment · 10-minute block target · First to find nonce wins' },
+              { icon: '🗄️', title: 'UTXO Model', summary: 'Inputs reference past UTXOs · Outputs create new UTXOs · No global balance · Change is a new output' },
+              { icon: '📊', title: 'Halving Schedule', summary: '50 → 25 → 12.5 → 6.25 BTC per block · Max supply 21M · Next halving ~2028 · Last coin mined ~2140' },
+              { icon: '⚖️', title: 'Trilemma Trade-off', summary: 'Bitcoin: Security + Decentralization · Scalability handled by Lightning Network (Layer 2) off-chain payments' },
+            ].map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.08, duration: 0.3 }}
+                className="flex flex-col gap-2 p-4 rounded-2xl border bg-card"
+                style={{ borderColor: '#f59e0b30' }}
+              >
+                <div className="text-3xl">{card.icon}</div>
+                <div className="font-bold text-sm text-foreground">{card.title}</div>
+                <div className="text-xs text-muted-foreground leading-relaxed">{card.summary}</div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-card/50 text-center">
+            <span className="text-xs text-muted-foreground">Proceed to Section 2 to explore Ethereum and programmable blockchains →</span>
+          </div>
         </div>
 
         </div>

@@ -7,7 +7,9 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Layers } from 'lucide-react';
 
 const chapters = [
+  { id: 's2-objectives', label: 'Objectives' },
   { id: 's2-why', label: 'Why Ethereum?' },
+  { id: 's2-accounts-visual', label: 'Accounts Visual' },
   { id: 's2-accounts', label: 'Accounts' },
   { id: 's2-evm', label: 'EVM' },
   { id: 's2-transaction', label: 'Transaction' },
@@ -16,6 +18,7 @@ const chapters = [
   { id: 's2-evmecosystem', label: 'EVM Everywhere' },
   { id: 's2-comparison', label: 'BTC vs ETH' },
   { id: 's2-takeaways', label: 'Takeaways' },
+  { id: 's2-summary', label: 'Summary' },
 ];
 
 export function BP_Section2() {
@@ -134,6 +137,129 @@ export function BP_Section2() {
             </div>
 
           </div>
+        </div>
+
+        {/* ═══════ S2-ACCOUNTS-VISUAL ═══════ */}
+        <div id="s2-accounts-visual" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">EOA vs Contract Account</h2>
+            <p className="text-sm text-muted-foreground mt-1">The key architectural difference — who initiates, who responds</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {/* EOA */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col gap-4 p-6 rounded-2xl border-2"
+              style={{ borderColor: '#627EEA60', backgroundColor: '#627EEA08' }}
+            >
+              <div className="flex items-center gap-4">
+                <div className="size-16 rounded-2xl flex items-center justify-center text-4xl" style={{ backgroundColor: '#627EEA18' }}>🔑</div>
+                <div>
+                  <div className="font-black text-xl text-foreground">EOA</div>
+                  <div className="text-sm text-muted-foreground">Externally Owned Account</div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 flex-1">
+                {[
+                  { icon: '👤', text: 'Controlled by a private key (a human or software)' },
+                  { icon: '🚀', text: 'The ONLY type that can initiate a transaction' },
+                  { icon: '💰', text: 'Holds ETH balance — no code, no storage' },
+                  { icon: '⛽', text: 'Always pays the gas fee' },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 + i * 0.08 }}
+                    className="flex items-start gap-3 p-3 rounded-xl"
+                    style={{ backgroundColor: '#627EEA0d' }}
+                  >
+                    <span className="text-lg shrink-0">{item.icon}</span>
+                    <span className="text-sm text-foreground">{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="p-3 rounded-xl border border-[#627EEA]/40 text-center">
+                <div className="text-xs font-bold text-[#627EEA]">Examples</div>
+                <div className="text-xs text-muted-foreground mt-1">MetaMask wallet · Hardware wallet · Exchange hot wallet</div>
+              </div>
+            </motion.div>
+
+            {/* Contract Account */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="flex flex-col gap-4 p-6 rounded-2xl border-2"
+              style={{ borderColor: '#39B54A60', backgroundColor: '#39B54A08' }}
+            >
+              <div className="flex items-center gap-4">
+                <div className="size-16 rounded-2xl flex items-center justify-center text-4xl" style={{ backgroundColor: '#39B54A18' }}>📜</div>
+                <div>
+                  <div className="font-black text-xl text-foreground">Contract Account</div>
+                  <div className="text-sm text-muted-foreground">Smart Contract</div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 flex-1">
+                {[
+                  { icon: '⚙️', text: 'Controlled by code — no private key exists' },
+                  { icon: '📩', text: 'Can ONLY respond to incoming calls (never initiates)' },
+                  { icon: '🗄️', text: 'Has ETH balance + executable code + persistent storage' },
+                  { icon: '🔄', text: 'Gas is paid by the EOA that triggered it' },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: 12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.08 }}
+                    className="flex items-start gap-3 p-3 rounded-xl"
+                    style={{ backgroundColor: '#39B54A0d' }}
+                  >
+                    <span className="text-lg shrink-0">{item.icon}</span>
+                    <span className="text-sm text-foreground">{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="p-3 rounded-xl border border-[#39B54A]/40 text-center">
+                <div className="text-xs font-bold text-[#39B54A]">Examples</div>
+                <div className="text-xs text-muted-foreground mt-1">Uniswap pool · USDC token · NFT collection · DAO treasury</div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Interaction flow */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="shrink-0 mt-4 flex items-center gap-3 p-4 rounded-xl border border-border bg-card"
+          >
+            <div className="text-sm font-bold text-foreground shrink-0">How they interact:</div>
+            <div className="flex items-center gap-2 flex-1 overflow-x-auto">
+              {[
+                { label: '🔑 EOA', sub: 'signs & sends tx' },
+                { label: '→' },
+                { label: '📜 Contract', sub: 'executes code' },
+                { label: '→' },
+                { label: '📜 Contract B', sub: 'calls another contract' },
+                { label: '→' },
+                { label: '🔑 EOA', sub: 'receives ETH/token' },
+              ].map((item, i) =>
+                item.label === '→'
+                  ? <span key={i} className="text-muted-foreground font-bold shrink-0">→</span>
+                  : (
+                    <div key={i} className="flex flex-col items-center shrink-0 px-2">
+                      <span className="text-sm font-bold text-foreground">{item.label}</span>
+                      {item.sub && <span className="text-xs text-muted-foreground">{item.sub}</span>}
+                    </div>
+                  )
+              )}
+            </div>
+          </motion.div>
         </div>
 
         {/* ═══════ S2-ACCOUNTS ═══════ */}

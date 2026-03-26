@@ -6,11 +6,13 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Building2 } from 'lucide-react';
 
 const chapters = [
+  { id: 's3-objectives', label: 'Objectives' },
   { id: 's3-homedepot',  label: 'Home Depot Supply Chain' },
   { id: 's3-realestate', label: 'Real-Estate NFT Deeds' },
   { id: 's3-dmv',        label: 'California DMV Titles' },
   { id: 's3-exercise',   label: '🎯 Exercise' },
   { id: 's3-takeaways',  label: 'Takeaways' },
+  { id: 's3-summary',    label: 'Summary' },
 ];
 
 function Stub({ id, label }: { id: string; label: string }) {
@@ -178,6 +180,39 @@ export function SC_Section3() {
             icon={<Building2 className="size-20 text-[#6366f1]" />}
             gradient="from-[#6366f1] to-[#22d3ee]"
           />
+        </div>
+
+        {/* ═══════ OBJECTIVES ═══════ */}
+        <div id="s3-objectives" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#6366f1]">Learning Objectives</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
+            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
+            {[
+              { num: '01', label: 'Analyze DeFi protocols', desc: 'Understand how Uniswap AMM and Compound lending work on-chain without intermediaries' },
+              { num: '02', label: 'Evaluate supply chain claims', desc: 'Identify where blockchain genuinely helps vs creates unnecessary complexity' },
+              { num: '03', label: 'Understand the oracle problem', desc: 'Explain why off-chain data is the biggest structural weakness of smart contracts' },
+              { num: '04', label: 'Critically assess hype', desc: 'Apply de-hype criteria to real blockchain project proposals' },
+              { num: '05', label: 'Learn from real deployments', desc: 'Extract lessons from Home Depot, California DMV, and Real-Estate case studies' },
+            ].map((obj, i) => (
+              <motion.div
+                key={obj.num}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1, duration: 0.35 }}
+                className="flex gap-4 p-5 rounded-2xl border"
+                style={{ borderColor: '#6366f140', backgroundColor: '#6366f108' }}
+              >
+                <div className="text-3xl font-black shrink-0 text-[#6366f1]/40">{obj.num}</div>
+                <div>
+                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* ═══════ CASE STUDY 1 — HOME DEPOT ═══════ */}
@@ -487,6 +522,40 @@ export function SC_Section3() {
               'The common thread: many parties, no single trusted authority, and a need for an immutable record',
             ]}
           />
+        </div>
+
+        {/* ═══════ SUMMARY ═══════ */}
+        <div id="s3-summary" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Section Summary</h2>
+            <p className="text-sm text-muted-foreground mt-1">Everything covered in this section — at a glance</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-start">
+            {[
+              { icon: '🏠', title: 'Home Depot', summary: '$50B in annual supply disputes automated — accounts payable resolved via Hyperledger Fabric in days, not weeks' },
+              { icon: '🏡', title: 'Real-Estate NFTs', summary: 'NFT property deeds eliminate title insurance delays — Vermont & Wyoming pilots; still legally experimental globally' },
+              { icon: '🚗', title: 'California DMV', summary: 'Blockchain car titles reduced fraud; title transfer dropped from 2 weeks to minutes via Tezos' },
+              { icon: '🔮', title: 'The Oracle Problem', summary: 'Off-chain data is the #1 vulnerability — Chainlink, API3 provide decentralized feeds; still a trust assumption' },
+              { icon: '❌', title: 'De-Hype Cases', summary: 'Voting, supply chain provenance, social media — often a database is cheaper, faster, and sufficient' },
+              { icon: '🏗️', title: 'When SC Shines', summary: 'DeFi (trustless settlement), cross-border multi-party conditionals, programmable money — real value here' },
+            ].map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.08, duration: 0.3 }}
+                className="flex flex-col gap-2 p-4 rounded-2xl border bg-card"
+                style={{ borderColor: '#6366f130' }}
+              >
+                <div className="text-3xl">{card.icon}</div>
+                <div className="font-bold text-sm text-foreground">{card.title}</div>
+                <div className="text-xs text-muted-foreground leading-relaxed">{card.summary}</div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-card/50 text-center">
+            <span className="text-xs text-muted-foreground">Proceed to Section 4 for technical challenges, attacks, and limitations →</span>
+          </div>
         </div>
 
         </div>

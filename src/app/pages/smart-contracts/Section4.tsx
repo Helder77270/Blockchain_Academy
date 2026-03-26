@@ -6,12 +6,14 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { ShieldAlert } from 'lucide-react';
 
 const chapters = [
+  { id: 's4-objectives', label: 'Objectives' },
   { id: 's4-oracle',     label: 'The Oracle Problem' },
   { id: 's4-challenges', label: 'Challenges & Limitations' },
   { id: 's4-technical',  label: 'Technical Challenges' },
   { id: 's4-ex-oracle',  label: '🎯 Exercise: Oracle' },
   { id: 's4-ex-verdict', label: '🎯 Exercise: Adv/Prob' },
   { id: 's4-takeaways',  label: 'Takeaways' },
+  { id: 's4-summary',    label: 'Summary' },
 ];
 
 function Stub({ id, label }: { id: string; label: string }) {
@@ -349,6 +351,39 @@ export function SC_Section4() {
             icon={<ShieldAlert className="size-20 text-[#6366f1]" />}
             gradient="from-[#ED1C24] to-[#6366f1]"
           />
+        </div>
+
+        {/* ═══════ OBJECTIVES ═══════ */}
+        <div id="s4-objectives" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#6366f1]">Learning Objectives</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
+            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
+            {[
+              { num: '01', label: 'Identify attack vectors', desc: 'Describe reentrancy, integer overflow, front-running, and access control vulnerabilities' },
+              { num: '02', label: 'Understand the oracle attack', desc: 'Trace how flash loan price manipulation can drain a DeFi protocol in one transaction' },
+              { num: '03', label: 'Evaluate structural limits', desc: 'Explain gas limits, scalability ceiling, and UX friction preventing mainstream adoption' },
+              { num: '04', label: 'Weigh advantages vs problems', desc: 'Apply a balanced framework to smart contract evaluation for any real-world scenario' },
+              { num: '05', label: 'Recommend mitigations', desc: 'Suggest audit practices, multi-oracle patterns, timelocks, and upgrade proxies as defenses' },
+            ].map((obj, i) => (
+              <motion.div
+                key={obj.num}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1, duration: 0.35 }}
+                className="flex gap-4 p-5 rounded-2xl border"
+                style={{ borderColor: '#6366f140', backgroundColor: '#6366f108' }}
+              >
+                <div className="text-3xl font-black shrink-0 text-[#6366f1]/40">{obj.num}</div>
+                <div>
+                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* ═══════ THE ORACLE PROBLEM ═══════ */}
@@ -721,6 +756,40 @@ export function SC_Section4() {
               'Security audits are not optional — $6B+ lost since 2016; Shayan Eskandari has audited dozens of real contracts',
             ]}
           />
+        </div>
+
+        {/* ═══════ SUMMARY ═══════ */}
+        <div id="s4-summary" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Section Summary</h2>
+            <p className="text-sm text-muted-foreground mt-1">Everything covered in this section — at a glance</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-start">
+            {[
+              { icon: '🔒', title: 'Reentrancy', summary: 'Attacker re-enters function before state updates — The DAO hack ($60M, 2016). Fix: Checks-Effects-Interactions pattern' },
+              { icon: '🔮', title: 'Oracle Attacks', summary: 'Flash loan → manipulate AMM price → drain protocol — Harvest Finance ($34M, 2020). Fix: multi-oracle, TWAP' },
+              { icon: '⛽', title: 'Gas & Scale', summary: 'Computation is metered and expensive on L1 — L2 rollups (Arbitrum, Optimism) reduce cost 10–100×' },
+              { icon: '⚖️', title: 'Advantages', summary: 'Trustless settlement · Composability · Global access · No intermediary · Censorship resistance · 24/7 operation' },
+              { icon: '⚠️', title: 'Problems', summary: 'Immutable bugs · Oracle dependency · Complex UX · Legal grey area · High gas on congested networks' },
+              { icon: '🛡️', title: 'Mitigations', summary: 'Audits + formal verification · Multi-oracle design · Timelocks · Upgrade proxy patterns · Bug bounties' },
+            ].map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.08, duration: 0.3 }}
+                className="flex flex-col gap-2 p-4 rounded-2xl border bg-card"
+                style={{ borderColor: '#6366f130' }}
+              >
+                <div className="text-3xl">{card.icon}</div>
+                <div className="font-bold text-sm text-foreground">{card.title}</div>
+                <div className="text-xs text-muted-foreground leading-relaxed">{card.summary}</div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-card/50 text-center">
+            <span className="text-xs text-muted-foreground">Course 2 complete — explore Course 3 for Blockchain Platforms →</span>
+          </div>
         </div>
 
         </div>

@@ -181,11 +181,11 @@ function SupplyChainsSlide() {
         {/* Left — traditional problem */}
         <div className="flex flex-col gap-3">
           <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">The problem — traditional supply chain</h3>
-          <div className="flex-1 flex flex-col justify-center gap-1">
+          <div className="flex-1 flex flex-col gap-1">
             {SUPPLY_STEPS.map((step, i) => (
-              <div key={step.label} className="flex flex-col items-start">
+              <div key={step.label} className="flex flex-col items-start flex-1">
                 <div
-                  className="w-full flex items-center gap-3 p-3 rounded-xl border border-[#ED1C24]/30 bg-[#ED1C24]/05"
+                  className="w-full h-full flex items-center gap-3 p-3 rounded-xl border border-[#ED1C24]/30"
                   style={{ backgroundColor: '#ED1C240d' }}
                 >
                   <span className="text-lg">{step.icon}</span>
@@ -329,17 +329,17 @@ function FabricDeepDiveSlide() {
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left — components list */}
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">Key Components</h3>
+          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1 shrink-0">Key Components</h3>
           {FABRIC_COMPONENTS.map((c, i) => (
             <motion.div
               key={c.label}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.08, duration: 0.3 }}
-              className="flex items-start gap-3 p-3 rounded-xl border"
+              className="flex items-center gap-3 p-3 rounded-xl border flex-1"
               style={{ borderColor: c.color + '40', backgroundColor: c.color + '0d' }}
             >
-              <span className="text-lg shrink-0">{c.emoji}</span>
+              <span className="text-2xl shrink-0">{c.emoji}</span>
               <div>
                 <div className="font-bold text-sm text-foreground">{c.label}</div>
                 <div className="text-xs text-muted-foreground">{c.desc}</div>
@@ -613,86 +613,161 @@ function BFTSlide() {
 
 // ─── s3-channels ─────────────────────────────────────────────────────────────
 
+const CHANNEL_ORGS = [
+  { id: 'pharmaA', label: 'PharmaA', icon: '🔵', color: '#6366f1' },
+  { id: 'pharmaB', label: 'PharmaB', icon: '🟢', color: '#39B54A' },
+  { id: 'hospital', label: 'City Hospital', icon: '🏥', color: '#ED1C24' },
+  { id: 'regulator', label: 'Regulator', icon: '⚖️', color: '#f59e0b' },
+];
+
+const CHANNELS_DEF = [
+  {
+    id: 'ch1',
+    label: 'Joint R&D',
+    color: '#6366f1',
+    members: ['pharmaA', 'pharmaB'],
+    data: 'Shared drug research, trial data, patents',
+    why: 'Competitors collaborate on R&D but keep results hidden from hospitals and regulators until ready.',
+  },
+  {
+    id: 'ch2',
+    label: 'Drug Supply',
+    color: '#ED1C24',
+    members: ['pharmaA', 'hospital'],
+    data: 'Orders, shipments, cold-chain logs, invoices',
+    why: 'Supply chain between one pharma and one hospital — PharmaB should not see their competitor\'s sales volumes.',
+  },
+  {
+    id: 'ch3',
+    label: 'Compliance',
+    color: '#f59e0b',
+    members: ['pharmaA', 'pharmaB', 'hospital', 'regulator'],
+    data: 'Audit logs, regulatory filings, adverse event reports',
+    why: 'Regulator needs visibility into safety and compliance across the whole network.',
+  },
+];
+
 function ChannelsSlide() {
+  const [activeChannel, setActiveChannel] = useState<string | null>(null);
+  const active = CHANNELS_DEF.find(c => c.id === activeChannel);
+
   return (
     <div className="h-full flex flex-col p-6 lg:p-10">
       <div className="shrink-0 mb-4">
-        <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Channels: Private Sub-Networks</h2>
+        <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Channels: Selective Data Sharing</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          A channel is a private communication path between a subset of Fabric members. Each channel has its own independent <strong>ledger</strong>, <strong>chaincode</strong>, and <strong>membership policy</strong>.
+          Four companies on one Fabric network — three channels, each with different membership and data. Click a channel to see who can read it.
         </p>
       </div>
 
-      {/* Visual — orgs and channels */}
       <div className="flex-1 min-h-0 flex flex-col gap-4">
-        <div className="flex-1 min-h-0 flex flex-col gap-3 p-4 rounded-xl border border-border bg-card/50">
-          {/* Orgs row */}
-          <div className="flex gap-4 justify-center">
-            {[
-              { label: 'Bank A', color: '#6366f1' },
-              { label: 'Bank B', color: '#39B54A' },
-              { label: 'Regulator', color: '#f59e0b' },
-            ].map(org => (
-              <div
-                key={org.label}
-                className="px-5 py-2 rounded-xl border-2 font-bold text-sm text-center"
-                style={{ borderColor: org.color, backgroundColor: org.color + '15', color: org.color }}
+        {/* Companies row */}
+        <div className="shrink-0 flex gap-3 justify-center">
+          {CHANNEL_ORGS.map(org => (
+            <div
+              key={org.id}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 font-bold text-sm"
+              style={{ borderColor: org.color, backgroundColor: org.color + '15', color: org.color }}
+            >
+              <span>{org.icon}</span> {org.label}
+            </div>
+          ))}
+        </div>
+
+        {/* Channels + detail */}
+        <div className="flex-1 min-h-0 flex gap-4">
+          {/* Channels column */}
+          <div className="flex flex-col gap-3 w-56 shrink-0">
+            {CHANNELS_DEF.map(ch => (
+              <button
+                key={ch.id}
+                onClick={() => setActiveChannel(activeChannel === ch.id ? null : ch.id)}
+                className="flex-1 flex flex-col gap-2 p-4 rounded-xl border-2 border-dashed text-left cursor-pointer transition-all"
+                style={{
+                  borderColor: activeChannel === ch.id ? ch.color : ch.color + '50',
+                  backgroundColor: activeChannel === ch.id ? ch.color + '14' : ch.color + '06',
+                }}
               >
-                {org.label}
-              </div>
+                <div className="font-bold text-sm" style={{ color: ch.color }}>{ch.label}</div>
+                <div className="flex flex-wrap gap-1">
+                  {CHANNEL_ORGS.map(org => (
+                    <span
+                      key={org.id}
+                      className="px-2 py-0.5 rounded-full text-xs border font-medium transition-all"
+                      style={
+                        ch.members.includes(org.id)
+                          ? { borderColor: org.color + '80', color: org.color, backgroundColor: org.color + '12' }
+                          : { borderColor: 'var(--border)', color: 'var(--muted-foreground)', opacity: 0.35 }
+                      }
+                    >
+                      {org.label}
+                    </span>
+                  ))}
+                </div>
+                <div className="text-xs text-muted-foreground">{ch.data}</div>
+              </button>
             ))}
           </div>
 
-          {/* Channels */}
-          <div className="flex gap-4 flex-1 min-h-0">
-            {/* Channel 1 */}
-            <div
-              className="flex-1 rounded-xl border-2 border-dashed p-4 flex flex-col gap-2"
-              style={{ borderColor: '#6366f1' + '60', backgroundColor: '#6366f10a' }}
-            >
-              <div className="text-xs font-bold uppercase tracking-wider" style={{ color: '#6366f1' }}>Channel 1 — Trade Settlement</div>
-              <div className="text-xs text-muted-foreground">Members: Bank A + Bank B only</div>
-              <div className="flex gap-2 flex-wrap mt-auto">
-                <span className="px-2 py-0.5 rounded-full text-xs border" style={{ borderColor: '#6366f140', color: '#6366f1' }}>Bank A</span>
-                <span className="px-2 py-0.5 rounded-full text-xs border" style={{ borderColor: '#39B54A40', color: '#39B54A' }}>Bank B</span>
-              </div>
-              <div className="text-xs text-muted-foreground">🔒 Private — Regulator cannot see these transactions</div>
-            </div>
+          {/* Detail / visual panel */}
+          <div className="flex-1 min-w-0 rounded-xl border border-border bg-card/50 p-5 flex flex-col">
+            {active ? (
+              <motion.div
+                key={active.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col gap-4 h-full"
+              >
+                <div className="font-bold text-lg" style={{ color: active.color }}>
+                  Channel: {active.label}
+                </div>
 
-            {/* Channel 2 */}
-            <div
-              className="flex-1 rounded-xl border-2 border-dashed p-4 flex flex-col gap-2"
-              style={{ borderColor: '#f59e0b60', backgroundColor: '#f59e0b0a' }}
-            >
-              <div className="text-xs font-bold uppercase tracking-wider" style={{ color: '#f59e0b' }}>Channel 2 — Compliance Reporting</div>
-              <div className="text-xs text-muted-foreground">Members: Bank A + Bank B + Regulator</div>
-              <div className="flex gap-2 flex-wrap mt-auto">
-                <span className="px-2 py-0.5 rounded-full text-xs border" style={{ borderColor: '#6366f140', color: '#6366f1' }}>Bank A</span>
-                <span className="px-2 py-0.5 rounded-full text-xs border" style={{ borderColor: '#39B54A40', color: '#39B54A' }}>Bank B</span>
-                <span className="px-2 py-0.5 rounded-full text-xs border" style={{ borderColor: '#f59e0b40', color: '#f59e0b' }}>Regulator</span>
+                {/* Who sees what visual */}
+                <div className="flex-1 flex flex-col gap-3">
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Visibility per organisation</div>
+                  <div className="flex flex-col gap-2">
+                    {CHANNEL_ORGS.map(org => {
+                      const canSee = active.members.includes(org.id);
+                      return (
+                        <div
+                          key={org.id}
+                          className="flex items-center gap-3 p-3 rounded-xl border"
+                          style={{
+                            borderColor: canSee ? org.color + '60' : 'var(--border)',
+                            backgroundColor: canSee ? org.color + '0a' : 'transparent',
+                          }}
+                        >
+                          <span className="text-lg">{org.icon}</span>
+                          <span className="font-semibold text-sm text-foreground flex-1">{org.label}</span>
+                          <span
+                            className="text-xs font-bold px-2 py-0.5 rounded-full"
+                            style={
+                              canSee
+                                ? { backgroundColor: org.color + '20', color: org.color }
+                                : { backgroundColor: 'var(--muted)', color: 'var(--muted-foreground)' }
+                            }
+                          >
+                            {canSee ? '✓ Can read & write' : '✗ No access'}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div
+                    className="mt-auto p-3 rounded-xl border text-xs text-muted-foreground"
+                    style={{ borderColor: active.color + '40', backgroundColor: active.color + '08' }}
+                  >
+                    <span className="font-semibold" style={{ color: active.color }}>Why this channel? </span>
+                    {active.why}
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+                ← Click a channel to see who has access
               </div>
-              <div className="text-xs text-muted-foreground">📋 Regulator sees only what they need for compliance</div>
-            </div>
+            )}
           </div>
-        </div>
-
-        {/* Key properties */}
-        <div className="grid grid-cols-3 gap-3 shrink-0">
-          {[
-            { emoji: '🔒', label: 'Data Isolation', desc: "Bank A's trades are invisible to any party not on the channel." },
-            { emoji: '📋', label: 'Separate Policies', desc: 'Each channel has its own endorsement and ordering rules.' },
-            { emoji: '⚡', label: 'Independent Ledgers', desc: 'No cross-channel data leakage — fully separate state databases.' },
-          ].map(card => (
-            <div
-              key={card.label}
-              className="p-3 rounded-xl border border-[#39B54A]/40"
-              style={{ backgroundColor: '#39B54A0d' }}
-            >
-              <div className="text-lg mb-1">{card.emoji}</div>
-              <div className="font-bold text-sm text-foreground">{card.label}</div>
-              <div className="text-xs text-muted-foreground mt-0.5">{card.desc}</div>
-            </div>
-          ))}
         </div>
       </div>
     </div>
@@ -1498,9 +1573,19 @@ export function BP_Section3() {
           <FabricDeepDiveSlide />
         </div>
 
+        {/* ═══════ CONSENSUS EVOLUTION ═══════ */}
+        <div id="s3-consensus-evo" className="h-full">
+          <ConsensusEvolutionSlide />
+        </div>
+
         {/* ═══════ PLUGGABLE CONSENSUS ═══════ */}
         <div id="s3-consensus" className="h-full">
           <PluggableConsensusSlide />
+        </div>
+
+        {/* ═══════ RAFT MECHANICS ═══════ */}
+        <div id="s3-raft" className="h-full">
+          <RaftMechanicsSlide />
         </div>
 
         {/* ═══════ BFT ═══════ */}
@@ -1516,6 +1601,16 @@ export function BP_Section3() {
         {/* ═══════ TX FLOW ═══════ */}
         <div id="s3-txflow" className="h-full">
           <TxFlowSlide />
+        </div>
+
+        {/* ═══════ EXERCISE: SUPPLY CHAIN ═══════ */}
+        <div id="s3-exercise-supply" className="h-full">
+          <SupplyChainExercise />
+        </div>
+
+        {/* ═══════ EXERCISE: HEALTH DATA ═══════ */}
+        <div id="s3-exercise-health" className="h-full">
+          <HealthDataExercise />
         </div>
 
         {/* ═══════ COMPARISON ═══════ */}
