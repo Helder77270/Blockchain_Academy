@@ -6,7 +6,6 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { ShieldAlert } from 'lucide-react';
 
 const chapters = [
-  { id: 's4-objectives', label: 'Objectives' },
   { id: 's4-oracle',     label: 'The Oracle Problem' },
   { id: 's4-challenges', label: 'Challenges & Limitations' },
   { id: 's4-technical',  label: 'Technical Challenges' },
@@ -351,39 +350,6 @@ export function SC_Section4() {
             icon={<ShieldAlert className="size-20 text-[#6366f1]" />}
             gradient="from-[#ED1C24] to-[#6366f1]"
           />
-        </div>
-
-        {/* ═══════ OBJECTIVES ═══════ */}
-        <div id="s4-objectives" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#6366f1]">Learning Objectives</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
-            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
-          </div>
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
-            {[
-              { num: '01', label: 'Identify attack vectors', desc: 'Describe reentrancy, integer overflow, front-running, and access control vulnerabilities' },
-              { num: '02', label: 'Understand the oracle attack', desc: 'Trace how flash loan price manipulation can drain a DeFi protocol in one transaction' },
-              { num: '03', label: 'Evaluate structural limits', desc: 'Explain gas limits, scalability ceiling, and UX friction preventing mainstream adoption' },
-              { num: '04', label: 'Weigh advantages vs problems', desc: 'Apply a balanced framework to smart contract evaluation for any real-world scenario' },
-              { num: '05', label: 'Recommend mitigations', desc: 'Suggest audit practices, multi-oracle patterns, timelocks, and upgrade proxies as defenses' },
-            ].map((obj, i) => (
-              <motion.div
-                key={obj.num}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.35 }}
-                className="flex gap-4 p-5 rounded-2xl border"
-                style={{ borderColor: '#6366f140', backgroundColor: '#6366f108' }}
-              >
-                <div className="text-3xl font-black shrink-0 text-[#6366f1]/40">{obj.num}</div>
-                <div>
-                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         {/* ═══════ THE ORACLE PROBLEM ═══════ */}

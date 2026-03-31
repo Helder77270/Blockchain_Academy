@@ -7,7 +7,6 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Cog, Check, X } from 'lucide-react';
 
 const chapters = [
-  { id: 's2-objectives',    label: 'Objectives' },
   { id: 's2-workflow',      label: 'Workflow' },
   { id: 's2-components',   label: 'Core Components' },
   { id: 's2-execution',    label: 'Execution Environment' },
@@ -351,39 +350,6 @@ export function SC_Section2() {
             icon={<Cog className="size-20 text-[#6366f1]" />}
             gradient="from-[#6366f1] to-[#8b5cf6]"
           />
-        </div>
-
-        {/* ═══════ OBJECTIVES ═══════ */}
-        <div id="s2-objectives" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#6366f1]">Learning Objectives</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
-            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
-          </div>
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
-            {[
-              { num: '01', label: 'Map the Web3 stack', desc: 'Distinguish the decentralized development stack from traditional web architecture' },
-              { num: '02', label: 'Explain gas economics', desc: 'Understand why computation costs gas and how transaction fees are calculated' },
-              { num: '03', label: 'Build the dApp stack', desc: 'Identify each layer from smart contract to user interface' },
-              { num: '04', label: 'Evaluate use cases', desc: 'Apply the "Why Build with SC?" framework to decide when smart contracts are appropriate' },
-              { num: '05', label: 'Understand new capabilities', desc: 'Describe atomic swaps, flash loans, composability, and programmable money' },
-            ].map((obj, i) => (
-              <motion.div
-                key={obj.num}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.35 }}
-                className="flex gap-4 p-5 rounded-2xl border"
-                style={{ borderColor: '#6366f140', backgroundColor: '#6366f108' }}
-              >
-                <div className="text-3xl font-black shrink-0 text-[#6366f1]/40">{obj.num}</div>
-                <div>
-                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         {/* ═══════ WORKFLOW ═══════ */}

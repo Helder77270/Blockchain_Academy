@@ -6,7 +6,6 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Bitcoin } from 'lucide-react';
 
 const chapters = [
-  { id: 's1-objectives', label: 'Objectives' },
   { id: 's1-architecture', label: 'Architecture' },
   { id: 's1-transaction', label: 'Transaction' },
   { id: 's1-utxo-exercise', label: 'UTXO Exercise' },
@@ -496,38 +495,6 @@ export function BP_Section1() {
             icon={<Bitcoin className="size-20 text-[#f59e0b]" />}
             gradient="from-[#f59e0b] to-[#ED1C24]"
           />
-        </div>
-
-        {/* ═══════ OBJECTIVES ═══════ */}
-        <div id="s1-objectives" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#f59e0b]">Learning Objectives</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
-            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
-          </div>
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
-            {[
-              { num: '01', label: "Map Bitcoin's architecture", desc: 'Describe the four layers: Application, P2P Network, Consensus, and Data Layer' },
-              { num: '02', label: 'Explain the UTXO model', desc: 'Trace how inputs, outputs, change, and fees work in a Bitcoin transaction' },
-              { num: '03', label: 'Understand Proof of Work', desc: 'Explain SHA-256 hash puzzles, nonce finding, difficulty adjustment, and halvings' },
-              { num: '04', label: 'Analyze the Trilemma', desc: "Explain why Bitcoin prioritizes security and decentralization over scalability, and Bitcoin's trade-off strategy" },
-            ].map((obj, i) => (
-              <motion.div
-                key={obj.num}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.35 }}
-                className="flex gap-4 p-5 rounded-2xl border"
-                style={{ borderColor: '#f59e0b40', backgroundColor: '#f59e0b08' }}
-              >
-                <div className="text-3xl font-black shrink-0 text-[#f59e0b]/40">{obj.num}</div>
-                <div>
-                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         {/* ═══════ ARCHITECTURE ═══════ */}

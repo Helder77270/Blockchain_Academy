@@ -44,6 +44,16 @@ const courses: Course[] = [
     path: '/blockchain-platforms',
     available: true,
   },
+  {
+    number: '04',
+    title: 'Project Management for Blockchain Initiatives',
+    description: 'Plan, execute, and lead blockchain projects — from scoping and governance to risk management, team leadership, and measuring success.',
+    topics: ['Project Lifecycle', 'Scope & Governance', 'Risk & Audits', 'Communication', 'Team Leadership'],
+    gradient: 'from-[#f97316] to-[#eab308]',
+    accentColor: '#f97316',
+    path: '/project-management',
+    available: true,
+  },
 ];
 
 export function CourseSelection() {
@@ -66,12 +76,12 @@ export function CourseSelection() {
               Blockchain Academy
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Three courses. One complete mastery path. Choose where to begin.
+              Four courses. One complete mastery path. Choose where to begin.
             </p>
           </div>
 
           {/* Course cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
             {courses.map((course) => (
               course.available ? (
                 <Link

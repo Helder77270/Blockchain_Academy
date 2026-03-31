@@ -6,7 +6,6 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Building2 } from 'lucide-react';
 
 const chapters = [
-  { id: 's3-objectives', label: 'Objectives' },
   { id: 's3-homedepot',  label: 'Home Depot Supply Chain' },
   { id: 's3-realestate', label: 'Real-Estate NFT Deeds' },
   { id: 's3-dmv',        label: 'California DMV Titles' },
@@ -180,39 +179,6 @@ export function SC_Section3() {
             icon={<Building2 className="size-20 text-[#6366f1]" />}
             gradient="from-[#6366f1] to-[#22d3ee]"
           />
-        </div>
-
-        {/* ═══════ OBJECTIVES ═══════ */}
-        <div id="s3-objectives" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#6366f1]">Learning Objectives</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">What You Will Learn</h2>
-            <p className="text-sm text-muted-foreground mt-1">By the end of this section, you will be able to:</p>
-          </div>
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
-            {[
-              { num: '01', label: 'Analyze DeFi protocols', desc: 'Understand how Uniswap AMM and Compound lending work on-chain without intermediaries' },
-              { num: '02', label: 'Evaluate supply chain claims', desc: 'Identify where blockchain genuinely helps vs creates unnecessary complexity' },
-              { num: '03', label: 'Understand the oracle problem', desc: 'Explain why off-chain data is the biggest structural weakness of smart contracts' },
-              { num: '04', label: 'Critically assess hype', desc: 'Apply de-hype criteria to real blockchain project proposals' },
-              { num: '05', label: 'Learn from real deployments', desc: 'Extract lessons from Home Depot, California DMV, and Real-Estate case studies' },
-            ].map((obj, i) => (
-              <motion.div
-                key={obj.num}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.35 }}
-                className="flex gap-4 p-5 rounded-2xl border"
-                style={{ borderColor: '#6366f140', backgroundColor: '#6366f108' }}
-              >
-                <div className="text-3xl font-black shrink-0 text-[#6366f1]/40">{obj.num}</div>
-                <div>
-                  <div className="font-bold text-sm text-foreground">{obj.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{obj.desc}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         {/* ═══════ CASE STUDY 1 — HOME DEPOT ═══════ */}

@@ -5,6 +5,7 @@ const BASE = '/smart-contracts';
 
 const sections = [
   { id: 'home', number: '🏠', label: 'Home',         path: BASE },
+  { id: 'lo',   number: '🎯', label: 'Objectives',  path: `${BASE}/learning-objectives` },
   { id: '1',    number: '01', label: 'Intro',        path: `${BASE}/section-1` },
   { id: '2',    number: '02', label: 'How It Works', path: `${BASE}/section-2` },
   { id: '3',    number: '03', label: 'Case Studies', path: `${BASE}/section-3` },

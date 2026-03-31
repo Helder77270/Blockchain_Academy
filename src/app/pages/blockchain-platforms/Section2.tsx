@@ -7,7 +7,6 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Layers } from 'lucide-react';
 
 const chapters = [
-  { id: 's2-objectives', label: 'Objectives' },
   { id: 's2-why', label: 'Why Ethereum?' },
   { id: 's2-accounts-visual', label: 'Accounts Visual' },
   { id: 's2-accounts', label: 'Accounts' },

@@ -1,8 +1,17 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(find /c/Users/helde/Documents/Github/Blockchain_Academy -not -path */node_modules/* -type d)",
       "Bash(grep -r \"onClick\\\\|onChange\\\\|onDrag\\\\|interactive\\\\|useState\" /e/Helder/GitHub_Repo/Blockchain_Academy/src/app/components/templates/*.tsx)"
+    ],
+    "ask": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf*)",
+      "Bash(git:*)",
+      "Read(**/.env*)",
+      "Read(**/*secret*)",
+      "Read(**/*secrets*)"
     ]
   }
 }

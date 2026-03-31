@@ -5,6 +5,7 @@ const BASE = '/blockchain-platforms';
 
 const sections = [
   { id: 'home', number: '🏠', label: 'Home',            path: BASE },
+  { id: 'lo',   number: '🎯', label: 'Objectives',     path: `${BASE}/learning-objectives` },
   { id: '0',    number: '00', label: 'Recap',           path: `${BASE}/section-0` },
   { id: '1',    number: '01', label: 'Bitcoin',         path: `${BASE}/section-1` },
   { id: '2',    number: '02', label: 'Ethereum',        path: `${BASE}/section-2` },

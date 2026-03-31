@@ -15,6 +15,7 @@ import { DesignSystem } from "./pages/DesignSystem";
 import { QuickReference } from "./pages/QuickReference";
 import { Bibliography } from "./pages/Bibliography";
 import { BlockchainPlatformsHome } from "./pages/blockchain-platforms/Home";
+import { BP_LearningObjectives } from "./pages/blockchain-platforms/LearningObjectives";
 import { Section0 } from "./pages/blockchain-platforms/Section0";
 import { BP_Section1 } from "./pages/blockchain-platforms/Section1";
 import { BP_Section2 } from "./pages/blockchain-platforms/Section2";
@@ -22,12 +23,22 @@ import { BP_Section3 } from "./pages/blockchain-platforms/Section3";
 import { BP_Section4 } from "./pages/blockchain-platforms/Section4";
 import { Conclusion } from "./pages/blockchain-platforms/Conclusion";
 import { SmartContractsHome } from "./pages/smart-contracts/Home";
+import { SC_LearningObjectives } from "./pages/smart-contracts/LearningObjectives";
 import { SC_Section1 } from "./pages/smart-contracts/Section1";
 import { SC_Section2 } from "./pages/smart-contracts/Section2";
 import { SC_Section3 } from "./pages/smart-contracts/Section3";
 import { SC_Section4 } from "./pages/smart-contracts/Section4";
 import { SC_Section5 } from "./pages/smart-contracts/Section5";
 import { SC_Conclusion } from "./pages/smart-contracts/Conclusion";
+import { ProjectManagementRoot } from "./ProjectManagementRoot";
+import { ProjectManagementHome } from "./pages/project-management/Home";
+import { PM_LearningObjectives } from "./pages/project-management/LearningObjectives";
+import { PM_Section1 } from "./pages/project-management/Section1";
+import { PM_Section2 } from "./pages/project-management/Section2";
+import { PM_Section3 } from "./pages/project-management/Section3";
+import { PM_Section4 } from "./pages/project-management/Section4";
+import { PM_Section5 } from "./pages/project-management/Section5";
+import { PM_Conclusion } from "./pages/project-management/Conclusion";
 
 export const router = createBrowserRouter([
   {
@@ -61,6 +72,7 @@ export const router = createBrowserRouter([
         Component: SmartContractsRoot,
         children: [
           { index: true, Component: SmartContractsHome },
+          { path: "learning-objectives", Component: SC_LearningObjectives },
           { path: "section-1", Component: SC_Section1 },
           { path: "section-2", Component: SC_Section2 },
           { path: "section-3", Component: SC_Section3 },
@@ -76,12 +88,29 @@ export const router = createBrowserRouter([
         Component: BlockchainPlatformsRoot,
         children: [
           { index: true, Component: BlockchainPlatformsHome },
+          { path: "learning-objectives", Component: BP_LearningObjectives },
           { path: "section-0", Component: Section0 },
           { path: "section-1", Component: BP_Section1 },
           { path: "section-2", Component: BP_Section2 },
           { path: "section-3", Component: BP_Section3 },
           { path: "section-4", Component: BP_Section4 },
           { path: "conclusion", Component: Conclusion },
+        ],
+      },
+
+      // Course 04 — Project Management for Blockchain Initiatives
+      {
+        path: "project-management",
+        Component: ProjectManagementRoot,
+        children: [
+          { index: true, Component: ProjectManagementHome },
+          { path: "learning-objectives", Component: PM_LearningObjectives },
+          { path: "section-1", Component: PM_Section1 },
+          { path: "section-2", Component: PM_Section2 },
+          { path: "section-3", Component: PM_Section3 },
+          { path: "section-4", Component: PM_Section4 },
+          { path: "section-5", Component: PM_Section5 },
+          { path: "conclusion", Component: PM_Conclusion },
         ],
       },
 
