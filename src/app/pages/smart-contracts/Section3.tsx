@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { Building2 } from 'lucide-react';
 
@@ -10,6 +11,7 @@ const chapters = [
   { id: 's3-realestate', label: 'Real-Estate NFT Deeds' },
   { id: 's3-dmv',        label: 'California DMV Titles' },
   { id: 's3-exercise',   label: '🎯 Exercise' },
+  { id: 's3-quiz',       label: 'Quiz' },
   { id: 's3-takeaways',  label: 'Takeaways' },
   { id: 's3-summary',    label: 'Summary' },
 ];
@@ -475,6 +477,20 @@ export function SC_Section3() {
         {/* ═══════ EXERCISE: DESIGN YOUR OWN ═══════ */}
         <div id="s3-exercise" className="h-full">
           <DesignYourOwnExercise />
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s3-quiz" className="h-full">
+          <QuizSlide
+            question="The California DMV digitized 42 million vehicle titles on blockchain. What is the primary advantage of blockchain over the traditional paper title system?"
+            options={[
+              { text: 'Blockchain storage is cheaper than paper filing, reducing the DMV operating budget significantly.', correct: false },
+              { text: 'Title transfers and ownership verification can occur in minutes without contacting the DMV — eliminating fraud via immutable provenance records.', correct: true },
+              { text: 'Vehicle titles are now publicly visible to anyone without identity verification, increasing transparency.', correct: false },
+              { text: 'Vehicle theft becomes impossible because titles are stored on-chain and cannot be cloned.', correct: false },
+            ]}
+            explanation="The core blockchain advantage here is trustless verification of ownership history. Traditional paper titles require physical transfer, manual verification, and weeks of processing. With blockchain, a buyer can instantly verify the full ownership chain, detect odometer fraud, and confirm the seller has clear title — all without trusting the DMV database or the seller's word. The immutability makes forgery structurally impossible rather than merely difficult. Blockchain storage is actually more expensive than paper — the value is in verification speed and fraud elimination, not cost."
+          />
         </div>
 
         <div id="s3-takeaways" className="h-full">

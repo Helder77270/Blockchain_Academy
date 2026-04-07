@@ -1,10 +1,12 @@
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { TitleSlide } from '../../components/templates/TitleSlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { Users } from 'lucide-react';
 
 const chapters = [
   { id: 's5-brief',    label: 'Project Brief' },
   { id: 's5-template', label: 'Deliverable Template' },
+  { id: 's5-quiz',     label: 'Quiz' },
 ];
 
 const ACCENT = '#6366f1';
@@ -136,6 +138,20 @@ export function SC_Section5() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s5-quiz" className="h-full">
+          <QuizSlide
+            question="Your team is designing a smart contract for a crop insurance payout: a sensor detects rainfall below a threshold, the contract automatically pays the farmer. Which section of the deliverable template carries the MOST weight in your evaluation, and what must it address?"
+            options={[
+              { text: 'Executive Summary (20%) — clearly state the problem, the proposed contract, and the key benefit in two sentences.', correct: false },
+              { text: 'Risk & Limitation Analysis (25%) — identify the oracle dependency on the rainfall sensor, immutability concerns if the sensor malfunctions, and legal enforceability of automated payouts.', correct: true },
+              { text: 'Adoption Roadmap (not separately weighted) — define the technical requirements and regulatory compliance path for the insurance industry.', correct: false },
+              { text: 'Presentation Quality (10%) — deliver a compelling 10-minute pitch with clear visuals and confident Q&A responses.', correct: false },
+            ]}
+            explanation="Risk & Limitation Analysis is tied for highest weight at 25% — equal to Smart Contract Design. For this specific use case, the risk section must address: (1) Oracle dependency — the rainfall sensor is a single point of failure; if it is compromised or malfunctions, the contract pays incorrectly and there is no recourse. (2) Immutability — if a sensor reports faulty data and the contract executes, the payout cannot be reversed. (3) Legal enforceability — does an automated payout satisfy the legal definition of an insurance claim settlement in the relevant jurisdiction? These risks are what distinguish a thoughtful smart contract design from a naive one."
+          />
         </div>
 
         </div>

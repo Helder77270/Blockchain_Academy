@@ -1,6 +1,7 @@
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { DiscussionSlide } from '../../components/templates/DiscussionSlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { MessageSquare } from 'lucide-react';
 
@@ -11,6 +12,7 @@ const chapters = [
   { id: 's4-governance',   label: 'Decision-Making' },
   { id: 's4-community',    label: 'Community Management' },
   { id: 's4-discussion',   label: 'Discussion' },
+  { id: 's4-quiz',         label: 'Quiz' },
   { id: 's4-takeaways',    label: 'Takeaways' },
 ];
 
@@ -310,6 +312,48 @@ export function PM_Section4() {
               'A governance vote on a major protocol change passes with 71% approval but only 12% participation (quorum is 20%). The community is split — some say the result stands, others want a revote. As PM, what do you do?',
               'A key technical contributor is communicating only in highly technical terms in stakeholder meetings, causing executives to lose confidence in the project. How do you address this without alienating your best engineer?',
             ]}
+          />
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s4-quiz" className="h-full">
+          <QuizSlide
+            question="(1/3) A smart contract exploit has drained $2M from your DeFi protocol. The team has identified the root cause and a fix is ready. As PM, what is your first communication action?"
+            options={[
+              { text: 'Say nothing publicly until the fix is fully deployed — announcing the exploit before the patch will attract more attackers.', correct: false },
+              { text: 'Post a brief, factual incident notice immediately: confirm the issue, state that the protocol is paused, and commit to a postmortem timeline.', correct: true },
+              { text: 'Contact the media first to control the narrative before the community finds out on-chain.', correct: false },
+              { text: 'Notify only the largest token holders privately so they can protect their positions before the public announcement.', correct: false },
+            ]}
+            explanation="In blockchain, on-chain activity is public — the community will discover the exploit independently within minutes. Silence creates a trust vacuum that speculation fills. The correct response is immediate, factual transparency: confirm the pause, acknowledge the issue, and commit to a postmortem. Selectively notifying large holders is insider information and potentially illegal. Delaying the announcement to complete the fix is also wrong — users need to know their funds are at risk so they can make their own decisions."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 2/3 ═══════ */}
+        <div className="h-full">
+          <QuizSlide
+            question="(2/3) In the DACI decision framework used by blockchain project teams, what is the specific role of the 'A' — Approver?"
+            options={[
+              { text: 'The person who does the analytical work, gathers input, and prepares the recommendation for review.', correct: false },
+              { text: 'The person or group with final decision authority — their explicit sign-off is required before the decision takes effect.', correct: true },
+              { text: 'The people who provide domain expertise and can shape the decision but cannot block it.', correct: false },
+              { text: 'The stakeholders who are notified of the outcome after the decision has been made.', correct: false },
+            ]}
+            explanation="In DACI: Driver owns the process and runs it forward; Approver has veto power and must explicitly sign off (typically the Exec Sponsor, Legal, or Security lead); Contributors provide input but cannot block; Informed are notified after. The key distinction is that Contributors (C) advise, while the Approver (A) decides. In blockchain projects, the Approver for mainnet launch is typically the PM plus the Security Auditor — without both sign-offs, the launch cannot proceed."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3/3 ═══════ */}
+        <div className="h-full">
+          <QuizSlide
+            question="(3/3) Your smart contract developer says: 'Each transaction costs ~23,000 gas — at current base fees that's about $4 per call.' How should you translate this for the executive sponsor?"
+            options={[
+              { text: "Share the exact technical figures — executives funding the project should understand gas mechanics.", correct: false },
+              { text: "Frame it as user cost and business impact: 'Each user action costs ~$4. At a target of 10,000 daily active users, that is $40,000/day in user-paid network fees — we need to factor this into adoption projections and UX design.'", correct: true },
+              { text: "Tell the sponsor not to worry — gas fees are a technical implementation detail that does not affect the business model.", correct: false },
+              { text: "Ask the developer to reduce gas costs before the next executive meeting so you can present better numbers.", correct: false },
+            ]}
+            explanation="Technical-to-business translation is a core blockchain PM skill. Executives do not make decisions based on gas units — they make decisions based on cost, risk, and adoption impact. The PM's job is to convert '23,000 gas at $4' into a user experience and business model implication: How does $4/transaction affect user onboarding? At what scale does this become a barrier? Should we target a Layer 2 with lower fees? These are executive-level questions the PM must preempt."
           />
         </div>
 

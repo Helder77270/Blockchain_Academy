@@ -3,14 +3,17 @@ import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { TimelineSlide } from '../../components/templates/TimelineSlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { FileCode2, Check, X } from 'lucide-react';
 
 const chapters = [
   { id: 's1-what',     label: 'What is a Smart Contract?' },
   { id: 's1-szabo',    label: 'Nick Szabo\'s Vending Machine' },
-  { id: 's1-history',  label: 'Historical Evolution' },
-  { id: 's1-exercise', label: '🎯 Exercise' },
+  { id: 's1-history',    label: 'Historical Evolution' },
+  { id: 's1-standards',  label: 'Token Standards' },
+  { id: 's1-exercise',   label: '🎯 Exercise' },
+  { id: 's1-quiz',     label: 'Quiz' },
   { id: 's1-takeaways', label: 'Takeaways' },
   { id: 's1-summary', label: 'Summary' },
 ];
@@ -347,9 +350,103 @@ export function SC_Section1() {
           />
         </div>
 
+        {/* ═══════ TOKEN STANDARDS ═══════ */}
+        <div id="s1-standards" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-[#6366f1]">Section 01</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Token Standards: ERC-20, ERC-721, ERC-1155</h2>
+            <p className="text-sm text-muted-foreground">Token standards are shared interfaces — agreed-upon function signatures that let any wallet, exchange, or protocol interact with any token without custom integration.</p>
+          </div>
+          <div className="flex-1 min-h-0 flex gap-4">
+            {([
+              {
+                standard: 'ERC-20',
+                color: '#6366f1',
+                icon: '🪙',
+                name: 'Fungible Token',
+                tagline: 'Every unit is identical and interchangeable',
+                howItWorks: 'Each token is indistinguishable from another of the same contract. 1 USDC = 1 USDC. Balances tracked in a mapping(address => uint256).',
+                coreFunctions: ['transfer(to, amount)', 'approve(spender, amount)', 'transferFrom(from, to, amount)', 'balanceOf(address) → uint256', 'allowance(owner, spender) → uint256'],
+                examples: ['USDC, USDT — stablecoins', 'UNI, AAVE — governance tokens', 'WETH — wrapped ETH', 'DAI — algorithmic stablecoin'],
+                keyInsight: 'The allowance pattern enables DeFi composability — you approve a DEX contract to move your tokens, then the swap executes in one atomic transaction.',
+                insightColor: '#6366f1',
+              },
+              {
+                standard: 'ERC-721',
+                color: '#f97316',
+                icon: '🖼️',
+                name: 'Non-Fungible Token (NFT)',
+                tagline: 'Each token has a unique ID and is not interchangeable',
+                howItWorks: 'Each token has a unique uint256 tokenId. Ownership tracked in mapping(uint256 => address). Metadata (image, attributes) stored off-chain via tokenURI().',
+                coreFunctions: ['ownerOf(tokenId) → address', 'transferFrom(from, to, tokenId)', 'approve(to, tokenId)', 'setApprovalForAll(operator, bool)', 'tokenURI(tokenId) → string'],
+                examples: ['CryptoPunks, Bored Apes — profile pictures', 'ENS domains — .eth names', 'Real estate title deeds (Propy)', 'California DMV vehicle titles'],
+                keyInsight: 'tokenURI() is a critical off-chain dependency — if the metadata server goes down, the NFT image disappears. IPFS pinning is the standard mitigation.',
+                insightColor: '#f97316',
+              },
+              {
+                standard: 'ERC-1155',
+                color: '#39B54A',
+                icon: '🎮',
+                name: 'Multi-Token Standard',
+                tagline: 'One contract holds both fungible and non-fungible tokens',
+                howItWorks: 'Uses mapping(uint256 => mapping(address => uint256)) — each token ID can be fungible (supply > 1) or non-fungible (supply = 1). Batch transfers in a single call.',
+                coreFunctions: ['balanceOf(account, id) → uint256', 'balanceOfBatch(accounts[], ids[]) → uint256[]', 'safeTransferFrom(from, to, id, amount, data)', 'safeBatchTransferFrom(from, to, ids[], amounts[], data)'],
+                examples: ['Gaming items — 1000× common sword (fungible), 1× legendary weapon (NFT)', 'Event tickets — 500 general admission + 10 VIP', 'Fractional NFT ownership', 'Multi-asset DeFi vaults'],
+                keyInsight: 'Batch transfers are the killer feature — send 50 different game items in one transaction instead of 50. Gas savings of 80–90% vs multiple ERC-20/721 transfers.',
+                insightColor: '#39B54A',
+              },
+            ] as const).map(s => (
+              <div key={s.standard} className="flex-1 flex flex-col rounded-xl border-2 bg-card overflow-hidden" style={{ borderColor: s.color + '40' }}>
+                <div className="h-1.5 shrink-0" style={{ backgroundColor: s.color }} />
+                <div className="flex flex-col flex-1 p-4 min-h-0 gap-3">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-2xl">{s.icon}</span>
+                    <div>
+                      <div className="font-black text-base" style={{ color: s.color }}>{s.standard}</div>
+                      <div className="text-xs font-semibold text-foreground">{s.name}</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground italic shrink-0">{s.tagline}</p>
+                  <p className="text-xs text-muted-foreground shrink-0">{s.howItWorks}</p>
+                  <div className="shrink-0">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Core Interface</div>
+                    <div className="bg-[#0d1117] rounded-lg p-2 font-mono space-y-0.5">
+                      {s.coreFunctions.map(f => <div key={f} className="text-xs" style={{ color: s.color }}>{f}</div>)}
+                    </div>
+                  </div>
+                  <div className="shrink-0">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Real Examples</div>
+                    <ul className="space-y-0.5">
+                      {s.examples.map(e => <li key={e} className="text-xs text-muted-foreground flex gap-1.5"><span style={{ color: s.color }}>•</span>{e}</li>)}
+                    </ul>
+                  </div>
+                  <div className="mt-auto pt-3 border-t border-border shrink-0">
+                    <div className="text-xs font-semibold mb-0.5" style={{ color: s.insightColor }}>Key Insight</div>
+                    <div className="text-xs text-muted-foreground">{s.keyInsight}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* ═══════ EXERCISE ═══════ */}
         <div id="s1-exercise" className="h-full">
           <SmartContractSortingExercise />
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s1-quiz" className="h-full">
+          <QuizSlide
+            question="Nick Szabo introduced the concept of smart contracts in 1994. Which real-world object did he use as the foundational analogy to explain how they work?"
+            options={[
+              { text: 'A notary office — a trusted third party that validates and records agreements between parties.', correct: false },
+              { text: 'A vending machine — a mechanism that autonomously enforces the terms of a transaction without a human intermediary.', correct: true },
+              { text: 'A court of law — an authority that resolves disputes and enforces contractual obligations after the fact.', correct: false },
+              { text: 'A bank vault — a secure system that holds assets until conditions agreed by both parties are met.', correct: false },
+            ]}
+            explanation="Szabo used the vending machine as his canonical analogy: you insert money, select an item, and the machine automatically verifies the payment and delivers the product — no cashier, no trust, no dispute. The machine's logic is the contract. Szabo's insight was that this same principle — conditional logic enforced by a mechanism rather than a person — could be embedded in digital protocols. This became the intellectual foundation for Ethereum's smart contract model two decades later."
+          />
         </div>
 
         {/* ═══════ TAKEAWAYS ═══════ */}

@@ -9,7 +9,7 @@ export function TakeawaySlide({ title, takeaways }: TakeawaySlideProps) {
   return (
     <div className="slide-template w-full items-center justify-center p-5 lg:p-10">
       <div className="max-w-4xl w-full">
-        <h2 className="text-2xl lg:text-4xl font-bold text-center text-foreground mb-4 lg:mb-6">{title}</h2>
+        <h2 className="text-2xl lg:text-3xl font-bold text-center text-foreground mb-4 lg:mb-6">{title}</h2>
 
         <div className="space-y-3">
           {takeaways.map((takeaway, index) => (

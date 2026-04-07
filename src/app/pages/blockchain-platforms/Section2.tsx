@@ -4,6 +4,7 @@ import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { ComparisonSlide } from '../../components/templates/ComparisonSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { Layers } from 'lucide-react';
 
 const chapters = [
@@ -16,6 +17,7 @@ const chapters = [
   { id: 's2-consensus', label: 'PoW → PoS' },
   { id: 's2-evmecosystem', label: 'EVM Everywhere' },
   { id: 's2-comparison', label: 'BTC vs ETH' },
+  { id: 's2-quiz', label: 'Quiz' },
   { id: 's2-takeaways', label: 'Takeaways' },
   { id: 's2-summary', label: 'Summary' },
 ];
@@ -800,6 +802,20 @@ export function BP_Section2() {
               { feature: 'Token', option1: 'BTC', option2: 'ETH' },
               { feature: 'Main L2', option1: 'Lightning Network', option2: 'Arbitrum / Optimism / Base' },
             ]}
+          />
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s2-quiz" className="h-full">
+          <QuizSlide
+            question="What is the fundamental difference between an Externally Owned Account (EOA) and a Contract Account on Ethereum?"
+            options={[
+              { text: 'EOAs can store ETH; Contract Accounts can only store code and cannot hold a balance.', correct: false },
+              { text: 'Contract Accounts can initiate transactions independently; EOAs can only respond when called by a contract.', correct: false },
+              { text: 'EOAs are controlled by a private key and can initiate transactions; Contract Accounts are controlled by code and only execute when triggered by an EOA or another contract.', correct: true },
+              { text: 'EOAs exist only on Ethereum mainnet; Contract Accounts work across all EVM-compatible chains automatically.', correct: false },
+            ]}
+            explanation="This is the foundational distinction of Ethereum's account model. An EOA is what a human controls — it has a private key, can initiate transactions, and pays gas. A Contract Account has no private key — it is pure code deployed at a deterministic address, and it only runs when another account sends it a transaction. This means a Contract Account cannot spontaneously act on a schedule — it needs an EOA (or a keeper bot using an EOA) to trigger it. Every transaction on Ethereum ultimately originates from an EOA."
           />
         </div>
 

@@ -12,6 +12,7 @@ const sections = [
   { id: '4',    number: '04', label: 'Communication', path: `${BASE}/section-4` },
   { id: '5',    number: '05', label: 'Leadership',    path: `${BASE}/section-5` },
   { id: 'end',  number: '🏁', label: 'Conclusion',    path: `${BASE}/conclusion` },
+  { id: 'bib',  number: '📖', label: 'Bibliography',  path: `${BASE}/bibliography` },
 ];
 
 export function ProjectManagementRoot() {

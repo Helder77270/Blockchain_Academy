@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { ShieldAlert } from 'lucide-react';
 
@@ -11,6 +12,7 @@ const chapters = [
   { id: 's4-technical',  label: 'Technical Challenges' },
   { id: 's4-ex-oracle',  label: '🎯 Exercise: Oracle' },
   { id: 's4-ex-verdict', label: '🎯 Exercise: Adv/Prob' },
+  { id: 's4-quiz',       label: 'Quiz' },
   { id: 's4-takeaways',  label: 'Takeaways' },
   { id: 's4-summary',    label: 'Summary' },
 ];
@@ -708,6 +710,20 @@ export function SC_Section4() {
         {/* ═══════ EXERCISE: BUILD OR NOT? ═══════ */}
         <div id="s4-ex-verdict" className="h-full">
           <AdvProblExercise />
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s4-quiz" className="h-full">
+          <QuizSlide
+            question="A DeFi lending protocol uses a single on-chain DEX spot price as its collateral oracle. An attacker takes a $50M flash loan, manipulates the DEX price, borrows against inflated collateral, and repays the loan — all in one transaction. Which property of flash loans makes this attack unique compared to a standard market manipulation?"
+            options={[
+              { text: 'Flash loans are anonymous — the attacker cannot be traced or prosecuted.', correct: false },
+              { text: 'Flash loans require no capital — the entire attack is atomic and self-financing within a single block, leaving no trace between blocks.', correct: true },
+              { text: 'Flash loans exploit a bug in the Ethereum protocol itself, making them impossible to prevent at the contract level.', correct: false },
+              { text: 'Flash loans allow attackers to bypass gas fees, making the attack economically viable even for small protocols.', correct: false },
+            ]}
+            explanation="Traditional market manipulation requires large capital held at risk over time. Flash loans change the economics completely: the attacker borrows an enormous amount, executes the attack, and repays everything within a single atomic transaction. If any step fails, the entire transaction reverts — the attacker risks only gas fees. This means any protocol using a single on-chain spot price is vulnerable to an adversary with virtually zero capital. The fix: time-weighted average prices (TWAP) cannot be manipulated within a single block, and decentralized oracle networks aggregate from multiple independent sources."
+          />
         </div>
 
         <div id="s4-takeaways" className="h-full">

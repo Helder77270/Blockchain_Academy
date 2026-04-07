@@ -5,6 +5,7 @@ import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { ComparisonSlide } from '../../components/templates/ComparisonSlide';
 import { ConceptSlide } from '../../components/templates/ConceptSlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { Building2 } from 'lucide-react';
 
 const chapters = [
@@ -21,6 +22,7 @@ const chapters = [
   { id: 's3-exercise-supply', label: 'Exercise: Supply Chain' },
   { id: 's3-exercise-health', label: 'Exercise: Health Data' },
   { id: 's3-comparison', label: 'ETH vs Fabric' },
+  { id: 's3-quiz', label: 'Quiz' },
   { id: 's3-takeaways', label: 'Takeaways' },
 ];
 
@@ -1631,6 +1633,20 @@ export function BP_Section3() {
               { feature: 'Governance', option1: 'Decentralized (EIP process)', option2: 'Consortium members' },
               { feature: 'Best for', option1: 'DeFi, NFTs, public dApps', option2: 'Enterprise B2B, supply chain, finance' },
             ]}
+          />
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s3-quiz" className="h-full">
+          <QuizSlide
+            question="In Hyperledger Fabric, three pharmaceutical companies (PharmaA, PharmaB, and a Hospital) are on the same network. PharmaA and PharmaB want to share pricing data that the Hospital must NOT see. What Fabric feature enables this?"
+            options={[
+              { text: 'Pluggable consensus — PharmaA and PharmaB use a separate Raft ordering service that excludes the Hospital.', correct: false },
+              { text: 'A private Channel — only PharmaA and PharmaB are members of this channel; the Hospital sees none of its transactions or ledger state.', correct: true },
+              { text: 'A separate MSP (Membership Service Provider) — the Hospital is issued a different certificate type that limits its read access.', correct: false },
+              { text: 'Zero-knowledge proofs — PharmaA and PharmaB submit proofs instead of raw data, hiding the pricing details from the Hospital.', correct: false },
+            ]}
+            explanation="Channels are Hyperledger Fabric's primary privacy mechanism. A Channel is a private sub-ledger with its own set of member organizations, chaincode, and transaction history — invisible to non-members on the same network. PharmaA and PharmaB create a channel that only they join; the Hospital cannot see its transactions, state, or even that it exists. This is fundamentally different from public blockchains where all data is visible to all participants. MSPs control identity and enrollment, not data visibility between enrolled members."
           />
         </div>
 

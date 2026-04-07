@@ -4,6 +4,7 @@ import { ConceptSlide } from '../../components/templates/ConceptSlide';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { Network } from 'lucide-react';
 
 const chapters = [
@@ -11,6 +12,8 @@ const chapters = [
   { id: 's4-cosmos', label: 'Cosmos' },
   { id: 's4-layer0', label: 'Layer 0' },
   { id: 's4-starknet', label: 'Starknet' },
+  { id: 's4-layer2',   label: 'Layer 2: Optimistic vs ZK' },
+  { id: 's4-quiz',     label: 'Quiz' },
   { id: 's4-takeaways', label: 'Takeaways' },
 ];
 
@@ -541,6 +544,107 @@ export function BP_Section4() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* ═══════ LAYER 2: OPTIMISTIC VS ZK ═══════ */}
+        <div id="s4-layer2" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-[#39B54A]">Section 04</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Layer 2 Scaling: Optimistic vs ZK Rollups</h2>
+            <p className="text-sm text-muted-foreground">Both rollup types execute transactions off-chain and post results to Ethereum L1 — but they differ fundamentally in <em>how they prove correctness</em>.</p>
+          </div>
+          <div className="flex-1 min-h-0 flex flex-col gap-4">
+            {/* Head-to-head cards */}
+            <div className="flex gap-4 flex-1 min-h-0">
+              {/* Optimistic */}
+              <div className="flex-1 flex flex-col rounded-xl border-2 border-[#f97316]/40 bg-card overflow-hidden">
+                <div className="h-1.5 bg-[#f97316] shrink-0" />
+                <div className="flex flex-col flex-1 p-4 gap-3 min-h-0">
+                  <div className="shrink-0">
+                    <div className="font-black text-lg text-[#f97316]">Optimistic Rollups</div>
+                    <div className="text-xs text-muted-foreground font-medium">Assume valid until proven otherwise</div>
+                  </div>
+                  <div className="text-xs text-muted-foreground shrink-0">Transactions are posted to L1 with an <span className="font-semibold text-foreground">optimistic assumption</span> that they are valid. A 7-day challenge window allows anyone to submit a <span className="font-semibold text-[#f97316]">fraud proof</span> if they detect an invalid state transition.</div>
+                  {[
+                    { label: 'Proof type', value: 'Fraud proof (submitted if fraud detected)', color: '#f97316' },
+                    { label: 'Finality', value: '~7-day withdrawal delay (challenge window)', color: '#ef4444' },
+                    { label: 'Compute cost', value: 'Low — no proof generation overhead', color: '#39B54A' },
+                    { label: 'EVM compatibility', value: '✅ Full EVM equivalence — deploy existing Solidity', color: '#39B54A' },
+                    { label: 'Trust model', value: 'At least 1 honest verifier must watch the chain', color: '#f97316' },
+                    { label: 'Main chains', value: 'Arbitrum One, Optimism, Base', color: '#f97316' },
+                    { label: 'Best for', value: 'General DeFi, DApps needing EVM compatibility', color: '#6366f1' },
+                  ].map(r => (
+                    <div key={r.label} className="flex gap-2 text-xs shrink-0">
+                      <span className="text-muted-foreground w-28 shrink-0">{r.label}</span>
+                      <span style={{ color: r.color }} className="font-medium">{r.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ZK */}
+              <div className="flex-1 flex flex-col rounded-xl border-2 border-[#6366f1]/40 bg-card overflow-hidden">
+                <div className="h-1.5 bg-[#6366f1] shrink-0" />
+                <div className="flex flex-col flex-1 p-4 gap-3 min-h-0">
+                  <div className="shrink-0">
+                    <div className="font-black text-lg text-[#6366f1]">ZK Rollups</div>
+                    <div className="text-xs text-muted-foreground font-medium">Cryptographic validity proof — no trust required</div>
+                  </div>
+                  <div className="text-xs text-muted-foreground shrink-0">Each batch of transactions is accompanied by a <span className="font-semibold text-foreground">zero-knowledge validity proof</span> (SNARK or STARK) that mathematically proves correctness. L1 verifies the proof — no challenge window needed.</div>
+                  {[
+                    { label: 'Proof type', value: 'Validity proof (ZK-SNARK or ZK-STARK)', color: '#6366f1' },
+                    { label: 'Finality', value: '⚡ Minutes — as soon as L1 verifies the proof', color: '#39B54A' },
+                    { label: 'Compute cost', value: 'High — proof generation is computationally intensive', color: '#ef4444' },
+                    { label: 'EVM compatibility', value: '⚠️ Partial — zkEVM still maturing (Type 1–4 spectrum)', color: '#f97316' },
+                    { label: 'Trust model', value: 'Trustless — math proves correctness, not watchers', color: '#39B54A' },
+                    { label: 'Main chains', value: 'zkSync Era, Starknet, Polygon zkEVM, Scroll', color: '#6366f1' },
+                    { label: 'Best for', value: 'Payments, exchanges, privacy apps, high-security finance', color: '#6366f1' },
+                  ].map(r => (
+                    <div key={r.label} className="flex gap-2 text-xs shrink-0">
+                      <span className="text-muted-foreground w-28 shrink-0">{r.label}</span>
+                      <span style={{ color: r.color }} className="font-medium">{r.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Shared mechanics + decision rule */}
+            <div className="grid grid-cols-2 gap-4 shrink-0">
+              <div className="p-4 bg-card border border-border rounded-xl">
+                <div className="font-bold text-sm text-foreground mb-2">What both share</div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground">
+                  <li className="flex gap-2"><span className="text-[#39B54A]">•</span>Execute transactions off-chain, post compressed data to Ethereum L1</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A]">•</span>Inherit Ethereum's security — L1 is the final arbiter</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A]">•</span>10–100× cheaper than L1 for end users</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A]">•</span>Native bridges back to L1 (with different withdrawal times)</li>
+                  <li className="flex gap-2"><span className="text-[#39B54A]">•</span>ERC-20 tokens and ETH work on both</li>
+                </ul>
+              </div>
+              <div className="p-4 bg-[#6366f1]/8 border border-[#6366f1]/30 rounded-xl">
+                <div className="font-bold text-sm text-[#6366f1] mb-2">How to choose</div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground">
+                  <li className="flex gap-2"><span className="text-[#f97316]">→</span><span><span className="font-semibold text-foreground">Need EVM compatibility today?</span> Use Arbitrum or Optimism — fastest path to deploy existing Solidity.</span></li>
+                  <li className="flex gap-2"><span className="text-[#6366f1]">→</span><span><span className="font-semibold text-foreground">Need instant finality for payments/exchange?</span> Use a ZK rollup — users don't want to wait 7 days to withdraw.</span></li>
+                  <li className="flex gap-2"><span className="text-[#6366f1]">→</span><span><span className="font-semibold text-foreground">Building privacy features?</span> ZK proofs are foundational — only ZK rollups enable transaction privacy by design.</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s4-quiz" className="h-full">
+          <QuizSlide
+            question="Cross-chain bridges have been responsible for the largest hacks in crypto history — Ronin ($625M), Wormhole ($320M), Nomad ($190M). What architectural property makes bridges such high-value targets?"
+            options={[
+              { text: 'Bridges use proof-of-authority consensus controlled by a single company, making them easy to corrupt.', correct: false },
+              { text: 'Bridges require KYC verification, creating a centralized identity database attackers can exploit.', correct: false },
+              { text: 'Bridges concentrate large amounts of locked assets in a single smart contract on one chain while issuing representations on another — creating a honeypot with a single point of failure.', correct: true },
+              { text: 'Bridges are slower than direct transactions, giving attackers more time to execute front-running attacks during the transfer window.', correct: false },
+            ]}
+            explanation="To bridge 1 ETH from Ethereum to another chain, you lock the ETH in a smart contract on Ethereum and mint a wrapped version on the destination chain. Every user who bridges concentrates their locked assets in that one contract — making it an increasingly valuable target. The Ronin bridge held $625M in locked ETH and USDC before attackers compromised 5 of 9 validator keys and drained it. The fundamental tension is that bridges require centralization (trusted validators or multisig) to operate efficiently, which directly conflicts with blockchain's trust minimization principle. Native interoperability protocols like IBC avoid this by design."
+          />
         </div>
 
         {/* ═══════ TAKEAWAYS ═══════ */}

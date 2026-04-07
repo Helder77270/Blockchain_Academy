@@ -6,7 +6,7 @@ html, body, #root {
 }
 
 :root {
-  --font-size: 16px;
+  --font-size: 18px;
   
   /* Blockchain.pt Brand Theme - Light Mode */
   --background: #f8f9fa;
@@ -206,6 +206,33 @@ html, body, #root {
   }
 }
 
+/* Boost hardcoded tiny text sizes within slide content */
+.slide-flow .text-\[10px\] { font-size: 0.75rem; }
+.slide-flow .text-\[11px\] { font-size: 0.8rem; }
+
+/*
+  Semantic UI tokens — use these instead of hardcoded hex values.
+  --color-quiz-correct  : feedback for a correct quiz answer
+  --color-quiz-wrong    : feedback for an incorrect quiz answer
+  --color-success-subtle: success badge / green highlight backgrounds
+  --color-danger-subtle : error / high-severity badge backgrounds
+  --color-warning-subtle: caution / medium severity backgrounds
+  --color-eth           : Ethereum brand blue-purple
+  --color-bitcoin       : Bitcoin brand orange
+*/
+:root {
+  --quiz-correct:        #10b981;
+  --quiz-wrong:          #ef4444;
+  --success-subtle:      rgba(57, 181, 74, 0.12);
+  --danger-subtle:       rgba(239, 68, 68, 0.12);
+  --warning-subtle:      rgba(234, 179, 8, 0.12);
+  --color-eth:           #627EEA;
+  --color-bitcoin:       #F7931A;
+  --slide-label-size:    0.7rem;   /* section label: text-[10px] equivalent */
+  --slide-body-size:     0.875rem; /* body copy: text-sm equivalent */
+  --slide-heading-size:  1.75rem;  /* slide h2: between text-2xl and text-3xl */
+}
+
 /* Slide layout — each slide is exactly one viewport height, content scales to fit */
 :root {
   --nav-h: 56px; /* CourseNav height — update here if nav changes */
@@ -233,6 +260,30 @@ html, body, #root {
   itself stays full-height for correct snap behaviour.
   At 900 px height the factor is exactly 1 (no scale). Below that it shrinks.
 */
+/*
+  Slide typography hierarchy — use these classes for consistency:
+  .slide-label  → session / section label above the title
+  .slide-title  → primary slide heading (h2)
+  .slide-body   → body / description text
+  These supplement Tailwind utilities and are safe to mix with them.
+*/
+.slide-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.slide-title {
+  font-size: clamp(1.5rem, 2.5vw, 1.875rem); /* between text-2xl and text-3xl */
+  font-weight: 700;
+  line-height: 1.25;
+}
+.slide-body {
+  font-size: 0.9375rem; /* just above text-sm, below text-base */
+  line-height: 1.6;
+  color: hsl(var(--muted-foreground, 0 0% 45%));
+}
+
 @media (max-height: 900px) {
   .slide-flow > div > * {
     zoom: calc(var(--slide-h) / 900px);

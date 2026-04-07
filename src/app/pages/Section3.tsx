@@ -20,7 +20,9 @@ import uniswapLogo from '../../uniswap-uni-logo.svg';
 import usdcLogo from '../../usd-coin-usdc-logo.svg';
 
 const section3Chapters = [
-  { id: 's3-ethereum', label: 'Ethereum' },
+  { id: 's3-ethereum',  label: 'Ethereum' },
+  { id: 's3-eth-accounts', label: 'Accounts & Gas' },
+  { id: 's3-eth-apps',     label: 'DeFi · NFTs · DAOs' },
   { id: 's3-usecases', label: 'Use Cases' },
   { id: 's3-ecosystem', label: 'Web3 Ecosystem' },
   { id: 's3-web3', label: 'Web1 → Web3' },
@@ -139,6 +141,166 @@ export function Section3() {
 
             </div>
 
+          </div>
+        </div>
+
+        {/* ═══════ ETH ACCOUNTS & GAS ═══════ */}
+        <div id="s3-eth-accounts" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <img src={ethereumLogo} alt="Ethereum" className="h-7 object-contain" />
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Ethereum: Accounts & Gas</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">Two concepts you must understand before touching any Ethereum application. Everything else is built on top of these.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+            {/* Accounts */}
+            <div className="flex flex-col gap-3">
+              <div className="font-bold text-sm text-foreground">Two Types of Account</div>
+              <div className="flex-1 grid grid-rows-2 gap-3">
+                <div className="p-4 bg-[#627EEA]/8 border border-[#627EEA]/30 rounded-xl flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🧑</span>
+                    <div className="font-bold text-[#627EEA]">Externally Owned Account (EOA)</div>
+                  </div>
+                  <ul className="text-sm text-muted-foreground space-y-1.5">
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span>Controlled by a <span className="font-semibold text-foreground">private key</span> — whoever holds the key owns the account</li>
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span>Can <span className="font-semibold text-foreground">initiate transactions</span> — send ETH, deploy contracts, call functions</li>
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span>Has a balance in ETH. No code stored.</li>
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span>Examples: your MetaMask wallet, a hardware wallet, an exchange hot wallet</li>
+                  </ul>
+                </div>
+                <div className="p-4 bg-[#39B54A]/8 border border-[#39B54A]/30 rounded-xl flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">📄</span>
+                    <div className="font-bold text-[#39B54A]">Contract Account</div>
+                  </div>
+                  <ul className="text-sm text-muted-foreground space-y-1.5">
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Controlled by <span className="font-semibold text-foreground">code</span> — no private key, no human owner</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span><span className="font-semibold text-foreground">Cannot initiate</span> transactions — only executes when called by an EOA or another contract</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Has a balance in ETH + stores code and state permanently on-chain</li>
+                    <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">•</span>Examples: Uniswap DEX, USDC token, an NFT collection</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-3 bg-[#f59e0b]/10 border border-[#f59e0b]/30 rounded-lg text-xs text-muted-foreground">
+                <span className="font-bold text-[#f59e0b]">Key rule:</span> Every transaction on Ethereum originates from an EOA. Smart contracts cannot act spontaneously — they need a human (or a keeper bot) to trigger them.
+              </div>
+            </div>
+            {/* Gas */}
+            <div className="flex flex-col gap-3">
+              <div className="font-bold text-sm text-foreground">Gas — The Fuel of the EVM</div>
+              <div className="p-4 bg-card border border-border rounded-xl text-sm text-muted-foreground leading-relaxed">
+                Every operation on Ethereum costs <span className="font-semibold text-foreground">gas</span> — a unit that measures computational work. Gas prevents infinite loops and spam: you must pay for every instruction executed by the EVM.
+              </div>
+              <div className="flex-1 grid grid-rows-2 gap-3">
+                <div className="p-4 bg-card border border-border rounded-xl">
+                  <div className="font-bold text-sm text-foreground mb-2">Gas cost examples</div>
+                  {[
+                    { op: 'Read a public variable',     gas: 'FREE',      note: 'View call — never hits the chain', color: '#39B54A' },
+                    { op: 'Emit an event',              gas: '~375 gas',  note: 'Cheap — stored in logs, not state', color: '#6366f1' },
+                    { op: 'Transfer ETH',               gas: '21,000 gas',note: 'Base cost for every ETH transfer', color: '#f59e0b' },
+                    { op: 'Write to storage',           gas: '~22,100 gas',note: 'Most expensive common operation', color: '#ED1C24' },
+                    { op: 'Deploy a contract',          gas: '500k+ gas', note: 'Pays for every byte of bytecode', color: '#8b5cf6' },
+                  ].map(r => (
+                    <div key={r.op} className="flex items-center gap-2 py-1 border-b border-border/50 last:border-0">
+                      <span className="text-xs text-muted-foreground flex-1">{r.op}</span>
+                      <span className="text-xs font-black shrink-0" style={{ color: r.color }}>{r.gas}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-4 bg-[#627EEA]/8 border border-[#627EEA]/30 rounded-xl">
+                  <div className="font-bold text-sm text-[#627EEA] mb-2">Gas = Gas Units × Gas Price</div>
+                  <ul className="text-sm text-muted-foreground space-y-1.5">
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span><span className="font-semibold text-foreground">Base fee:</span> Set by the protocol, burned (EIP-1559, since 2021)</li>
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span><span className="font-semibold text-foreground">Priority fee (tip):</span> You pay the validator to include your transaction faster</li>
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span>Gas price is denominated in <span className="font-semibold text-foreground">gwei</span> (1 gwei = 0.000000001 ETH)</li>
+                    <li className="flex gap-2"><span className="text-[#627EEA] shrink-0">•</span>If a transaction runs out of gas mid-execution — it reverts, but <em>you still pay for the work done</em></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ ETH APPLICATIONS: DeFi · NFTs · DAOs ═══════ */}
+        <div id="s3-eth-apps" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <img src={ethereumLogo} alt="Ethereum" className="h-7 object-contain" />
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">What Ethereum Enables: DeFi, NFTs, DAOs</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">Three categories of applications that did not exist before programmable blockchains — each replacing or disrupting a traditional institution.</p>
+          </div>
+          <div className="flex-1 min-h-0 flex gap-4">
+            {([
+              {
+                icon: '🏦', title: 'DeFi', subtitle: 'Decentralised Finance',
+                color: '#39B54A',
+                replaces: 'Banks, brokers, exchanges',
+                description: 'Financial services — lending, borrowing, trading, earning yield — running entirely in smart contracts. No KYC, no opening hours, no intermediary taking a cut.',
+                examples: [
+                  { name: 'Uniswap', desc: 'Decentralised exchange — swap any ERC-20 token via automated market maker (AMM)' },
+                  { name: 'Aave', desc: 'Lend and borrow crypto — interest rates set algorithmically by supply/demand' },
+                  { name: 'MakerDAO / DAI', desc: 'Algorithmic stablecoin — mint DAI by locking ETH as collateral in a smart contract' },
+                ],
+                risk: 'Smart contract bugs, oracle manipulation, liquidation cascades',
+                stat: '$40B+ Total Value Locked in DeFi protocols',
+              },
+              {
+                icon: '🖼️', title: 'NFTs', subtitle: 'Non-Fungible Tokens',
+                color: '#f97316',
+                replaces: 'Art dealers, certificate authorities, notaries',
+                description: 'Provable, transferable digital ownership on-chain. Each NFT is a unique token (ERC-721) whose ownership history is permanently recorded. No one can deny ownership — the blockchain is the title deed.',
+                examples: [
+                  { name: 'ENS (.eth domains)', desc: 'Blockchain-native usernames — pay once, own forever. No renewal extortion.' },
+                  { name: 'Proof of attendance (POAPs)', desc: 'On-chain badges proving you attended events — cryptographic credentials' },
+                  { name: 'Real estate deeds', desc: 'Propy sold the first NFT property — immutable ownership transfer on-chain' },
+                ],
+                risk: 'Metadata stored off-chain (IPFS) can disappear — "you don\'t own the image, you own the receipt"',
+                stat: '$41B traded in NFTs in 2021 — peak. Now utility-focused.',
+              },
+              {
+                icon: '🏛️', title: 'DAOs', subtitle: 'Decentralised Autonomous Organisations',
+                color: '#6366f1',
+                replaces: 'Companies, NGOs, cooperatives, funds',
+                description: 'An organisation governed by smart contracts and token votes instead of a board of directors. Anyone holding governance tokens can propose and vote on decisions — the outcome executes automatically on-chain.',
+                examples: [
+                  { name: 'MakerDAO', desc: 'MKR holders vote on DAI stability parameters — billions in protocol policy decided on-chain' },
+                  { name: 'Uniswap DAO', desc: 'UNI holders control the $6B+ Uniswap treasury — voted to deploy to new chains' },
+                  { name: 'Gitcoin DAO', desc: 'Funds open-source development via quadratic voting — community decides who gets grants' },
+                ],
+                risk: 'Voter apathy, whale capture, slow governance for emergencies',
+                stat: 'DAOs collectively hold $20B+ in treasuries',
+              },
+            ] as const).map(app => (
+              <div key={app.title} className="flex-1 flex flex-col rounded-xl border-2 bg-card overflow-hidden" style={{ borderColor: app.color + '40' }}>
+                <div className="h-1.5 shrink-0" style={{ backgroundColor: app.color }} />
+                <div className="flex flex-col flex-1 p-4 gap-3 min-h-0">
+                  <div className="shrink-0 flex items-center gap-2">
+                    <span className="text-2xl">{app.icon}</span>
+                    <div>
+                      <div className="font-black text-lg leading-none" style={{ color: app.color }}>{app.title}</div>
+                      <div className="text-xs font-semibold text-foreground">{app.subtitle}</div>
+                    </div>
+                    <div className="ml-auto text-xs text-muted-foreground italic">Replaces: {app.replaces}</div>
+                  </div>
+                  <p className="text-sm text-muted-foreground shrink-0">{app.description}</p>
+                  <div className="flex-1 min-h-0 space-y-2">
+                    {app.examples.map(ex => (
+                      <div key={ex.name} className="p-2.5 rounded-lg bg-muted/40 border border-border">
+                        <div className="font-bold text-xs text-foreground mb-0.5">{ex.name}</div>
+                        <div className="text-xs text-muted-foreground">{ex.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="shrink-0 pt-3 border-t border-border space-y-1.5">
+                    <div className="text-xs text-muted-foreground"><span className="font-semibold text-[#ef4444]">Risk: </span>{app.risk}</div>
+                    <div className="text-xs font-semibold" style={{ color: app.color }}>{app.stat}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

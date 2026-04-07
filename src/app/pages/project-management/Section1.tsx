@@ -1,15 +1,16 @@
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { ComparisonSlide } from '../../components/templates/ComparisonSlide';
-import { ProcessSlide } from '../../components/templates/ProcessSlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, ArrowRight } from 'lucide-react';
 
 const chapters = [
   { id: 's1-unique',    label: 'What Makes It Unique?' },
   { id: 's1-lifecycle', label: 'Project Lifecycle' },
   { id: 's1-roles',     label: 'Key Roles' },
   { id: 's1-agile',     label: 'Agile vs Waterfall' },
+  { id: 's1-quiz',      label: 'Quiz' },
   { id: 's1-takeaways', label: 'Takeaways' },
 ];
 
@@ -89,40 +90,133 @@ export function PM_Section1() {
         </div>
 
         {/* ═══════ PROJECT LIFECYCLE ═══════ */}
-        <div id="s1-lifecycle" className="h-full">
-          <ProcessSlide
-            sectionNumber="SESSION 01"
-            title="Blockchain Project Lifecycle"
-            subtitle="Five phases — each with distinct PM concerns specific to decentralized systems"
-            steps={[
-              {
-                number: '01',
-                title: 'Initiation & Discovery',
-                description: 'Define the problem. Apply the "Do we need blockchain?" framework. Identify stakeholders and initial governance structure. Assess regulatory environment.',
-              },
-              {
-                number: '02',
-                title: 'Design & Architecture',
-                description: 'Choose the platform (public / permissioned). Design token economics if applicable. Define consensus mechanism, data model, and integration points.',
-              },
-              {
-                number: '03',
-                title: 'Development & Auditing',
-                description: 'Build and test smart contracts in isolated environments. Conduct formal audits before any mainnet deployment. Security is not optional.',
-              },
-              {
-                number: '04',
-                title: 'Deployment & Go-Live',
-                description: 'Deploy to testnet first. Coordinate multi-party signing for mainnet launch. Document on-chain addresses and upgrade paths. No rollback is possible.',
-              },
-              {
-                number: '05',
-                title: 'Operations & Governance',
-                description: 'Monitor on-chain activity and protocol health. Manage governance proposals and community votes. Plan for protocol upgrades and ecosystem changes.',
-              },
-            ]}
-            accentColor="#f97316"
-          />
+        <div id="s1-lifecycle" className="h-full flex flex-col p-5 lg:p-8">
+
+          {/* Header */}
+          <div className="shrink-0 mb-4 lg:mb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#f97316]">Session 01</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Blockchain Project Lifecycle</h2>
+            <p className="text-sm text-muted-foreground">
+              Five phases — each with distinct PM concerns specific to decentralized systems.
+            </p>
+          </div>
+
+          {/* Five equal-height phase cards in a horizontal flow */}
+          <div className="flex-1 min-h-0 flex items-stretch gap-2 lg:gap-3">
+            {(
+              [
+                {
+                  number: '01',
+                  title: 'Initiation & Discovery',
+                  icon: '🔍',
+                  color: '#f97316',
+                  description:
+                    'Define the problem. Apply the "Do we need blockchain?" framework. Identify stakeholders and initial governance structure. Assess regulatory environment.',
+                  deliverables: ['Feasibility study', 'Stakeholder register', 'Governance charter'],
+                },
+                {
+                  number: '02',
+                  title: 'Design & Architecture',
+                  icon: '🏗️',
+                  color: '#6366f1',
+                  description:
+                    'Choose the platform (public / permissioned). Design token economics if applicable. Define consensus mechanism, data model, and integration points.',
+                  deliverables: ['Platform decision', 'Architecture docs', 'Tokenomics model'],
+                },
+                {
+                  number: '03',
+                  title: 'Development & Auditing',
+                  icon: '💻',
+                  color: '#39B54A',
+                  description:
+                    'Build and test smart contracts in isolated environments. Conduct formal security audits before any mainnet deployment. Security is not optional.',
+                  deliverables: ['Testnet contracts', 'Audit report', 'Test coverage'],
+                },
+                {
+                  number: '04',
+                  title: 'Deployment & Go-Live',
+                  icon: '🚀',
+                  color: '#ED1C24',
+                  description:
+                    'Deploy to testnet first. Coordinate multi-party signing for mainnet launch. Document on-chain addresses and upgrade paths. No rollback is possible.',
+                  deliverables: ['Mainnet deploy', 'Multi-sig setup', 'On-chain registry'],
+                },
+                {
+                  number: '05',
+                  title: 'Operations & Governance',
+                  icon: '⚙️',
+                  color: '#22d3ee',
+                  description:
+                    'Monitor on-chain activity and protocol health. Manage governance proposals and community votes. Plan for protocol upgrades and ecosystem changes.',
+                  deliverables: ['Monitoring setup', 'Governance forum', 'Upgrade roadmap'],
+                },
+              ] as const
+            ).flatMap((phase, i, arr) => {
+              const card = (
+                <div
+                  key={phase.number}
+                  className="flex-1 flex flex-col rounded-xl border-2 bg-card overflow-hidden"
+                  style={{ borderColor: phase.color + '50' }}
+                >
+                  {/* Top color stripe */}
+                  <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: phase.color }} />
+
+                  <div className="flex flex-col flex-1 p-4 lg:p-5 min-h-0">
+                    {/* Number badge + icon */}
+                    <div className="flex items-center gap-2 mb-3 shrink-0">
+                      <div
+                        className="size-9 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0"
+                        style={{ backgroundColor: phase.color }}
+                      >
+                        {phase.number}
+                      </div>
+                      <span className="text-xl">{phase.icon}</span>
+                    </div>
+
+                    {/* Phase title */}
+                    <h3
+                      className="font-bold text-sm lg:text-base leading-snug mb-2 shrink-0"
+                      style={{ color: phase.color }}
+                    >
+                      {phase.title}
+                    </h3>
+
+                    {/* Description — fills remaining space */}
+                    <p className="text-xs text-muted-foreground leading-relaxed flex-1 min-h-0">
+                      {phase.description}
+                    </p>
+
+                    {/* Key deliverables pinned to bottom */}
+                    <div className="mt-3 pt-3 border-t border-border shrink-0">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
+                        Key Deliverables
+                      </p>
+                      <ul className="space-y-1">
+                        {phase.deliverables.map(d => (
+                          <li key={d} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <span
+                              className="size-1.5 rounded-full shrink-0"
+                              style={{ backgroundColor: phase.color }}
+                            />
+                            {d}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              );
+
+              const arrow =
+                i < arr.length - 1 ? (
+                  <div key={`arrow-${i}`} className="flex items-center justify-center shrink-0 self-center">
+                    <ArrowRight className="size-4 text-muted-foreground/40" strokeWidth={2} />
+                  </div>
+                ) : null;
+
+              return arrow ? [card, arrow] : [card];
+            })}
+          </div>
         </div>
 
         {/* ═══════ KEY ROLES ═══════ */}
@@ -189,6 +283,48 @@ export function PM_Section1() {
                 option2: 'Risks discovered and addressed iteratively throughout delivery',
               },
             ]}
+          />
+        </div>
+
+        {/* ═══════ QUIZ 1/3 ═══════ */}
+        <div id="s1-quiz" className="h-full">
+          <QuizSlide
+            question="(1/3) A blockchain project has just deployed its smart contracts to mainnet. The team discovers a critical logic bug that allows unauthorized token minting. What is the correct response?"
+            options={[
+              { text: 'Push a hotfix directly to the mainnet contract to patch the vulnerability as fast as possible.', correct: false },
+              { text: 'Roll back the mainnet deployment to the previous version while the fix is tested.', correct: false },
+              { text: 'Activate the emergency pause mechanism, notify stakeholders, and plan a formal upgrade through the established change control process.', correct: true },
+              { text: 'Accept the bug as a known issue and wait for the next planned release cycle to include the fix.', correct: false },
+            ]}
+            explanation="Smart contract deployments are irreversible — you cannot simply push a patch or roll back. The correct response is to activate the emergency pause (if available), communicate transparently with all stakeholders, and follow the formal upgrade path (proxy upgrade or migration). This is why the Audit Complete Go/No-Go gate and a well-tested emergency pause mechanism are non-negotiable deliverables before mainnet."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 2/3 ═══════ */}
+        <div className="h-full">
+          <QuizSlide
+            question="(2/3) Which component of a blockchain project is BEST suited to waterfall-style locked specifications, while the other benefits from agile iteration?"
+            options={[
+              { text: 'Off-chain integrations → waterfall; on-chain smart contract logic → agile sprints.', correct: false },
+              { text: 'On-chain architecture decisions → waterfall rigor; off-chain UI and tooling → agile iteration.', correct: true },
+              { text: 'Both on-chain and off-chain components benefit equally from agile sprints — blockchain is no different.', correct: false },
+              { text: 'Neither — blockchain projects must be 100% waterfall because of their irreversibility.', correct: false },
+            ]}
+            explanation="On-chain architecture is irreversible once deployed — changing a smart contract data model or consensus mechanism after launch is extremely costly or impossible. This demands upfront rigor akin to waterfall: lock the spec, audit, then deploy. Off-chain components (dApp frontend, indexers, APIs) can be iterated rapidly because they carry no permanent state commitment. A mature blockchain PM applies the right methodology to the right layer."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3/3 ═══════ */}
+        <div className="h-full">
+          <QuizSlide
+            question="(3/3) A DeFi protocol is three weeks from mainnet launch. Which role is specifically responsible for independently reviewing smart contract code for reentrancy attacks and access control vulnerabilities?"
+            options={[
+              { text: 'The Blockchain Architect — they designed the contracts and know them best.', correct: false },
+              { text: 'The Product Owner — they own the backlog and must approve all security requirements.', correct: false },
+              { text: 'The Independent Security Auditor — a third party not involved in development.', correct: true },
+              { text: 'The Integration Engineer — they are responsible for all external interfaces.', correct: false },
+            ]}
+            explanation="Independence is the defining property of the Security Auditor role. A developer cannot fully audit their own code — cognitive bias and familiarity create blind spots. The auditor must be a third party with no prior involvement in the codebase, commissioned specifically to find vulnerabilities before mainnet. This is why the Audit Complete milestone is a hard Go/No-Go gate: no audit sign-off, no mainnet."
           />
         </div>
 

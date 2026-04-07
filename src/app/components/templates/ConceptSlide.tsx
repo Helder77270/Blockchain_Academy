@@ -17,8 +17,8 @@ export function ConceptSlide({
     <div className="w-full flex flex-col p-5 lg:p-10">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-2 lg:mb-4">{title}</h2>
-        <p className="text-sm lg:text-lg text-muted-foreground max-w-3xl">{description}</p>
+        <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-2 lg:mb-4">{title}</h2>
+        <p className="text-sm lg:text-base text-muted-foreground max-w-3xl">{description}</p>
       </div>
 
       {/* Content Grid */}

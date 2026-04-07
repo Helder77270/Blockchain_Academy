@@ -9,6 +9,7 @@ import { Cog, Check, X } from 'lucide-react';
 const chapters = [
   { id: 's2-workflow',      label: 'Workflow' },
   { id: 's2-components',   label: 'Core Components' },
+  { id: 's2-solidity',     label: 'Reading Solidity' },
   { id: 's2-execution',    label: 'Execution Environment' },
   { id: 's2-web3',         label: 'The Web3 Landscape' },
   { id: 's2-dapp',         label: 'dApp & Smart Contracts' },
@@ -494,6 +495,82 @@ export function SC_Section2() {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        {/* ═══════ READING SOLIDITY ═══════ */}
+        <div id="s2-solidity" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-[#6366f1]">Section 02</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Reading a Smart Contract</h2>
+            <p className="text-sm text-muted-foreground">You don't need to write Solidity — but every PM, auditor, and analyst must be able to read it. Here is a minimal ERC-20 token contract, fully annotated.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+            {/* Code block */}
+            <div className="bg-[#0d1117] rounded-xl overflow-auto p-4 font-mono text-sm leading-relaxed border border-border">
+              {[
+                { line: '// SPDX-License-Identifier: MIT',               color: '#6a737d', note: null },
+                { line: 'pragma solidity ^0.8.20;',                        color: '#6a737d', note: null },
+                { line: '',                                                color: '',        note: null },
+                { line: 'contract SimpleToken {',                          color: '#f0f4f8', note: 'A' },
+                { line: '  string public name;',                           color: '#79c0ff', note: 'B' },
+                { line: '  string public symbol;',                         color: '#79c0ff', note: 'B' },
+                { line: '  uint256 public totalSupply;',                   color: '#79c0ff', note: 'B' },
+                { line: '',                                                color: '',        note: null },
+                { line: '  mapping(address => uint256) public balances;',  color: '#ffa657', note: 'C' },
+                { line: '',                                                color: '',        note: null },
+                { line: '  event Transfer(',                               color: '#d2a8ff', note: 'D' },
+                { line: '    address indexed from,',                       color: '#d2a8ff', note: null },
+                { line: '    address indexed to,',                         color: '#d2a8ff', note: null },
+                { line: '    uint256 amount',                              color: '#d2a8ff', note: null },
+                { line: '  );',                                            color: '#d2a8ff', note: null },
+                { line: '',                                                color: '',        note: null },
+                { line: '  constructor(string memory _name,',              color: '#f0f4f8', note: 'E' },
+                { line: '    string memory _symbol, uint256 _supply) {',  color: '#f0f4f8', note: null },
+                { line: '    name = _name; symbol = _symbol;',            color: '#f0f4f8', note: null },
+                { line: '    totalSupply = _supply;',                     color: '#f0f4f8', note: null },
+                { line: '    balances[msg.sender] = _supply;',            color: '#39B54A', note: 'F' },
+                { line: '  }',                                            color: '#f0f4f8', note: null },
+                { line: '',                                               color: '',        note: null },
+                { line: '  function transfer(address to,',                color: '#f0f4f8', note: 'G' },
+                { line: '    uint256 amount) external {',                 color: '#f0f4f8', note: null },
+                { line: '    require(balances[msg.sender] >= amount);',   color: '#ED1C24', note: 'H' },
+                { line: '    balances[msg.sender] -= amount;',            color: '#f0f4f8', note: null },
+                { line: '    balances[to] += amount;',                    color: '#f0f4f8', note: null },
+                { line: '    emit Transfer(msg.sender, to, amount);',     color: '#d2a8ff', note: null },
+                { line: '  }',                                            color: '#f0f4f8', note: null },
+                { line: '}',                                              color: '#f0f4f8', note: null },
+              ].map((l, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span className="text-[#444d56] text-xs w-5 shrink-0 select-none">{l.line ? i + 1 : ''}</span>
+                  <span style={{ color: l.color || 'transparent' }} className="flex-1 whitespace-pre">{l.line || ' '}</span>
+                  {l.note && (
+                    <span className="shrink-0 size-4 rounded-full bg-[#6366f1] text-white text-[9px] font-black flex items-center justify-center">{l.note}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            {/* Annotations */}
+            <div className="flex flex-col gap-2.5">
+              {[
+                { key: 'A', color: '#6366f1', title: 'Contract Declaration', desc: 'Like a class in OOP. All state and functions live inside. Once deployed, this code is immutable at its address on the blockchain.' },
+                { key: 'B', color: '#79c0ff', title: 'State Variables', desc: 'Stored permanently on-chain. public creates a getter function automatically. Every write costs gas — reads are free.' },
+                { key: 'C', color: '#ffa657', title: 'Mapping (Key→Value Store)', desc: 'mapping(address => uint256) is the on-chain equivalent of a database table. Every Ethereum address maps to a token balance. Not iterable — you must know the key.' },
+                { key: 'D', color: '#d2a8ff', title: 'Event', desc: 'Logged to the blockchain but NOT stored in state. Cheap to emit (~375 gas). Indexed fields enable efficient off-chain search. This is how block explorers display token transfers.' },
+                { key: 'E', color: '#f0f4f8', title: 'Constructor', desc: 'Runs exactly once at deployment. Sets the token name, symbol, and total supply. After this, it never runs again — state is locked as deployed.' },
+                { key: 'F', color: '#39B54A', title: 'msg.sender', desc: 'The address that called this function — in the constructor, this is the deployer. All initial supply goes to them. A critical security variable: always validate who msg.sender is.' },
+                { key: 'G', color: '#f0f4f8', title: 'Function', desc: 'external means only outside callers can call this (not the contract itself). public allows both external and internal calls. Every function that changes state costs gas.' },
+                { key: 'H', color: '#ED1C24', title: 'require (Guard Clause)', desc: 'If the condition is false, the entire transaction reverts — no state changes, no gas refund for execution so far. This is the Checks step in Checks-Effects-Interactions.' },
+              ].map(a => (
+                <div key={a.key} className="flex gap-2.5 items-start">
+                  <span className="shrink-0 size-5 rounded-full flex items-center justify-center text-white text-[10px] font-black mt-0.5" style={{ backgroundColor: a.color }}>{a.key}</span>
+                  <div>
+                    <span className="font-bold text-xs text-foreground">{a.title} — </span>
+                    <span className="text-xs text-muted-foreground">{a.desc}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

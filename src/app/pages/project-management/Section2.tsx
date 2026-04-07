@@ -1,9 +1,9 @@
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
-import { ProcessSlide } from '../../components/templates/ProcessSlide';
 import { DiscussionSlide } from '../../components/templates/DiscussionSlide';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
-import { Map } from 'lucide-react';
+import { Map, ArrowRight } from 'lucide-react';
 
 const chapters = [
   { id: 's2-decision',     label: 'Do We Need Blockchain?' },
@@ -12,6 +12,7 @@ const chapters = [
   { id: 's2-wbs',          label: 'WBS & Milestones' },
   { id: 's2-governance',   label: 'Governance Framework' },
   { id: 's2-discussion',   label: 'Discussion' },
+  { id: 's2-quiz',         label: 'Quiz' },
   { id: 's2-takeaways',    label: 'Takeaways' },
 ];
 
@@ -206,40 +207,138 @@ export function PM_Section2() {
         </div>
 
         {/* ═══════ WBS & MILESTONES ═══════ */}
-        <div id="s2-wbs" className="h-full">
-          <ProcessSlide
-            sectionNumber="SESSION 02"
-            title="Work Breakdown Structure & Milestones"
-            subtitle="Translate the project lifecycle into concrete workstreams, deliverables, and go/no-go milestones"
-            steps={[
-              {
-                number: 'M1',
-                title: 'Feasibility & Architecture Sign-off',
-                description: 'Deliver: blockchain decision rationale, platform selection, high-level architecture diagram, legal feasibility memo, initial risk register.',
-              },
-              {
-                number: 'M2',
-                title: 'Smart Contract Specification Freeze',
-                description: 'Deliver: functional specification for all on-chain contracts, data model, access control matrix, and integration API contracts. No changes after this point without formal change control.',
-              },
-              {
-                number: 'M3',
-                title: 'Testnet Deployment & Audit Kickoff',
-                description: 'Deliver: deployed contracts on testnet, passing test suite (>90% coverage), audit scope document submitted to security firm.',
-              },
-              {
-                number: 'M4',
-                title: 'Security Audit Complete & Findings Resolved',
-                description: 'Deliver: audit report with all critical/high findings resolved, updated contracts, re-test evidence. Go/No-Go gate for mainnet.',
-              },
-              {
-                number: 'M5',
-                title: 'Mainnet Launch & Governance Activation',
-                description: 'Deliver: mainnet deployment, monitoring dashboard live, governance forum and voting contracts activated, post-launch runbook distributed to all stakeholders.',
-              },
-            ]}
-            accentColor="#eab308"
-          />
+        <div id="s2-wbs" className="h-full flex flex-col p-5 lg:p-8">
+
+          {/* Header */}
+          <div className="shrink-0 mb-4 lg:mb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#eab308]">Session 02</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Work Breakdown Structure & Milestones</h2>
+            <p className="text-sm text-muted-foreground">
+              Five go/no-go gates — each a hard checkpoint before proceeding to the next phase.
+            </p>
+          </div>
+
+          {/* Five equal-height milestone cards */}
+          <div className="flex-1 min-h-0 flex items-stretch gap-2 lg:gap-3">
+            {(
+              [
+                {
+                  number: 'M1',
+                  title: 'Feasibility & Architecture Sign-off',
+                  icon: '🔍',
+                  color: '#f97316',
+                  description: 'Validate that blockchain is the right tool and lock in the platform choice before any design work begins.',
+                  deliverables: ['Blockchain decision rationale', 'Platform selection doc', 'Architecture diagram', 'Legal feasibility memo', 'Initial risk register'],
+                  gate: false,
+                },
+                {
+                  number: 'M2',
+                  title: 'Smart Contract Spec Freeze',
+                  icon: '📐',
+                  color: '#eab308',
+                  description: 'Lock all on-chain contracts, data models, and API contracts. No changes after this point without formal change control.',
+                  deliverables: ['Functional spec (all contracts)', 'Data model', 'Access control matrix', 'Integration API contracts'],
+                  gate: false,
+                },
+                {
+                  number: 'M3',
+                  title: 'Testnet Deployment & Audit Kickoff',
+                  icon: '🧪',
+                  color: '#39B54A',
+                  description: 'Contracts deployed and tested in an isolated environment. Audit scope submitted to the security firm.',
+                  deliverables: ['Testnet deployment', 'Test suite >90% coverage', 'Audit scope document'],
+                  gate: false,
+                },
+                {
+                  number: 'M4',
+                  title: 'Audit Complete & Findings Resolved',
+                  icon: '🔐',
+                  color: '#ED1C24',
+                  description: 'All critical and high severity audit findings resolved, re-tested, and signed off. Hard go/no-go gate before mainnet.',
+                  deliverables: ['Audit report', 'All critical/high findings closed', 'Updated contracts', 'Re-test evidence'],
+                  gate: true,
+                },
+                {
+                  number: 'M5',
+                  title: 'Mainnet Launch & Governance Activation',
+                  icon: '🚀',
+                  color: '#6366f1',
+                  description: 'Coordinated mainnet deployment with all stakeholders. Monitoring and governance systems activated.',
+                  deliverables: ['Mainnet deployment', 'Monitoring dashboard', 'Governance forum live', 'Post-launch runbook'],
+                  gate: false,
+                },
+              ] as const
+            ).flatMap((milestone, i, arr) => {
+              const card = (
+                <div
+                  key={milestone.number}
+                  className="flex-1 flex flex-col rounded-xl border-2 bg-card overflow-hidden"
+                  style={{ borderColor: milestone.color + '50' }}
+                >
+                  {/* Top color stripe */}
+                  <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: milestone.color }} />
+
+                  <div className="flex flex-col flex-1 p-4 lg:p-5 min-h-0">
+                    {/* Badge + icon row */}
+                    <div className="flex items-center gap-2 mb-3 shrink-0">
+                      <div
+                        className="px-2.5 py-1 rounded-full text-white text-xs font-black shrink-0"
+                        style={{ backgroundColor: milestone.color }}
+                      >
+                        {milestone.number}
+                      </div>
+                      <span className="text-2xl">{milestone.icon}</span>
+                      {milestone.gate && (
+                        <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#ED1C24]/15 text-[#ED1C24] border border-[#ED1C24]/30 whitespace-nowrap">
+                          🚦 GO / NO-GO
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Title */}
+                    <h3
+                      className="font-bold text-sm lg:text-base leading-snug mb-2 shrink-0"
+                      style={{ color: milestone.color }}
+                    >
+                      {milestone.title}
+                    </h3>
+
+                    {/* Description — larger text, fills space */}
+                    <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed flex-1 min-h-0">
+                      {milestone.description}
+                    </p>
+
+                    {/* Deliverables pinned to bottom */}
+                    <div className="mt-3 pt-3 border-t border-border shrink-0">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                        Deliverables
+                      </p>
+                      <ul className="space-y-1.5">
+                        {milestone.deliverables.map(d => (
+                          <li key={d} className="flex items-start gap-2 text-xs lg:text-sm text-muted-foreground">
+                            <span
+                              className="shrink-0 size-4 rounded-full flex items-center justify-center text-white text-[9px] font-black mt-0.5"
+                              style={{ backgroundColor: milestone.color }}
+                            >✓</span>
+                            {d}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              );
+
+              const arrow =
+                i < arr.length - 1 ? (
+                  <div key={`arrow-${i}`} className="flex items-center justify-center shrink-0 self-center">
+                    <ArrowRight className="size-4 text-muted-foreground/40" strokeWidth={2} />
+                  </div>
+                ) : null;
+
+              return arrow ? [card, arrow] : [card];
+            })}
+          </div>
         </div>
 
         {/* ═══════ GOVERNANCE FRAMEWORK ═══════ */}
@@ -303,6 +402,48 @@ export function PM_Section2() {
               'You are the PM for a consortium blockchain project. One member wants to add a new on-chain feature two weeks before the specification freeze milestone. What do you do?',
               'How would you structure the governance framework for a public DeFi protocol — where no single organization is in charge?',
             ]}
+          />
+        </div>
+
+        {/* ═══════ QUIZ 1/3 ═══════ */}
+        <div id="s2-quiz" className="h-full">
+          <QuizSlide
+            question="(1/3) A government agency wants to store citizen identity records on a public blockchain to 'modernize' their system. Applying the blockchain decision checklist, what is the most likely correct verdict?"
+            options={[
+              { text: 'Blockchain is appropriate — government data should be public and immutable for maximum transparency.', correct: false },
+              { text: 'Blockchain is appropriate — multiple agencies need to read and write the same data.', correct: false },
+              { text: 'A traditional database is more appropriate — one trusted party controls all the data, and GDPR requires the right to erasure, which conflicts with immutability.', correct: true },
+              { text: 'Blockchain is appropriate — disintermediation of the current system would reduce costs.', correct: false },
+            ]}
+            explanation="The blockchain decision checklist asks: Is there a trust problem between untrusted parties? Is immutability a core requirement that outweighs privacy concerns? Here, a single trusted authority already exists (the government), and GDPR explicitly requires the right to erasure — which conflicts with blockchain's immutability. A permissioned database with strict access controls is the correct architectural choice."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 2/3 ═══════ */}
+        <div className="h-full">
+          <QuizSlide
+            question="(2/3) Your consortium project is two weeks from Milestone M2 — the Smart Contract Specification Freeze. A consortium member requests adding a new on-chain voting mechanism. What is the correct PM response?"
+            options={[
+              { text: 'Add the feature immediately — there are still two weeks before the freeze, which is enough time.', correct: false },
+              { text: 'Refuse the request entirely — consortium members cannot propose changes after kickoff.', correct: false },
+              { text: 'Log the request in the change backlog, assess the on-chain impact, and defer to post-launch scope unless it is a critical requirement.', correct: true },
+              { text: 'Extend the M2 milestone date to accommodate the request — stakeholder satisfaction is the top priority.', correct: false },
+            ]}
+            explanation="The Specification Freeze is a hard boundary — changes to on-chain architecture after M2 cascade into audit scope changes, re-testing, and potential deployment delays. The correct response is formal change control: log it, assess impact, and unless it is critical, defer it. Casually accepting changes two weeks before freeze undermines the entire milestone structure and creates irreversibility risk in the audit phase."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3/3 ═══════ */}
+        <div className="h-full">
+          <QuizSlide
+            question="(3/3) In a DAO governance system, token-weighted voting consistently produces low participation rates — fewer than 5% of token holders vote on any proposal. Which governance failure mode does this represent, and what is the primary risk?"
+            options={[
+              { text: 'Fork risk — low participation causes the network to split into competing forks.', correct: false },
+              { text: 'Upgrade gridlock — the supermajority requirement cannot be reached with 5% participation.', correct: false },
+              { text: 'Voter apathy — a small, coordinated cartel can pass or block proposals on behalf of the entire community.', correct: true },
+              { text: 'Whale capture — large holders are dominating the vote count and suppressing other voters.', correct: false },
+            ]}
+            explanation="Voter apathy is the most common DAO governance failure. When most holders do not vote, the effective decision-making power concentrates in whoever does — often a small, coordinated group. This can produce governance outcomes that serve a minority interest while appearing legitimately democratic. Solutions include delegation mechanisms, governance incentives, and lowering proposal thresholds to increase engagement."
           />
         </div>
 

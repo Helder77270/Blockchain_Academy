@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
+import { QuizSlide } from '../../components/templates/QuizSlide';
 import { Bitcoin } from 'lucide-react';
 
 const chapters = [
@@ -11,6 +12,7 @@ const chapters = [
   { id: 's1-utxo-exercise', label: 'UTXO Exercise' },
   { id: 's1-pow', label: 'Proof of Work' },
   { id: 's1-trilemma', label: 'Trilemma' },
+  { id: 's1-quiz', label: 'Quiz' },
   { id: 's1-takeaways', label: 'Takeaways' },
   { id: 's1-summary', label: 'Summary' },
 ];
@@ -948,6 +950,20 @@ export function BP_Section1() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* ═══════ QUIZ ═══════ */}
+        <div id="s1-quiz" className="h-full">
+          <QuizSlide
+            question="Alice has two UTXOs: 0.35 BTC and 0.40 BTC. She wants to send 0.60 BTC to Bob and pay a 0.01 BTC miner fee. What must happen in this transaction?"
+            options={[
+              { text: 'Use only the 0.40 BTC UTXO and ask Bob to cover the remaining 0.21 BTC himself.', correct: false },
+              { text: 'Combine both UTXOs (0.75 BTC total), send 0.60 BTC to Bob, pay 0.01 BTC fee, and receive 0.14 BTC as change back to Alice\'s wallet.', correct: true },
+              { text: 'Split the 0.40 BTC UTXO into two outputs of 0.20 BTC each to cover the payment over two transactions.', correct: false },
+              { text: 'Wait for a new mining reward UTXO before making the transaction, since the individual UTXOs are too small.', correct: false },
+            ]}
+            explanation="Bitcoin's UTXO model requires consuming whole UTXOs as inputs. Alice needs 0.61 BTC total (0.60 + 0.01 fee) — neither UTXO alone covers this, so both must be combined. The transaction spends both UTXOs (0.35 + 0.40 = 0.75 BTC) as inputs, creates an output of 0.60 BTC to Bob, and creates a change output of 0.14 BTC back to Alice's wallet. The 0.01 BTC difference between inputs and outputs is implicitly claimed by the miner. This is why wallet software tracks your UTXO set rather than a single balance."
+          />
         </div>
 
         {/* ═══════ TAKEAWAYS ═══════ */}

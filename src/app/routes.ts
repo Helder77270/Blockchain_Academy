@@ -39,6 +39,7 @@ import { PM_Section3 } from "./pages/project-management/Section3";
 import { PM_Section4 } from "./pages/project-management/Section4";
 import { PM_Section5 } from "./pages/project-management/Section5";
 import { PM_Conclusion } from "./pages/project-management/Conclusion";
+import { PM_Bibliography } from "./pages/project-management/Bibliography";
 
 export const router = createBrowserRouter([
   {
@@ -111,6 +112,7 @@ export const router = createBrowserRouter([
           { path: "section-4", Component: PM_Section4 },
           { path: "section-5", Component: PM_Section5 },
           { path: "conclusion", Component: PM_Conclusion },
+          { path: "bibliography", Component: PM_Bibliography },
         ],
       },
 
