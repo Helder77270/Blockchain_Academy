@@ -39,20 +39,23 @@ export function QuizSlide({ question, options, explanation }: QuizSlideProps) {
             const showCorrect = showAnswer && option.correct;
             const showIncorrect = showAnswer && isSelected && !option.correct;
 
+            // Determine state class using the shared ex-* vocabulary
+            const stateClass = showCorrect
+              ? 'ex-correct cursor-default'
+              : showIncorrect
+              ? 'ex-wrong cursor-default'
+              : isSelected && !showAnswer
+              ? 'ex-selected cursor-pointer'
+              : !showAnswer
+              ? 'border-border bg-card/30 hover:border-[#6366f1] hover:bg-[#6366f1]/5 cursor-pointer'
+              : 'border-border bg-card/30 cursor-default';
+
             return (
               <button
                 key={index}
                 onClick={() => handleSelect(index)}
                 disabled={showAnswer}
-                className={`
-                  w-full p-3 lg:p-6 rounded-xl border-2 text-left transition-all
-                  flex items-center gap-3 lg:gap-4
-                  ${!showAnswer ? 'hover:border-[#6366f1] hover:bg-card/50' : ''}
-                  ${isSelected && !showAnswer ? 'border-[#6366f1] bg-card' : 'border-border bg-card/30'}
-                  ${showCorrect ? 'border-[#10b981] bg-[#10b981]/10' : ''}
-                  ${showIncorrect ? 'border-[#ef4444] bg-[#ef4444]/10' : ''}
-                  ${showAnswer ? 'cursor-default' : 'cursor-pointer'}
-                `}
+                className={`w-full p-3 lg:p-6 rounded-xl border-2 text-left transition-all flex items-center gap-3 lg:gap-4 ${stateClass}`}
               >
                 <div className={`
                   size-6 lg:size-8 rounded-full border-2 flex items-center justify-center flex-shrink-0
@@ -71,16 +74,12 @@ export function QuizSlide({ question, options, explanation }: QuizSlideProps) {
         </div>
 
         {showAnswer && explanation && (
-          <div className={`
-            p-4 lg:p-6 rounded-xl border-2
-            ${isCorrect ? 'border-[#10b981] bg-[#10b981]/10' : 'border-[#ef4444] bg-[#ef4444]/10'}
-          `}>
+          <div className={`p-4 lg:p-6 rounded-xl border-2 ${isCorrect ? 'ex-correct' : 'ex-wrong'}`}>
             <div className="flex items-center gap-2 mb-2">
-              {isCorrect ? (
-                <Check className="size-5 lg:size-6 text-[#10b981]" strokeWidth={3} />
-              ) : (
-                <X className="size-5 lg:size-6 text-[#ef4444]" strokeWidth={3} />
-              )}
+              {isCorrect
+                ? <Check className="size-5 lg:size-6 text-[#10b981]" strokeWidth={3} />
+                : <X    className="size-5 lg:size-6 text-[#ef4444]" strokeWidth={3} />
+              }
               <span className={`font-bold ${isCorrect ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
                 {isCorrect ? 'Correct!' : 'Incorrect'}
               </span>

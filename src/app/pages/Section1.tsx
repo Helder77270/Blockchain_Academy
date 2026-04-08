@@ -3,7 +3,6 @@ import { TitleSlide } from '../components/templates/TitleSlide';
 import { ConceptSlide } from '../components/templates/ConceptSlide';
 import { ComparisonSlide } from '../components/templates/ComparisonSlide';
 import { DiagramSlide } from '../components/templates/DiagramSlide';
-import { ProcessSlide } from '../components/templates/ProcessSlide';
 import { QuizSlide } from '../components/templates/QuizSlide';
 import { DiscussionSlide } from '../components/templates/DiscussionSlide';
 import { TakeawaySlide } from '../components/templates/TakeawaySlide';

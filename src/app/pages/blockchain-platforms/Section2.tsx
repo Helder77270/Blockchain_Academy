@@ -16,7 +16,8 @@ const chapters = [
   { id: 's2-smartcontracts', label: 'Smart Contracts' },
   { id: 's2-consensus', label: 'PoW → PoS' },
   { id: 's2-evmecosystem', label: 'EVM Everywhere' },
-  { id: 's2-comparison', label: 'BTC vs ETH' },
+  { id: 's2-defi',        label: 'DeFi Mechanics' },
+  { id: 's2-comparison',  label: 'BTC vs ETH' },
   { id: 's2-quiz', label: 'Quiz' },
   { id: 's2-takeaways', label: 'Takeaways' },
   { id: 's2-summary', label: 'Summary' },
@@ -778,6 +779,109 @@ export function BP_Section2() {
               >
                 "The EVM is becoming the standard instruction set for blockchains — like x86 for computers"
               </motion.div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ═══════ DEFI MECHANICS ═══════ */}
+        <div id="s2-defi" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-[#627EEA]">Section 02</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">DeFi: How Decentralised Finance Actually Works</h2>
+            <p className="text-sm text-muted-foreground">DeFi replaces financial institutions with smart contracts. Understanding three core primitives unlocks 90% of the ecosystem.</p>
+          </div>
+          <div className="flex-1 min-h-0 flex gap-4">
+
+            {/* AMM */}
+            <div className="flex-1 flex flex-col rounded-xl border-2 border-[#39B54A]/40 bg-card overflow-hidden">
+              <div className="h-1.5 bg-[#39B54A] shrink-0" />
+              <div className="flex flex-col flex-1 p-4 gap-3 min-h-0">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-2xl">🔄</span>
+                  <div>
+                    <div className="font-black text-base text-[#39B54A]">AMM — Automated Market Maker</div>
+                    <div className="text-xs text-muted-foreground font-medium">Replaces: Order book exchanges (NYSE, Binance)</div>
+                  </div>
+                </div>
+                <div className="text-sm text-muted-foreground shrink-0">Instead of matching buyers and sellers, an AMM holds two tokens in a <span className="font-semibold text-foreground">liquidity pool</span> and uses a formula to set the price automatically.</div>
+                <div className="p-3 bg-[#39B54A]/10 border border-[#39B54A]/30 rounded-xl shrink-0">
+                  <div className="font-bold text-xs text-[#39B54A] mb-1.5">The Constant Product Formula</div>
+                  <div className="font-mono text-lg text-center font-black text-foreground my-2">x · y = k</div>
+                  <div className="text-xs text-muted-foreground text-center">x = reserve of Token A &nbsp;·&nbsp; y = reserve of Token B &nbsp;·&nbsp; k = constant</div>
+                  <div className="text-xs text-muted-foreground mt-2">When you buy Token A, you add Token B to the pool — raising B's reserve and reducing A's. The price shifts automatically to maintain k.</div>
+                </div>
+                <div className="flex-1 min-h-0 space-y-2">
+                  <div className="text-xs font-black uppercase tracking-widest text-muted-foreground">How a swap works</div>
+                  {['You send 100 USDC to the pool', 'The contract calculates how much ETH to give you (x · y = k)', 'ETH is sent to your wallet — no counterparty needed', 'Slippage: larger trades move the price more (thinner pool)'].map((s, i) => (
+                    <div key={i} className="flex gap-2 text-xs text-muted-foreground">
+                      <span className="size-4 rounded-full bg-[#39B54A] text-white flex items-center justify-center font-bold shrink-0">{i + 1}</span>
+                      {s}
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-muted-foreground pt-2 border-t border-border shrink-0"><span className="font-semibold text-foreground">Live examples:</span> Uniswap (v2/v3), Curve, Balancer, PancakeSwap</div>
+              </div>
+            </div>
+
+            {/* Liquidity Pools */}
+            <div className="flex-1 flex flex-col rounded-xl border-2 border-[#6366f1]/40 bg-card overflow-hidden">
+              <div className="h-1.5 bg-[#6366f1] shrink-0" />
+              <div className="flex flex-col flex-1 p-4 gap-3 min-h-0">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-2xl">🌊</span>
+                  <div>
+                    <div className="font-black text-base text-[#6366f1]">Liquidity Pools</div>
+                    <div className="text-xs text-muted-foreground font-medium">Replaces: Market makers and broker-dealers</div>
+                  </div>
+                </div>
+                <div className="text-sm text-muted-foreground shrink-0">Anyone can deposit two tokens into a pool and become a <span className="font-semibold text-foreground">Liquidity Provider (LP)</span>. In return, they earn a share of every trading fee — proportional to their share of the pool.</div>
+                <div className="flex-1 min-h-0 space-y-2.5">
+                  {[
+                    { label: 'LP deposits', value: '100 USDC + 0.05 ETH → receives LP tokens representing pool share', color: '#6366f1' },
+                    { label: 'Trading fees', value: '0.3% of every swap goes to LPs — distributed pro-rata to LP token holders', color: '#39B54A' },
+                    { label: 'Withdraw', value: 'Burn LP tokens → receive proportional share of pool at current prices', color: '#6366f1' },
+                    { label: '⚠️ Impermanent Loss', value: "If ETH price rises 100%, LP earns less than just holding ETH. The 'loss' is impermanent only if the price reverts.", color: '#ef4444' },
+                    { label: 'Concentrated Liquidity (v3)', value: 'Uniswap v3 lets LPs specify a price range — capital is 100–4000× more efficient than v2 uniform distribution', color: '#f97316' },
+                  ].map(r => (
+                    <div key={r.label} className="p-2.5 rounded-lg bg-muted/40 border border-border">
+                      <div className="text-xs font-bold mb-0.5" style={{ color: r.color }}>{r.label}</div>
+                      <div className="text-xs text-muted-foreground">{r.value}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-muted-foreground pt-2 border-t border-border shrink-0"><span className="font-semibold text-foreground">TVL context:</span> Uniswap alone has processed $2T+ in cumulative volume via permissionless pools</div>
+              </div>
+            </div>
+
+            {/* Lending Protocols */}
+            <div className="flex-1 flex flex-col rounded-xl border-2 border-[#f97316]/40 bg-card overflow-hidden">
+              <div className="h-1.5 bg-[#f97316] shrink-0" />
+              <div className="flex flex-col flex-1 p-4 gap-3 min-h-0">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-2xl">🏦</span>
+                  <div>
+                    <div className="font-black text-base text-[#f97316]">Lending Protocols</div>
+                    <div className="text-xs text-muted-foreground font-medium">Replaces: Banks (savings accounts + loans)</div>
+                  </div>
+                </div>
+                <div className="text-sm text-muted-foreground shrink-0">Supply assets to earn interest. Borrow against crypto collateral. No credit score, no KYC, no bank. Rates are set algorithmically by supply and demand.</div>
+                <div className="flex-1 min-h-0 space-y-2.5">
+                  {[
+                    { step: 'Supply', desc: 'Deposit 10 ETH → receive aETH (interest-bearing token). Your balance grows each block.', color: '#39B54A' },
+                    { step: 'Borrow', desc: 'Lock 10 ETH as collateral (worth $30k) → borrow up to 75% = $22.5k USDC. Over-collateralized by design.', color: '#f97316' },
+                    { step: 'Interest rate', desc: 'Utilization ratio drives rates: if 90% of pool is borrowed, rates spike to incentivize more supply and repayments.', color: '#6366f1' },
+                    { step: '⚠️ Liquidation', desc: 'If ETH price drops and your collateral ratio falls below the threshold (e.g. 80%), a liquidator repays your debt and claims your collateral at a discount.', color: '#ef4444' },
+                    { step: 'Flash loans', desc: 'Borrow any amount with zero collateral — if repaid in the same transaction. Used for arbitrage and (unfortunately) oracle attacks.', color: '#eab308' },
+                  ].map(r => (
+                    <div key={r.step} className="p-2.5 rounded-lg bg-muted/40 border border-border">
+                      <div className="text-xs font-bold mb-0.5" style={{ color: r.color }}>{r.step}</div>
+                      <div className="text-xs text-muted-foreground">{r.desc}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-muted-foreground pt-2 border-t border-border shrink-0"><span className="font-semibold text-foreground">Live examples:</span> Aave, Compound, MakerDAO, Morpho</div>
+              </div>
             </div>
 
           </div>

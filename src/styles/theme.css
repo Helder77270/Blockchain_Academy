@@ -261,6 +261,32 @@ html, body, #root {
   At 900 px height the factor is exactly 1 (no scale). Below that it shrinks.
 */
 /*
+  Exercise interaction — consistent selected/placed/correct/wrong states.
+  Use these CSS classes on exercise items to ensure visual language is uniform
+  across all interactive exercises. Supplement with item-specific color via
+  inline style for the border/background color values.
+
+  Pattern:
+    Default:   border-border bg-card            (neutral)
+    Selected:  .ex-selected                      (ready to place — strong border + 20% tint)
+    Placed:    .ex-placed                         (already dropped into a slot — dimmed)
+    Correct:   .ex-correct                        (post-check success)
+    Wrong:     .ex-wrong                          (post-check failure)
+
+  For the selected accent border color, use the item's own semantic color where
+  items have distinct colors (ranking, trilemma), or --color-accent (#6366f1)
+  for generic selection.
+*/
+.ex-selected {
+  outline: 2px solid var(--color-accent, #6366f1);
+  outline-offset: -2px;
+  background-color: color-mix(in srgb, var(--color-accent, #6366f1) 12%, var(--card));
+}
+.ex-placed   { opacity: 0.55; }
+.ex-correct  { outline: 2px solid var(--quiz-correct, #10b981); outline-offset: -2px; background-color: color-mix(in srgb, #10b981 10%, var(--card)); }
+.ex-wrong    { outline: 2px solid var(--quiz-wrong, #ef4444);   outline-offset: -2px; background-color: color-mix(in srgb, #ef4444 10%, var(--card)); }
+
+/*
   Slide typography hierarchy — use these classes for consistency:
   .slide-label  → session / section label above the title
   .slide-title  → primary slide heading (h2)
