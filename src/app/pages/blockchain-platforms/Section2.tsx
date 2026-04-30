@@ -642,45 +642,101 @@ export function BP_Section2() {
             {/* Bottom — How PoS works */}
             <div className="flex-1 min-h-0 flex flex-col gap-3">
               <h3 className="text-base font-bold text-foreground shrink-0">How Proof of Stake works</h3>
-              <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {[
-                  { step: '1', label: 'Deposit', detail: 'Validator locks 32 ETH in the deposit contract', color: '#627EEA' },
-                  { step: '2', label: 'Propose', detail: 'Randomly selected to propose the next block', color: '#8b5cf6' },
-                  { step: '3', label: 'Attest', detail: 'Committee of validators votes to validate the block', color: '#3b82f6' },
-                  { step: '4', label: 'Finalize', detail: 'Finality after 2 epochs (~12 minutes)', color: '#10b981' },
+                  {
+                    step: '1', label: 'Deposit', color: '#627EEA',
+                    detail: 'Validator locks 32 ETH in the official beacon-chain deposit contract. Each validator runs its own keys and client.',
+                    metric: '32 ETH min · withdrawals live since Shapella (Apr 2023)',
+                  },
+                  {
+                    step: '2', label: 'Propose', color: '#8b5cf6',
+                    detail: 'Pseudo-randomly selected via RANDAO to build the next block. Slots run on a fixed 12-second clock — 32 slots = 1 epoch.',
+                    metric: '1 slot = 12s · 1 epoch ≈ 6.4 min',
+                  },
+                  {
+                    step: '3', label: 'Attest', color: '#3b82f6',
+                    detail: 'Committees of ~128 validators sign BLS-aggregated votes on the head of the chain and on the epoch checkpoint.',
+                    metric: 'Supermajority ≥ 2/3 required',
+                  },
+                  {
+                    step: '4', label: 'Finalize', color: '#10b981',
+                    detail: 'Casper FFG finalises a checkpoint after two consecutive justified epochs. Reverting it would require slashing ≥ 1/3 of all staked ETH.',
+                    metric: 'Finality ≈ 12.8 min · economically irreversible',
+                  },
                 ].map((step, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + i * 0.1 }}
-                    className="flex flex-col gap-2 p-3 rounded-xl border bg-card"
+                    className="flex flex-col gap-2 p-3 rounded-xl border bg-card min-h-0"
                     style={{ borderColor: step.color + '40' }}
                   >
-                    <div
-                      className="size-8 rounded-full flex items-center justify-center text-white font-black text-sm shrink-0"
-                      style={{ backgroundColor: step.color }}
-                    >{step.step}</div>
-                    <div className="font-bold text-sm text-foreground">{step.label}</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed">{step.detail}</div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div
+                        className="size-8 rounded-full flex items-center justify-center text-white font-black text-sm"
+                        style={{ backgroundColor: step.color }}
+                      >{step.step}</div>
+                      <div className="font-bold text-sm text-foreground">{step.label}</div>
+                    </div>
+                    <div className="text-xs text-muted-foreground leading-relaxed flex-1">{step.detail}</div>
+                    <div className="text-[10px] font-mono px-2 py-1 rounded leading-snug shrink-0" style={{ backgroundColor: step.color + '15', color: step.color }}>
+                      {step.metric}
+                    </div>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Slashing callout */}
+              {/* Key numbers strip */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-                className="shrink-0 rounded-xl p-3 text-xs leading-relaxed flex items-center gap-3"
-                style={{ backgroundColor: '#ef444412', border: '1px solid #ef444440' }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.65 }}
+                className="shrink-0 grid grid-cols-2 lg:grid-cols-4 gap-2 rounded-xl border border-border bg-card px-3 py-2.5"
               >
-                <span className="text-xl shrink-0">⚔️</span>
-                <div>
-                  <span className="font-bold text-red-400">Slashing — </span>
-                  <span className="text-muted-foreground">Validators who act maliciously (e.g. double-sign blocks) lose a portion of their staked ETH. Economic punishment makes attacks extremely costly.</span>
-                </div>
+                {[
+                  { value: '~1M+',     label: 'active validators' },
+                  { value: '~3–5%',    label: 'staking APR' },
+                  { value: '~28% of supply', label: 'ETH staked (~34M ETH)' },
+                  { value: '−99.95%',  label: 'energy vs PoW' },
+                ].map((stat, i) => (
+                  <div key={i} className="flex flex-col items-center gap-0.5 text-center">
+                    <div className="text-base lg:text-lg font-black text-foreground leading-none">{stat.value}</div>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider leading-snug">{stat.label}</div>
+                  </div>
+                ))}
               </motion.div>
+
+              {/* Slashing + Liquid Staking */}
+              <div className="shrink-0 grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.75 }}
+                  className="rounded-xl p-3 text-xs leading-relaxed flex items-start gap-2.5"
+                  style={{ backgroundColor: '#ef444412', border: '1px solid #ef444440' }}
+                >
+                  <span className="text-xl shrink-0 leading-none">⚔️</span>
+                  <div>
+                    <div className="font-bold mb-0.5" style={{ color: '#ef4444' }}>Slashing</div>
+                    <div className="text-muted-foreground">Double-signing or surround voting triggers an immediate burn (1 ETH minimum) plus a correlation penalty proportional to other slashings nearby — making coordinated attacks economically catastrophic.</div>
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.85 }}
+                  className="rounded-xl p-3 text-xs leading-relaxed flex items-start gap-2.5"
+                  style={{ backgroundColor: '#06b6d412', border: '1px solid #06b6d440' }}
+                >
+                  <span className="text-xl shrink-0 leading-none">💧</span>
+                  <div>
+                    <div className="font-bold mb-0.5" style={{ color: '#06b6d4' }}>Liquid Staking</div>
+                    <div className="text-muted-foreground">Lido (stETH), Rocket Pool (rETH) and others let users stake any ETH amount via derivative tokens. Lido alone secures ~30% of all staked ETH — boosting access at the cost of validator-set concentration.</div>
+                  </div>
+                </motion.div>
+              </div>
             </div>
 
           </div>
@@ -932,6 +988,34 @@ export function BP_Section2() {
               { text: 'EOAs exist only on Ethereum mainnet; Contract Accounts work across all EVM-compatible chains automatically.', correct: false },
             ]}
             explanation="This is the foundational distinction of Ethereum's account model. An EOA is what a human controls — it has a private key, can initiate transactions, and pays gas. A Contract Account has no private key — it is pure code deployed at a deterministic address, and it only runs when another account sends it a transaction. This means a Contract Account cannot spontaneously act on a schedule — it needs an EOA (or a keeper bot using an EOA) to trigger it. Every transaction on Ethereum ultimately originates from an EOA."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 2 — EIP-1559 fee mechanics ═══════ */}
+        <div id="s2-quiz-2" className="h-full">
+          <QuizSlide
+            question="An EIP-1559 transaction sets maxFeePerGas = 30 Gwei and maxPriorityFeePerGas = 2 Gwei. The current base fee is 25 Gwei. What does the sender actually pay per gas, and where does each part go?"
+            options={[
+              { text: '30 Gwei per gas, all of which is paid to the validator who includes the transaction.', correct: false },
+              { text: '25 Gwei base fee (burned, removed from supply) + 2 Gwei tip (paid to the validator) = 27 Gwei per gas. The remaining 3 Gwei of headroom in maxFeePerGas is refunded to the sender.', correct: true },
+              { text: '25 Gwei base fee paid to the validator + 2 Gwei priority fee burned. Total 27 Gwei per gas.', correct: false },
+              { text: '30 Gwei (max fee) + 2 Gwei (priority fee) = 32 Gwei per gas, paid entirely to the validator.', correct: false },
+            ]}
+            explanation="EIP-1559 split the gas price into two components. The protocol-determined base fee is BURNED (permanently destroyed — this is what makes ETH deflationary when activity is high). The priority fee is the tip the user offers the validator. Effective price per gas is min(maxFeePerGas, baseFee + maxPriorityFeePerGas) — here min(30, 25 + 2) = 27 Gwei. Any unused headroom is refunded. So the sender pays 27 Gwei × gasUsed: 25 burned, 2 to the validator. maxFeePerGas is a cap, not a target."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3 — Contract deployment address ═══════ */}
+        <div id="s2-quiz-3" className="h-full">
+          <QuizSlide
+            question="Bob deploys a smart contract by sending a transaction with to = null and the compiled bytecode in the data field. How is the new contract's address determined?"
+            options={[
+              { text: 'Bob picks any unused 20-byte address and includes it in the transaction\'s value field.', correct: false },
+              { text: 'The Ethereum protocol generates a random 20-byte address at deployment time, so the address is unpredictable until the transaction is mined.', correct: false },
+              { text: 'For a regular CREATE deployment, the address is derived deterministically from keccak256(senderAddress, senderNonce) — Bob can compute the future contract address before sending the transaction.', correct: true },
+              { text: 'The address equals keccak256(bytecode), so two deployments of identical contracts always share the same address.', correct: false },
+            ]}
+            explanation="CREATE derives the contract address from rlp(senderAddress, senderNonce), then takes the last 20 bytes of its keccak256 hash. This means anyone can predict the future contract address before deployment — useful for state channels and counterfactual instantiation. CREATE2 (introduced in Constantinople) uses keccak256(0xff, deployer, salt, keccak256(initCode)) so the address depends on a salt and the init code, decoupling it from nonce — enabling address pre-commitment regardless of deployment order. Identical bytecode does NOT share an address with CREATE; CREATE2 distinguishes by salt."
           />
         </div>
 

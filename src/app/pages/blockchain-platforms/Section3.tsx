@@ -151,90 +151,144 @@ function WhyPermissionedSlide() {
 // ─── s3-supplychains ──────────────────────────────────────────────────────────
 
 const SUPPLY_STEPS = [
-  { label: 'Farmer', icon: '🌾' },
-  { label: 'Processor', icon: '🏭' },
-  { label: 'Distributor', icon: '🚛' },
-  { label: 'Retailer', icon: '🏪' },
-  { label: 'Consumer', icon: '👤' },
+  {
+    label: 'Farmer',
+    icon: '🌾',
+    pre:  { tool: 'Paper logbook + fax',     issue: 'No timestamps · easy to forge · lost in transit' },
+    post: { fn: 'recordHarvest',  args: 'batch=B1, gps=37.4°N, date=2026-04-01' },
+  },
+  {
+    label: 'Processor',
+    icon: '🏭',
+    pre:  { tool: 'Excel + email attachments', issue: 'Re-keyed data · dropped fields · version drift' },
+    post: { fn: 'recordProcess',  args: 'batch=B1 → lotId=L42, temp=4°C' },
+  },
+  {
+    label: 'Distributor',
+    icon: '🚛',
+    pre:  { tool: 'ERP system (SAP)',         issue: 'Internal codes don’t match upstream IDs' },
+    post: { fn: 'recordTransport', args: 'lot=L42, route=Farm→Hub→Store, temp log' },
+  },
+  {
+    label: 'Retailer',
+    icon: '🏪',
+    pre:  { tool: 'POS — SKU only',           issue: 'No provenance · no upstream queries' },
+    post: { fn: 'recordReceipt',  args: 'lot=L42 ↔ sku=A123, store=NYC-12' },
+  },
+  {
+    label: 'Consumer',
+    icon: '👤',
+    pre:  { tool: 'Paper receipt',            issue: 'No origin info · must trust labels' },
+    post: { fn: 'queryProvenance', args: 'sku=A123 → full audit trail (2.2s)' },
+  },
 ];
 
-const SUPPLY_PAIN = [
-  'Paper documents',
-  '3-week recalls',
-  'No traceability',
-  'Siloed data',
+const SUPPLY_DEPLOYMENTS = [
+  { label: 'Walmart × IBM Food Trust', detail: 'Live since 2018 — pork, leafy greens, mangoes · 100+ suppliers' },
+  { label: 'De Beers Tracr',           detail: 'Diamond provenance · conflict-free certification' },
+  { label: 'Maersk TradeLens',         detail: '⚠ Shut down 2022 — network-effect lesson, not tech failure' },
 ];
 
 const SUPPLY_RESULTS = [
-  { metric: '7 days → 2.2 sec', label: 'Mango recall time (Walmart)' },
-  { metric: '100%', label: 'Traceability across all partners' },
-  { metric: '~$30B', label: 'Food fraud prevented annually' },
+  { metric: '7 days → 2.2 s', label: 'mango recall (Walmart)' },
+  { metric: '100%',           label: 'traceability across partners' },
+  { metric: '~$30B',          label: 'food fraud prevented / yr' },
 ];
 
 function SupplyChainsSlide() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-10">
-      <div className="shrink-0 mb-5">
+      <div className="shrink-0 mb-3">
         <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Supply Chains: The Perfect Use Case</h2>
         <p className="text-sm text-muted-foreground mt-1">Multi-party data sharing with no single point of trust — exactly what blockchain solves.</p>
       </div>
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left — traditional problem */}
-        <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">The problem — traditional supply chain</h3>
-          <div className="flex-1 flex flex-col gap-1">
-            {SUPPLY_STEPS.map((step, i) => (
-              <div key={step.label} className="flex flex-col items-start flex-1">
-                <div
-                  className="w-full h-full flex items-center gap-3 p-3 rounded-xl border border-[#ED1C24]/30"
-                  style={{ backgroundColor: '#ED1C240d' }}
-                >
-                  <span className="text-lg">{step.icon}</span>
-                  <span className="font-semibold text-sm text-foreground">{step.label}</span>
-                </div>
-                {i < SUPPLY_STEPS.length - 1 && (
-                  <div className="ml-5 flex items-center gap-2 py-0.5">
-                    <div className="w-0.5 h-4 bg-[#ED1C24]/30" />
-                    {i < SUPPLY_PAIN.length && (
-                      <span className="text-xs text-[#ED1C24]">{SUPPLY_PAIN[i]}</span>
-                    )}
+      {/* Real-world deployments strip */}
+      <div className="shrink-0 mb-4 grid grid-cols-1 lg:grid-cols-3 gap-2">
+        {SUPPLY_DEPLOYMENTS.map(d => (
+          <div key={d.label} className="px-3 py-1.5 rounded-lg border border-border bg-card">
+            <div className="text-[11px] font-bold text-foreground leading-tight">{d.label}</div>
+            <div className="text-[10px] text-muted-foreground leading-snug mt-0.5">{d.detail}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+        {/* Left — siloed today */}
+        <div className="flex flex-col gap-2 min-h-0">
+          <div className="shrink-0 flex items-center gap-2 flex-wrap">
+            <span
+              className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: '#ED1C2418', color: '#ED1C24', border: '1px solid #ED1C2450' }}
+            >
+              ✕ Today — siloed
+            </span>
+            <span className="text-xs text-muted-foreground">Each party hoards data in its own system</span>
+          </div>
+          <div className="flex-1 min-h-0 grid auto-rows-fr gap-1.5">
+            {SUPPLY_STEPS.map((step) => (
+              <div
+                key={step.label}
+                className="rounded-xl border p-2.5 flex items-start gap-2.5 min-h-0"
+                style={{ borderColor: '#ED1C2430', backgroundColor: '#ED1C2408' }}
+              >
+                <span className="text-base shrink-0 leading-none mt-0.5">{step.icon}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2 flex-wrap">
+                    <span className="font-bold text-sm text-foreground">{step.label}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground truncate">{step.pre.tool}</span>
                   </div>
-                )}
+                  <div className="text-[11px] leading-snug mt-0.5" style={{ color: '#ED1C24' }}>{step.pre.issue}</div>
+                </div>
               </div>
             ))}
+          </div>
+          <div className="shrink-0 rounded-lg p-2.5 text-[11px] leading-snug" style={{ backgroundColor: '#ED1C2412', border: '1px solid #ED1C2440' }}>
+            <span className="font-bold" style={{ color: '#ED1C24' }}>Walmart 2008 case — </span>
+            <span className="text-muted-foreground">tracing one contaminated mango required phoning 7 different systems and took ~7 days. Most of that was reconciling formats, not searching.</span>
           </div>
         </div>
 
-        {/* Right — Fabric solution */}
-        <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Fabric solution — shared ledger</h3>
-          <div className="flex flex-col gap-1">
-            {SUPPLY_STEPS.map((step, i) => (
-              <div key={step.label} className="flex flex-col items-start">
-                <div
-                  className="w-full flex items-center gap-3 p-3 rounded-xl border border-[#39B54A]/40"
-                  style={{ backgroundColor: '#39B54A0d' }}
-                >
-                  <span className="text-lg">{step.icon}</span>
-                  <span className="font-semibold text-sm text-foreground">{step.label}</span>
-                  <span className="ml-auto text-xs text-[#39B54A] font-medium">records on ledger</span>
-                </div>
-                {i < SUPPLY_STEPS.length - 1 && (
-                  <div className="ml-5 py-0.5">
-                    <div className="w-0.5 h-3 bg-[#39B54A]/40" />
+        {/* Right — Fabric channel */}
+        <div className="flex flex-col gap-2 min-h-0">
+          <div className="shrink-0 flex items-center gap-2 flex-wrap">
+            <span
+              className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: '#39B54A18', color: '#39B54A', border: '1px solid #39B54A50' }}
+            >
+              ✓ On a Fabric channel
+            </span>
+            <span className="text-xs text-muted-foreground">Every step writes to one shared, append-only ledger</span>
+          </div>
+          <div className="flex-1 min-h-0 grid auto-rows-fr gap-1.5">
+            {SUPPLY_STEPS.map((step) => (
+              <div
+                key={step.label}
+                className="rounded-xl border p-2.5 flex items-start gap-2.5 min-h-0"
+                style={{ borderColor: '#39B54A40', backgroundColor: '#39B54A08' }}
+              >
+                <span className="text-base shrink-0 leading-none mt-0.5">{step.icon}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2 flex-wrap">
+                    <span className="font-bold text-sm text-foreground">{step.label}</span>
+                    <span className="text-[10px] font-medium" style={{ color: '#39B54A' }}>→ chaincode invoke</span>
                   </div>
-                )}
+                  <div className="text-[11px] font-mono leading-snug mt-0.5 truncate">
+                    <span style={{ color: '#39B54A' }}>{step.post.fn}</span>
+                    <span className="text-muted-foreground">(</span>
+                    <span className="text-foreground">{step.post.args}</span>
+                    <span className="text-muted-foreground">)</span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-
-          {/* Result cards */}
-          <div className="grid grid-cols-3 gap-2 mt-auto">
+          <div className="shrink-0 grid grid-cols-3 gap-2">
             {SUPPLY_RESULTS.map(r => (
-              <div key={r.label} className="p-2 rounded-lg border border-[#39B54A]/40 text-center" style={{ backgroundColor: '#39B54A0d' }}>
-                <div className="font-bold text-sm text-[#39B54A]">{r.metric}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{r.label}</div>
+              <div key={r.label} className="p-2 rounded-lg border text-center" style={{ borderColor: '#39B54A50', backgroundColor: '#39B54A0d' }}>
+                <div className="font-black text-xs leading-tight" style={{ color: '#39B54A' }}>{r.metric}</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5 leading-snug">{r.label}</div>
               </div>
             ))}
           </div>
@@ -1647,6 +1701,34 @@ export function BP_Section3() {
               { text: 'Zero-knowledge proofs — PharmaA and PharmaB submit proofs instead of raw data, hiding the pricing details from the Hospital.', correct: false },
             ]}
             explanation="Channels are Hyperledger Fabric's primary privacy mechanism. A Channel is a private sub-ledger with its own set of member organizations, chaincode, and transaction history — invisible to non-members on the same network. PharmaA and PharmaB create a channel that only they join; the Hospital cannot see its transactions, state, or even that it exists. This is fundamentally different from public blockchains where all data is visible to all participants. MSPs control identity and enrollment, not data visibility between enrolled members."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 2 — MSP / identity ═══════ */}
+        <div id="s3-quiz-2" className="h-full">
+          <QuizSlide
+            question="In a Fabric consortium between BankA and BankB, every peer must prove its identity when submitting a proposal or endorsement. Which Fabric component issues and validates these identities?"
+            options={[
+              { text: 'The Ordering Service — Raft nodes verify each transaction\'s identity before sequencing it into a block.', correct: false },
+              { text: 'The Membership Service Provider (MSP) — each organization runs its own MSP backed by a Certificate Authority that issues X.509 certificates to peers, clients and admins; remote peers validate signatures by trusting the issuer\'s root CA.', correct: true },
+              { text: 'The Channel Configuration Block — a static list of public keys committed at channel genesis is checked on every transaction.', correct: false },
+              { text: 'The Smart Contract (chaincode) — each chaincode must include identity-validation logic in its Init function.', correct: false },
+            ]}
+            explanation="Fabric is permissioned by design and relies on PKI. Every organization runs an MSP that maps cryptographic material (X.509 certificates issued by its CA) to roles (peer / client / admin / orderer). When a peer signs a proposal or endorsement, peers from other orgs validate the signature against the configured root certificate of the signer's MSP — listed in the channel configuration. The ordering service does NOT validate business identity; it only orders transactions that have already been endorsed. Identities are configured per-channel via the channel config, not hardcoded in chaincode, so adding a new org is a configuration change, not a redeployment."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3 — Endorsement policy ═══════ */}
+        <div id="s3-quiz-3" className="h-full">
+          <QuizSlide
+            question="A supply-chain chaincode is deployed to a channel with three orgs (Producer, Distributor, Retailer) and an endorsement policy of AND('Producer.peer', 'Distributor.peer'). The Retailer submits a transaction proposal that updates a delivery record. What is required for this transaction to be committed to the ledger?"
+            options={[
+              { text: 'A single Retailer peer endorses the proposal — the Retailer is the submitter, so its endorsement is sufficient.', correct: false },
+              { text: 'The proposal must be endorsed by at least one peer from Producer AND at least one peer from Distributor before reaching the orderer; the Retailer\'s endorsement is irrelevant to the policy.', correct: true },
+              { text: 'All three orgs (Producer, Distributor, Retailer) must endorse — Fabric defaults to unanimous endorsement when the submitter is on the channel.', correct: false },
+              { text: 'The Raft orderer endorses on behalf of any unspecified org once a quorum of orderer nodes is reached.', correct: false },
+            ]}
+            explanation="Endorsement policy is enforced independently of the submitter. The client (Retailer here) sends the proposal directly to the peers listed in the policy — Producer and Distributor — collects their signed read/write sets, and only then forwards the endorsed transaction to the ordering service. The orderer batches and orders transactions but never endorses. Committing peers verify on receipt that the collected endorsements satisfy the policy before applying the state change; if the policy isn't met, the transaction is marked invalid in the block but still recorded (so the audit trail captures every attempt). Submitter identity gives no special endorsement power."
           />
         </div>
 

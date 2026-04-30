@@ -1159,6 +1159,34 @@ export function BP_Section1() {
           />
         </div>
 
+        {/* ═══════ QUIZ 2 — Nakamoto consensus ═══════ */}
+        <div id="s1-quiz-2" className="h-full">
+          <QuizSlide
+            question="A miner finds a block whose SHA-256 hash satisfies the difficulty target. Just before broadcasting, another miner publishes a different valid block at the same height. The network briefly has two competing chains. How is the conflict resolved?"
+            options={[
+              { text: 'Both blocks are kept side-by-side; honest nodes choose whichever arrived first and a coordinator transaction merges the histories within 10 minutes.', correct: false },
+              { text: 'The fork is resolved by Nakamoto consensus: nodes follow the chain with the most cumulative proof-of-work. Whichever side first extends with another block wins; the other block is orphaned and its transactions return to the mempool.', correct: true },
+              { text: 'The orphaned block is included in a future block as an "uncle" and the miner still earns a partial block reward, similar to Ethereum pre-Merge.', correct: false },
+              { text: 'The two miners must broadcast a coordinated tie-breaker transaction signed by a 51% majority of the hash rate within the next epoch.', correct: false },
+            ]}
+            explanation="Bitcoin uses Nakamoto consensus — the chain with the highest cumulative proof-of-work always wins. When two valid blocks are found at the same height, the network temporarily forks; whichever side first extends with another block becomes the canonical chain, and the orphaned block's transactions return to the mempool to be re-included later. Bitcoin has no uncle-block reward (that was Ethereum's GHOST protocol pre-Merge); a stale block earns the miner nothing. There is no coordinator transaction or signaling — propagation latency and probability decide forks naturally."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3 — Difficulty adjustment ═══════ */}
+        <div id="s1-quiz-3" className="h-full">
+          <QuizSlide
+            question="Bitcoin's network hash rate doubles over six months as new miners deploy faster ASICs. What automatically keeps block intervals near the 10-minute target?"
+            options={[
+              { text: 'The block reward is halved early to discourage new miners from joining the network.', correct: false },
+              { text: 'Every 2,016 blocks (~2 weeks) each node independently recalculates the difficulty target from how long the previous 2,016 blocks took. With double the hash rate, the target shrinks (more leading zeros required) so finding a valid block becomes proportionally harder.', correct: true },
+              { text: 'Bitcoin nodes vote in real-time on a new difficulty using miner signaling encoded in coinbase transactions.', correct: false },
+              { text: 'A timestamp rule rejects any block published less than 10 minutes after its parent, enforcing the cadence directly.', correct: false },
+            ]}
+            explanation="Bitcoin's difficulty adjustment is automatic, trustless, and runs every 2,016 blocks (~2 weeks). Each node compares the actual time elapsed against the expected 14 days × 24 h × 6 blocks/h = 20,160 minutes and scales the target accordingly: faster blocks → harder target. Halvings happen every 210,000 blocks but are unrelated to hash-rate changes. There is no miner voting on difficulty and no minimum time between blocks — the target alone constrains them probabilistically."
+          />
+        </div>
+
         {/* ═══════ TAKEAWAYS ═══════ */}
         <div id="s1-takeaways" className="h-full">
           <TakeawaySlide
