@@ -12,6 +12,7 @@ const chapters = [
   { id: 's1-utxo-exercise', label: 'UTXO Exercise' },
   { id: 's1-pow', label: 'Proof of Work' },
   { id: 's1-trilemma', label: 'Trilemma' },
+  { id: 's1-apps', label: 'Apps' },
   { id: 's1-quiz', label: 'Quiz' },
   { id: 's1-takeaways', label: 'Takeaways' },
   { id: 's1-summary', label: 'Summary' },
@@ -1143,6 +1144,95 @@ export function BP_Section1() {
         {/* ═══════ TRILEMMA ═══════ */}
         <div id="s1-trilemma" className="h-full">
           <TrilemmaSlide />
+        </div>
+
+        {/* ═══════ APPS — Bitcoin's app layer ═══════ */}
+        <div id="s1-apps" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Beyond payments — Bitcoin's app layer</h2>
+            <p className="text-sm text-muted-foreground mt-1">For most of its life Bitcoin only did one thing: send value. Since 2018 — and accelerating since 2023 — a real application layer has emerged on, around, and atop the base chain.</p>
+          </div>
+
+          <div className="shrink-0 mb-4 rounded-xl border p-3" style={{ borderColor: '#f59e0b55', backgroundColor: '#f59e0b0d' }}>
+            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#f59e0b' }}>Where the apps actually live</p>
+            <p className="text-sm text-foreground mt-0.5 leading-snug">
+              Bitcoin's base chain handles ~7 TPS and has no smart-contract VM. Apps live in <span className="font-semibold">payment channels</span> (Lightning), in <span className="font-semibold">satoshi inscriptions</span> (Ordinals · BRC-20 · Runes), on <span className="font-semibold">sidechains</span> (Stacks, Liquid, Rootstock), and in new <span className="font-semibold">Bitcoin staking</span> systems (Babylon).
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-3">
+            {[
+              {
+                icon: '⚡',
+                title: 'Lightning Network',
+                sub: 'L2 payment channels · 2018+',
+                color: '#f59e0b',
+                what: 'A network of payment channels. Two parties open a channel on-chain once, then exchange thousands of off-chain transactions instantly and almost free. Channels close on-chain to settle the final balance.',
+                adoption: 'Apps: Strike · Cash App (US Bitcoin) · Phoenix · Wallet of Satoshi · Cashu · Public capacity ~5,000 BTC · ~15,000 routing nodes.',
+                limit: 'Liquidity must be pre-allocated · routing failures common at the edge · custodial wallets dominate retail UX, eroding the self-sovereignty argument.',
+              },
+              {
+                icon: '📜',
+                title: 'Ordinals · BRC-20 · Runes',
+                sub: 'Inscriptions on satoshis · 2023+',
+                color: '#ef4444',
+                what: 'Casey Rodarmor\'s Ordinals (Jan 2023) numbers each satoshi and lets you "inscribe" arbitrary data onto it — images, JSON, code. BRC-20 reused this for fungible tokens; Runes (April 2024) added a more efficient native-token system.',
+                adoption: '~$4B+ Ordinals secondary market · BRC-20 momentum cooled in 2024 · Runes inherited the use case after the Halving.',
+                limit: 'Highly contested: bloats blockchain data, raises base-chain fees during inscription waves. Many node operators and core devs oppose it philosophically — "Bitcoin is for money".',
+              },
+              {
+                icon: '🔗',
+                title: 'Bitcoin sidechains & rollups',
+                sub: 'Stacks · Liquid · Rootstock · 2018+',
+                color: '#6366f1',
+                what: 'Programmable layers pegged to BTC. Stacks (Clarity language, settles via "Proof of Transfer"); Liquid (federation, fast confidential txs); Rootstock (EVM-compatible, merge-mined). New entrants 2024-25: BitVM-style rollups, BOB, Bitlayer.',
+                adoption: 'Stacks ~$1B TVL · Liquid powers confidential txs for major exchanges · Rootstock has steady DeFi activity.',
+                limit: 'Trust models vary widely: Liquid is federated (trust the signer set); Stacks settles to BTC but security remains debated; Rootstock pegs use merge-mining. None inherits Bitcoin\'s security as natively as ETH rollups inherit L1.',
+              },
+              {
+                icon: '🛡️',
+                title: 'Bitcoin staking — Babylon',
+                sub: 'Native BTC restaking · 2024+',
+                color: '#39B54A',
+                what: 'Babylon lets BTC holders stake their coins to provide economic security to PoS chains — without bridging or wrapping. If a validator equivocates, their staked BTC is slashed via a Bitcoin-native script.',
+                adoption: '~$5B+ BTC staked by late 2024 · backed by multiple PoS chains seeking shared security · mainnet launched 2024.',
+                limit: 'New and unproven at scale · introduces complex Bitcoin script · creates BTC-denominated yield, breaking with the long-held "Bitcoin doesn\'t pay yield" tradition.',
+              },
+            ].map(app => (
+              <motion.div
+                key={app.title}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="rounded-xl border-2 p-3 flex flex-col gap-2 min-h-0"
+                style={{ borderColor: app.color + '50', backgroundColor: app.color + '08' }}
+              >
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xl shrink-0 leading-none">{app.icon}</span>
+                  <div className="min-w-0">
+                    <div className="font-black text-sm leading-tight" style={{ color: app.color }}>{app.title}</div>
+                    <div className="text-[10px] text-muted-foreground leading-tight">{app.sub}</div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-snug flex-1">{app.what}</p>
+                <div className="rounded-lg border bg-card/60 px-2 py-1 text-[10px] leading-snug" style={{ borderColor: app.color + '40' }}>
+                  <span className="font-bold" style={{ color: app.color }}>Adoption: </span>
+                  <span className="text-muted-foreground">{app.adoption}</span>
+                </div>
+                <div className="rounded-lg border bg-card/60 px-2 py-1 text-[10px] leading-snug" style={{ borderColor: '#ED1C2440' }}>
+                  <span className="font-bold" style={{ color: '#ED1C24' }}>Honest limit: </span>
+                  <span className="text-muted-foreground">{app.limit}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-3 rounded-xl border p-2.5" style={{ borderColor: '#f59e0b55', backgroundColor: '#f59e0b0d' }}>
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              <span className="font-bold" style={{ color: '#f59e0b' }}>Pedagogical caveat — </span>
+              Bitcoin's app layer is debated within the Bitcoin community. Purists want the base chain minimal ("digital gold"); builders push to use it as a settlement layer for richer apps. Be skeptical of hype on either side — both camps have legitimate concerns.
+            </p>
+          </div>
         </div>
 
         {/* ═══════ QUIZ ═══════ */}
