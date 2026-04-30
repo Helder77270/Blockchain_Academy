@@ -628,98 +628,184 @@ function PluggableConsensusSlide() {
 // ─── s3-bft ───────────────────────────────────────────────────────────────────
 
 const BFT_TABLE = [
-  { faulty: 1, needed: 4 },
-  { faulty: 2, needed: 7 },
-  { faulty: 10, needed: 31 },
+  { faulty: 1,  needed: 4,  hint: 'minimum to tolerate 1 traitor' },
+  { faulty: 2,  needed: 7,  hint: 'most enterprise deployments' },
+  { faulty: 10, needed: 31, hint: 'large public consortiums' },
 ];
+
+function BFTThresholdDonut() {
+  const r = 40;
+  const c = 2 * Math.PI * r;        // ~251.3
+  const honest = (2 / 3) * c;
+  const byz    = (1 / 3) * c;
+  return (
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      {/* Background ring */}
+      <circle cx={50} cy={50} r={r} fill="none" stroke="hsl(var(--border))" strokeWidth={14} />
+      {/* Honest segment (2/3) */}
+      <circle
+        cx={50} cy={50} r={r}
+        fill="none" stroke="#39B54A" strokeWidth={14}
+        strokeDasharray={`${honest} ${c}`}
+        transform="rotate(-90 50 50)"
+        strokeLinecap="butt"
+      />
+      {/* Byzantine segment (1/3) */}
+      <circle
+        cx={50} cy={50} r={r}
+        fill="none" stroke="#ED1C24" strokeWidth={14}
+        strokeDasharray={`${byz} ${c}`}
+        strokeDashoffset={-honest}
+        transform="rotate(-90 50 50)"
+        strokeLinecap="butt"
+      />
+      {/* Center text */}
+      <text x={50} y={47} textAnchor="middle" fontSize={9} fontWeight="800" className="fill-foreground">≤ ⅓</text>
+      <text x={50} y={58} textAnchor="middle" fontSize={5.5} className="fill-muted-foreground">malicious max</text>
+    </svg>
+  );
+}
+
+function EquivocationDiagram() {
+  return (
+    <svg viewBox="0 0 240 110" className="w-full h-28">
+      <defs>
+        <marker id="bft-arrow" markerWidth={7} markerHeight={7} refX={6} refY={3.5} orient="auto">
+          <polygon points="0 0, 7 3.5, 0 7" fill="#ED1C24" />
+        </marker>
+      </defs>
+      {/* Honest A (left) */}
+      <circle cx={32} cy={55} r={16} fill="#39B54A30" stroke="#39B54A" strokeWidth={2} />
+      <text x={32} y={59} textAnchor="middle" fontSize={11} fontWeight="800" fill="#39B54A">A</text>
+      <text x={32} y={88} textAnchor="middle" fontSize={8} className="fill-muted-foreground">honest</text>
+      {/* Byzantine center */}
+      <circle cx={120} cy={55} r={20} fill="#ED1C2430" stroke="#ED1C24" strokeWidth={2.5} />
+      <text x={120} y={60} textAnchor="middle" fontSize={14} fontWeight="800" fill="#ED1C24">✗</text>
+      <text x={120} y={92} textAnchor="middle" fontSize={8} fontWeight="700" fill="#ED1C24">byzantine</text>
+      {/* Honest C (right) */}
+      <circle cx={208} cy={55} r={16} fill="#39B54A30" stroke="#39B54A" strokeWidth={2} />
+      <text x={208} y={59} textAnchor="middle" fontSize={11} fontWeight="800" fill="#39B54A">C</text>
+      <text x={208} y={88} textAnchor="middle" fontSize={8} className="fill-muted-foreground">honest</text>
+      {/* Conflicting messages */}
+      <line x1={102} y1={55} x2={50} y2={55} stroke="#ED1C24" strokeWidth={1.6} markerEnd="url(#bft-arrow)" />
+      <line x1={138} y1={55} x2={190} y2={55} stroke="#ED1C24" strokeWidth={1.6} markerEnd="url(#bft-arrow)" />
+      <text x={76} y={48} textAnchor="middle" fontSize={9} fontWeight="700" fill="#ED1C24">"X = $100"</text>
+      <text x={164} y={48} textAnchor="middle" fontSize={9} fontWeight="700" fill="#ED1C24">"X = $50"</text>
+    </svg>
+  );
+}
 
 function BFTSlide() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-10">
-      <div className="shrink-0 mb-5">
+      <div className="shrink-0 mb-3">
         <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Byzantine Fault Tolerance in Fabric</h2>
-        <p className="text-sm text-muted-foreground mt-1">How distributed systems survive malicious participants.</p>
+        <p className="text-sm text-muted-foreground mt-1">How distributed systems survive malicious — not just crashed — participants.</p>
       </div>
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left — BFT explained */}
-        <div className="flex flex-col gap-4">
-          <div className="p-4 rounded-xl border border-[#f59e0b]/40" style={{ backgroundColor: '#f59e0b0d' }}>
-            <div className="text-2xl mb-2">🛡️</div>
-            <p className="text-sm text-foreground font-medium mb-1">What is BFT?</p>
-            <p className="text-xs text-muted-foreground">
-              A system is Byzantine Fault Tolerant if it continues to work correctly even when some nodes behave maliciously — sending false data, colluding, or going silent at strategic moments.
-            </p>
-          </div>
+      {/* Definition strip */}
+      <div className="shrink-0 mb-3 rounded-xl border p-3" style={{ borderColor: '#f59e0b55', backgroundColor: '#f59e0b0d' }}>
+        <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#f59e0b' }}>
+          The Byzantine Generals Problem · Lamport, Shostak &amp; Pease, 1982
+        </p>
+        <p className="text-sm text-foreground mt-0.5 leading-snug">
+          A system is <span className="font-semibold">Byzantine Fault Tolerant</span> if it stays correct even when up to <span className="font-semibold">F</span> nodes lie, collude, or send <span className="italic">different answers to different peers</span> — not just go silent.
+        </p>
+      </div>
 
-          {/* Formula */}
-          <div className="p-4 rounded-xl border border-border bg-card text-center">
-            <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">The formula</div>
-            <div className="text-xl font-bold text-foreground font-mono">N ≥ 3F + 1</div>
-            <div className="text-xs text-muted-foreground mt-1">Need at least 3F+1 nodes to tolerate F malicious ones</div>
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+        {/* Left — Theory: threshold + formula + table */}
+        <div className="flex flex-col gap-2 min-h-0">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">The 1/3 threshold</p>
+
+          {/* Donut + formula side by side */}
+          <div className="shrink-0 grid grid-cols-[auto_1fr] gap-3 p-3 rounded-xl border border-border bg-card/50 items-center">
+            <div className="size-24 lg:size-28 shrink-0">
+              <BFTThresholdDonut />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">The formula</div>
+              <div className="text-xl lg:text-2xl font-black text-foreground font-mono leading-none mt-0.5">N ≥ 3F + 1</div>
+              <div className="text-[11px] text-muted-foreground mt-1.5 leading-snug">
+                <span className="text-[#39B54A] font-semibold">Honest ⅔</span> must out-vote <span className="text-[#ED1C24] font-semibold">malicious ⅓</span> twice — once to detect lying, once to converge. If <span className="font-semibold">F &gt; N/3</span>, BFT breaks.
+              </div>
+            </div>
           </div>
 
           {/* Table */}
-          <div className="flex flex-col gap-1.5">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="p-2 rounded-lg bg-muted text-xs font-bold text-foreground text-center">Faulty nodes (F)</div>
-              <div className="p-2 rounded-lg bg-muted text-xs font-bold text-foreground text-center">Nodes needed (N)</div>
+          <div className="flex-1 min-h-0 grid auto-rows-fr gap-1.5">
+            <div className="grid grid-cols-[auto_auto_1fr] gap-2 items-center px-2">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#ED1C24]">F malicious</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#39B54A]">N nodes needed</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">use case</div>
             </div>
             {BFT_TABLE.map(row => (
-              <div key={row.faulty} className="grid grid-cols-2 gap-2">
-                <div className="p-2 rounded-lg border border-[#ED1C24]/30 text-sm font-bold text-[#ED1C24] text-center" style={{ backgroundColor: '#ED1C240d' }}>{row.faulty}</div>
-                <div className="p-2 rounded-lg border border-[#39B54A]/30 text-sm font-bold text-[#39B54A] text-center" style={{ backgroundColor: '#39B54A0d' }}>{row.needed}</div>
+              <div key={row.faulty} className="grid grid-cols-[auto_auto_1fr] gap-2 items-center min-h-0">
+                <div className="px-3 py-1.5 rounded-lg border text-base font-black text-center" style={{ borderColor: '#ED1C2440', color: '#ED1C24', backgroundColor: '#ED1C240d', minWidth: 64 }}>
+                  {row.faulty}
+                </div>
+                <div className="px-3 py-1.5 rounded-lg border text-base font-black text-center" style={{ borderColor: '#39B54A40', color: '#39B54A', backgroundColor: '#39B54A0d', minWidth: 64 }}>
+                  {row.needed}
+                </div>
+                <div className="text-[11px] text-muted-foreground italic">{row.hint}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right — why it matters */}
-        <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Why it matters for enterprise</h3>
-          {[
-            {
-              emoji: '🏢',
-              label: 'Competitor on the network',
-              desc: 'A competitor sharing your blockchain could submit false transaction data to gain advantage.',
-              color: '#ED1C24',
-            },
-            {
-              emoji: '💻',
-              label: 'Hacked peer',
-              desc: 'A compromised node might send conflicting information to different parts of the network.',
-              color: '#f59e0b',
-            },
-            {
-              emoji: '📋',
-              label: 'Regulatory requirement',
-              desc: 'Some industries (finance, defense) mandate BFT guarantees by compliance rules.',
-              color: '#6366f1',
-            },
-          ].map((item, i) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="flex items-start gap-3 p-3 rounded-xl border"
-              style={{ borderColor: item.color + '40', backgroundColor: item.color + '0d' }}
-            >
-              <span className="text-xl shrink-0">{item.emoji}</span>
-              <div>
-                <div className="font-bold text-sm text-foreground">{item.label}</div>
-                <div className="text-xs text-muted-foreground">{item.desc}</div>
-              </div>
-            </motion.div>
-          ))}
+        {/* Right — Practice: what BFT prevents + enterprise scenarios */}
+        <div className="flex flex-col gap-2 min-h-0">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">What does a Byzantine fault look like?</p>
 
-          {/* Warning note */}
-          <div className="mt-auto p-3 rounded-xl border border-[#f59e0b]/50" style={{ backgroundColor: '#f59e0b0d' }}>
-            <div className="text-xs font-bold text-[#f59e0b] mb-1">⚠ Default Raft is CFT only</div>
-            <div className="text-xs text-muted-foreground">
-              Fabric's default Raft consensus only tolerates crashes, not malicious behavior. SmartBFT is required for hostile or adversarial environments.
-            </div>
+          {/* Equivocation diagram */}
+          <div className="shrink-0 rounded-xl border p-3" style={{ borderColor: '#ED1C2440', backgroundColor: '#ED1C2408' }}>
+            <EquivocationDiagram />
+            <p className="text-[11px] text-muted-foreground leading-snug text-center mt-1">
+              <span className="font-semibold text-foreground">Equivocation</span> — one node sends conflicting facts to different peers. CFT (Raft) cannot detect this; BFT can.
+            </p>
           </div>
+
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0 mt-1">Why it matters for enterprise</p>
+
+          <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+            {[
+              { emoji: '🏢', label: 'Competitor on the network',  desc: 'Two rivals sharing one ledger. BFT prevents either from feeding manipulated data into shared state.', color: '#ED1C24' },
+              { emoji: '💻', label: 'Compromised peer',           desc: 'A hacked node sending different read/write sets to different validators is detected and outvoted.',     color: '#f59e0b' },
+              { emoji: '📋', label: 'Regulatory mandate',         desc: 'Finance, defense, and cross-jurisdiction networks often require BFT guarantees by compliance.',         color: '#6366f1' },
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="flex items-start gap-2.5 p-2.5 rounded-xl border min-h-0"
+                style={{ borderColor: item.color + '50', backgroundColor: item.color + '0d' }}
+              >
+                <span className="text-lg shrink-0 leading-none mt-0.5">{item.emoji}</span>
+                <div className="min-w-0">
+                  <div className="font-bold text-xs leading-tight" style={{ color: item.color }}>{item.label}</div>
+                  <div className="text-[11px] text-muted-foreground leading-snug mt-0.5">{item.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom comparison strip */}
+      <div className="shrink-0 mt-3 grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <div className="rounded-xl border p-2.5" style={{ borderColor: '#f59e0b55', backgroundColor: '#f59e0b0d' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#f59e0b' }}>Raft (CFT) — default in Fabric</p>
+          <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
+            Tolerates <span className="text-foreground font-semibold">crashes only</span>. Trusts orderer operators not to lie. Lighter, faster, simpler — fits most consortiums.
+          </p>
+        </div>
+        <div className="rounded-xl border p-2.5" style={{ borderColor: '#39B54A55', backgroundColor: '#39B54A0d' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#39B54A' }}>SmartBFT — Fabric v3 opt-in</p>
+          <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
+            Tolerates <span className="text-foreground font-semibold">malicious orderers</span>. Required when operators are competitors, regulated, or untrusted at the protocol level.
+          </p>
         </div>
       </div>
     </div>
@@ -1078,69 +1164,74 @@ const CONSENSUS_VERSIONS: ConsensusVersion[] = [
 function ConsensusMiniDiagram({ kind, color }: { kind: 'kafka' | 'raft' | 'bft'; color: string }) {
   if (kind === 'kafka') {
     return (
-      <svg viewBox="0 0 200 80" className="w-full h-16">
+      <svg viewBox="0 0 240 120" className="w-full h-28">
         {/* Peers row */}
-        {[35, 75, 115, 155].map((x, i) => (
+        {[40, 90, 150, 200].map((x, i) => (
           <g key={i}>
-            <circle cx={x} cy={14} r={6} fill={color + '30'} stroke={color} strokeWidth={1} />
-            <text x={x} y={17} textAnchor="middle" fontSize={6} fill="currentColor" className="text-foreground">P{i + 1}</text>
-            <line x1={x} y1={20} x2={100} y2={50} stroke={color} strokeWidth={0.6} strokeDasharray="2 2" opacity={0.6} />
+            <circle cx={x} cy={22} r={11} fill={color + '30'} stroke={color} strokeWidth={1.5} />
+            <text x={x} y={26} textAnchor="middle" fontSize={10} fontWeight="700" fill="currentColor" className="text-foreground">P{i + 1}</text>
+            <line x1={x} y1={33} x2={120} y2={75} stroke={color} strokeWidth={1} strokeDasharray="3 3" opacity={0.6} />
           </g>
         ))}
         {/* External Kafka box */}
-        <rect x={50} y={48} width={100} height={22} rx={4} fill={color + '20'} stroke={color} strokeWidth={1} strokeDasharray="3 2" />
-        <text x={100} y={59} textAnchor="middle" fontSize={7} fontWeight="700" fill={color}>Kafka cluster</text>
-        <text x={100} y={67} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">+ Zookeeper · external</text>
+        <rect x={50} y={70} width={140} height={38} rx={6} fill={color + '20'} stroke={color} strokeWidth={1.5} strokeDasharray="4 3" />
+        <text x={120} y={88} textAnchor="middle" fontSize={11} fontWeight="800" fill={color}>Kafka cluster</text>
+        <text x={120} y={102} textAnchor="middle" fontSize={9} fill="currentColor" className="text-muted-foreground">+ Zookeeper · external</text>
       </svg>
     );
   }
   if (kind === 'raft') {
     return (
-      <svg viewBox="0 0 200 80" className="w-full h-16">
+      <svg viewBox="0 0 240 120" className="w-full h-28">
         {/* Leader */}
-        <circle cx={100} cy={18} r={9} fill={color + '40'} stroke={color} strokeWidth={1.5} />
-        <text x={100} y={21} textAnchor="middle" fontSize={6} fontWeight="700" fill={color}>LEAD</text>
+        <circle cx={120} cy={28} r={16} fill={color + '40'} stroke={color} strokeWidth={2} />
+        <text x={120} y={32} textAnchor="middle" fontSize={10} fontWeight="800" fill={color}>LEAD</text>
         {/* Followers */}
-        {[55, 145].map((x, i) => (
+        {[60, 180].map((x, i) => (
           <g key={i}>
-            <circle cx={x} cy={58} r={7} fill={color + '20'} stroke={color} strokeWidth={1} />
-            <text x={x} y={61} textAnchor="middle" fontSize={5} fontWeight="600" fill={color}>F{i + 1}</text>
-            <line x1={100} y1={26} x2={x} y2={51} stroke={color} strokeWidth={1.2} markerEnd="url(#arrow-raft)" />
+            <circle cx={x} cy={88} r={13} fill={color + '20'} stroke={color} strokeWidth={1.5} />
+            <text x={x} y={92} textAnchor="middle" fontSize={9} fontWeight="700" fill={color}>F{i + 1}</text>
+            <line x1={120} y1={44} x2={x} y2={75} stroke={color} strokeWidth={1.8} markerEnd="url(#arrow-raft)" />
           </g>
         ))}
         <defs>
-          <marker id="arrow-raft" markerWidth={5} markerHeight={5} refX={4} refY={2.5} orient="auto">
-            <polygon points="0 0, 5 2.5, 0 5" fill={color} />
+          <marker id="arrow-raft" markerWidth={7} markerHeight={7} refX={6} refY={3.5} orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill={color} />
           </marker>
         </defs>
-        <text x={100} y={75} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">log replication</text>
+        <text x={120} y={114} textAnchor="middle" fontSize={9} fill="currentColor" className="text-muted-foreground">log replication</text>
       </svg>
     );
   }
   // bft
   return (
-    <svg viewBox="0 0 200 80" className="w-full h-16">
+    <svg viewBox="0 0 240 120" className="w-full h-28">
       {/* 4 nodes in a square */}
       {[
-        { x: 70, y: 22, label: 'N1', honest: true },
-        { x: 130, y: 22, label: 'N2', honest: true },
-        { x: 70, y: 56, label: 'N3', honest: true },
-        { x: 130, y: 56, label: 'N4', honest: false },
+        { x: 80,  y: 32, label: 'N1', honest: true },
+        { x: 160, y: 32, label: 'N2', honest: true },
+        { x: 80,  y: 84, label: 'N3', honest: true },
+        { x: 160, y: 84, label: 'N4', honest: false },
       ].map((n, i) => (
         <g key={i}>
-          <circle cx={n.x} cy={n.y} r={8} fill={n.honest ? color + '30' : '#ED1C2430'} stroke={n.honest ? color : '#ED1C24'} strokeWidth={1.2} />
-          <text x={n.x} y={n.y + 3} textAnchor="middle" fontSize={6} fontWeight="700" fill={n.honest ? color : '#ED1C24'}>
+          <circle
+            cx={n.x} cy={n.y} r={14}
+            fill={n.honest ? color + '30' : '#ED1C2430'}
+            stroke={n.honest ? color : '#ED1C24'}
+            strokeWidth={1.8}
+          />
+          <text x={n.x} y={n.y + 4} textAnchor="middle" fontSize={n.honest ? 10 : 13} fontWeight="800" fill={n.honest ? color : '#ED1C24'}>
             {n.honest ? n.label : '✗'}
           </text>
         </g>
       ))}
-      {/* Connecting lines between honest nodes */}
+      {/* Connecting lines between honest nodes (triangle) */}
       {[
-        [70, 22, 130, 22], [70, 22, 70, 56], [130, 22, 70, 56],
+        [80, 32, 160, 32], [80, 32, 80, 84], [160, 32, 80, 84],
       ].map(([x1, y1, x2, y2], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={0.8} opacity={0.55} />
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={1.2} opacity={0.55} />
       ))}
-      <text x={100} y={75} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">≥ 2f+1 honest agree</text>
+      <text x={120} y={114} textAnchor="middle" fontSize={9} fill="currentColor" className="text-muted-foreground">≥ 2f+1 honest agree</text>
     </svg>
   );
 }

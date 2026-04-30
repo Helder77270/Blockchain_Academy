@@ -550,60 +550,78 @@ export function BP_Section4() {
 
         {/* ═══════ S4-STARKNET ═══════ */}
         <div id="s4-starknet" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="mb-4 lg:mb-6">
-            <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-1 lg:mb-2">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">
               Starknet: ZK-Rollup on Ethereum
             </h2>
-            <p className="text-sm lg:text-base text-muted-foreground">
-              Starknet is a Layer 2 ZK-Rollup on Ethereum. It batches thousands of transactions off-chain, generates a cryptographic STARK proof, and submits only that proof to Ethereum L1.
+            <p className="text-sm text-muted-foreground mt-1">
+              Batches thousands of transactions off-chain, generates a cryptographic STARK proof, and posts only that proof to Ethereum L1.
             </p>
           </div>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 min-h-0">
-            {/* Left — What is Starknet + 4 cards */}
+          {/* Why ZK is the next step */}
+          <div className="shrink-0 mb-3 rounded-xl border p-3" style={{ borderColor: '#8b5cf655', backgroundColor: '#8b5cf60d' }}>
+            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#8b5cf6' }}>
+              Why ZK has to be the next step
+            </p>
+            <p className="text-sm text-foreground mt-0.5 leading-snug">
+              Ethereum L1 can't host applications that need <span className="font-semibold">cheap throughput</span> AND <span className="font-semibold">privacy</span>. Optimistic rollups solve cost only; ZK rollups also unlock <span className="font-semibold">verifiable privacy</span> — a user can prove a fact <span className="italic">without revealing the underlying data</span>.
+            </p>
+          </div>
+
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-5 min-h-0">
+            {/* Left — KYC use case + Core Properties */}
             <div className="flex flex-col gap-3 min-h-0">
-              <div className="flex items-center gap-2">
-                <div className="size-2 rounded-full bg-[#8b5cf6]" />
-                <h3 className="text-base lg:text-lg font-semibold text-foreground">Core Properties</h3>
+
+              {/* KYC use case walkthrough */}
+              <div className="shrink-0 rounded-xl border p-3" style={{ borderColor: '#8b5cf660', backgroundColor: '#8b5cf608' }}>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: '#8b5cf6' }}>
+                  🔐 Concrete example — KYC without sharing your identity
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { n: '1', label: 'Bank issues credential', desc: 'Your bank verifies you once and signs a ZK credential containing { name, DOB, residency, sanctions check }.' },
+                    { n: '2', label: 'You generate a proof',   desc: 'In your wallet, build a STARK proof: "credential is signed by Bank · age ≥ 18 · residency = EU · sanctions = false".' },
+                    { n: '3', label: 'Cairo contract verifies', desc: 'On Starknet, the dApp\'s Cairo contract verifies the proof and grants access. Your name and DOB never leave your wallet.' },
+                  ].map(s => (
+                    <div key={s.n} className="rounded-lg border bg-card p-2 flex flex-col gap-1" style={{ borderColor: '#8b5cf640' }}>
+                      <div className="flex items-center gap-1.5">
+                        <div className="size-5 rounded-full flex items-center justify-center text-[10px] font-black text-white shrink-0" style={{ backgroundColor: '#8b5cf6' }}>{s.n}</div>
+                        <p className="text-[11px] font-bold text-foreground leading-tight">{s.label}</p>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground leading-snug">{s.desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground italic mt-2 leading-snug">
+                  Same pattern applies to <span className="font-medium text-foreground">private voting · proof of solvency · medical-record access · sanctions screening</span> — anywhere the question is "is this true?" without "who are you exactly?".
+                </p>
               </div>
 
-              {[
-                {
-                  emoji: '⚡',
-                  title: 'Speed',
-                  desc: '500–1,000 TPS vs ~15 TPS on Ethereum L1. Transactions settle off-chain and are proven in batches.',
-                },
-                {
-                  emoji: '💸',
-                  title: 'Cost',
-                  desc: '10–100× cheaper than Ethereum L1. The STARK proof amortises the L1 cost over thousands of transactions.',
-                },
-                {
-                  emoji: '🔒',
-                  title: 'Security',
-                  desc: 'Inherits Ethereum L1 security via validity proofs — no fraud window, no trust assumptions on the operator.',
-                },
-                {
-                  emoji: '🛡️',
-                  title: 'Cairo Language',
-                  desc: 'Native smart contract language designed for ZK circuits — more efficient than Solidity for generating STARK proofs. Compiled to Sierra IR.',
-                },
-              ].map((card) => (
-                <motion.div
-                  key={card.title}
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3 }}
-                  className="flex gap-3 p-2.5 lg:p-3 bg-card rounded-lg border border-[#8b5cf6]/20 hover:border-[#8b5cf6]/50 transition-colors"
-                >
-                  <span className="text-lg lg:text-xl flex-shrink-0">{card.emoji}</span>
-                  <div>
-                    <p className="text-xs lg:text-sm font-semibold text-foreground">{card.title}</p>
-                    <p className="text-[10px] lg:text-xs text-muted-foreground mt-0.5 leading-relaxed">{card.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground shrink-0">Core properties</p>
+              <div className="flex-1 min-h-0 grid grid-cols-2 auto-rows-fr gap-2">
+                {[
+                  { emoji: '⚡', title: 'Speed',         desc: '500–1,000 TPS · vs ~15 TPS on Ethereum L1. Transactions settle off-chain and are proven in batches.' },
+                  { emoji: '💸', title: 'Cost',          desc: '10–100× cheaper than L1. One STARK proof amortises the L1 settlement cost over thousands of txs.' },
+                  { emoji: '🔒', title: 'Security',      desc: 'Inherits L1 security via validity proofs — no fraud window, no trust in the operator.' },
+                  { emoji: '🛡️', title: 'Cairo language', desc: 'Native ZK-friendly language. Compiles to Sierra IR — far more efficient than EVM for STARK proving.' },
+                ].map((card) => (
+                  <motion.div
+                    key={card.title}
+                    initial={{ opacity: 0, x: -16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3 }}
+                    className="flex gap-2 p-2.5 bg-card rounded-lg border border-[#8b5cf6]/30 hover:border-[#8b5cf6]/55 transition-colors min-h-0"
+                  >
+                    <span className="text-base flex-shrink-0 leading-none mt-0.5">{card.emoji}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-foreground">{card.title}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug">{card.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
 
             {/* Right — ZK vs Optimistic + 2024 news */}
