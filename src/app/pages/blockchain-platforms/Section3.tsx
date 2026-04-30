@@ -1007,16 +1007,37 @@ function TxFlowSlide() {
 
 // ─── s3-consensus-evo ─────────────────────────────────────────────────────────
 
-const CONSENSUS_VERSIONS = [
+type ConsensusVersion = {
+  version: string;
+  year: string;
+  name: string;
+  color: string;
+  status: string;
+  diagram: 'kafka' | 'raft' | 'bft';
+  stats: { label: string; value: string }[];
+  desc: string;
+  limit: string;
+  solved: string;
+  adoption: string;
+};
+
+const CONSENSUS_VERSIONS: ConsensusVersion[] = [
   {
     version: 'v1.x',
     year: '2017',
     name: 'Apache Kafka',
     color: '#ED1C24',
-    status: 'Deprecated',
-    desc: 'External Kafka cluster handled ordering. Reliable but operationally heavy — required Zookeeper, separate ops infrastructure, and introduced a non-blockchain external dependency.',
-    limit: 'Not BFT. Kafka itself was a central point of failure and complexity.',
-    solved: '—',
+    status: 'Deprecated (2.5+)',
+    diagram: 'kafka',
+    stats: [
+      { label: 'Min nodes',     value: '5+' },
+      { label: 'Fault tol.',    value: 'CFT' },
+      { label: 'Throughput',    value: '~1k TPS' },
+    ],
+    desc: 'External Kafka cluster handled block ordering, with Zookeeper for coordination. Reliable but operationally heavy — a non-blockchain dependency that consortiums had to provision and patch separately.',
+    limit: 'Not BFT · Kafka + ZK = a central operational chokepoint outside the blockchain layer.',
+    solved: 'First stable ordering after the v0.6 PBFT prototype — proved Fabric\'s execute-order-validate model worked at scale.',
+    adoption: 'Removed entirely in Fabric v2.5 (2021). Legacy networks only.',
   },
   {
     version: 'v2.x',
@@ -1024,94 +1045,214 @@ const CONSENSUS_VERSIONS = [
     name: 'Raft (CFT)',
     color: '#f59e0b',
     status: 'Current default',
-    desc: 'Built-in Crash Fault Tolerant consensus. Orderer nodes elect a leader and replicate an append-only log to followers. Simple, fast, and requires no external infrastructure.',
-    limit: 'Assumes no malicious nodes — only tolerates crashes, not Byzantine faults.',
-    solved: 'Eliminated Kafka dependency, dramatically simplified deployment.',
+    diagram: 'raft',
+    stats: [
+      { label: 'Min nodes',     value: '3' },
+      { label: 'Fault tol.',    value: '⌊(N-1)/2⌋ crashes' },
+      { label: 'Throughput',    value: '~3k TPS' },
+    ],
+    desc: 'Built-in Crash Fault Tolerant consensus. Orderer nodes elect a leader; the leader replicates an append-only log of blocks to followers. Simple, fast, and requires zero external infrastructure.',
+    limit: 'Assumes no malicious orderers — tolerates crashes, not Byzantine behavior.',
+    solved: 'Eliminated the Kafka + Zookeeper dependency · single binary deployment.',
+    adoption: 'Used by virtually every production Fabric consortium today (IBM Food Trust, we.trade, TradeLens, government registries).',
   },
   {
     version: 'v3.x',
     year: '2023',
     name: 'SmartBFT',
     color: '#39B54A',
-    status: 'Available',
-    desc: 'Byzantine Fault Tolerant consensus. Handles both crashes and malicious orderer nodes. Designed for adversarial enterprise environments where full trust is impossible.',
-    limit: 'Heavier than Raft — requires at least 4 orderer nodes (N ≥ 3F+1).',
-    solved: 'Enables hostile environments: finance, defense, competing-consortium use cases.',
+    status: 'Production-ready',
+    diagram: 'bft',
+    stats: [
+      { label: 'Min nodes',     value: '4 (N ≥ 3F+1)' },
+      { label: 'Fault tol.',    value: '⌊(N-1)/3⌋ Byzantine' },
+      { label: 'Throughput',    value: '~1.5–2k TPS' },
+    ],
+    desc: 'Byzantine Fault Tolerant ordering service. Handles both crashes AND malicious orderer nodes. Designed for adversarial consortiums where parties don\'t trust each other to operate orderers honestly.',
+    limit: 'Heavier than Raft · 3-phase consensus · need at least 4 orderers to tolerate 1 malicious one.',
+    solved: 'Removes the trust-the-orderer-operator assumption — enables truly adversarial enterprise networks.',
+    adoption: 'Picked when orderer operators are competitors or regulated entities (cross-bank settlement, defense, multi-jurisdiction).',
   },
 ];
+
+function ConsensusMiniDiagram({ kind, color }: { kind: 'kafka' | 'raft' | 'bft'; color: string }) {
+  if (kind === 'kafka') {
+    return (
+      <svg viewBox="0 0 200 80" className="w-full h-16">
+        {/* Peers row */}
+        {[35, 75, 115, 155].map((x, i) => (
+          <g key={i}>
+            <circle cx={x} cy={14} r={6} fill={color + '30'} stroke={color} strokeWidth={1} />
+            <text x={x} y={17} textAnchor="middle" fontSize={6} fill="currentColor" className="text-foreground">P{i + 1}</text>
+            <line x1={x} y1={20} x2={100} y2={50} stroke={color} strokeWidth={0.6} strokeDasharray="2 2" opacity={0.6} />
+          </g>
+        ))}
+        {/* External Kafka box */}
+        <rect x={50} y={48} width={100} height={22} rx={4} fill={color + '20'} stroke={color} strokeWidth={1} strokeDasharray="3 2" />
+        <text x={100} y={59} textAnchor="middle" fontSize={7} fontWeight="700" fill={color}>Kafka cluster</text>
+        <text x={100} y={67} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">+ Zookeeper · external</text>
+      </svg>
+    );
+  }
+  if (kind === 'raft') {
+    return (
+      <svg viewBox="0 0 200 80" className="w-full h-16">
+        {/* Leader */}
+        <circle cx={100} cy={18} r={9} fill={color + '40'} stroke={color} strokeWidth={1.5} />
+        <text x={100} y={21} textAnchor="middle" fontSize={6} fontWeight="700" fill={color}>LEAD</text>
+        {/* Followers */}
+        {[55, 145].map((x, i) => (
+          <g key={i}>
+            <circle cx={x} cy={58} r={7} fill={color + '20'} stroke={color} strokeWidth={1} />
+            <text x={x} y={61} textAnchor="middle" fontSize={5} fontWeight="600" fill={color}>F{i + 1}</text>
+            <line x1={100} y1={26} x2={x} y2={51} stroke={color} strokeWidth={1.2} markerEnd="url(#arrow-raft)" />
+          </g>
+        ))}
+        <defs>
+          <marker id="arrow-raft" markerWidth={5} markerHeight={5} refX={4} refY={2.5} orient="auto">
+            <polygon points="0 0, 5 2.5, 0 5" fill={color} />
+          </marker>
+        </defs>
+        <text x={100} y={75} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">log replication</text>
+      </svg>
+    );
+  }
+  // bft
+  return (
+    <svg viewBox="0 0 200 80" className="w-full h-16">
+      {/* 4 nodes in a square */}
+      {[
+        { x: 70, y: 22, label: 'N1', honest: true },
+        { x: 130, y: 22, label: 'N2', honest: true },
+        { x: 70, y: 56, label: 'N3', honest: true },
+        { x: 130, y: 56, label: 'N4', honest: false },
+      ].map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={8} fill={n.honest ? color + '30' : '#ED1C2430'} stroke={n.honest ? color : '#ED1C24'} strokeWidth={1.2} />
+          <text x={n.x} y={n.y + 3} textAnchor="middle" fontSize={6} fontWeight="700" fill={n.honest ? color : '#ED1C24'}>
+            {n.honest ? n.label : '✗'}
+          </text>
+        </g>
+      ))}
+      {/* Connecting lines between honest nodes */}
+      {[
+        [70, 22, 130, 22], [70, 22, 70, 56], [130, 22, 70, 56],
+      ].map(([x1, y1, x2, y2], i) => (
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={0.8} opacity={0.55} />
+      ))}
+      <text x={100} y={75} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">≥ 2f+1 honest agree</text>
+    </svg>
+  );
+}
 
 function ConsensusEvolutionSlide() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-10">
-      <div className="shrink-0 mb-5">
+      <div className="shrink-0 mb-3">
         <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Consensus Evolution in Fabric</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Hyperledger Fabric's consensus layer evolved in three major steps — each solving the previous version's limitations.
+          Fabric's ordering layer evolved in three major steps — each removing the previous version's biggest constraint.
         </p>
       </div>
 
-      <div className="flex-1 min-h-0 flex flex-col gap-4">
-        {/* Timeline bar */}
-        <div className="shrink-0 flex items-center gap-0 px-2">
+      <div className="flex-1 min-h-0 flex flex-col gap-3">
+        {/* Timeline strip */}
+        <div className="shrink-0 flex items-center gap-2 px-1">
           {CONSENSUS_VERSIONS.map((v, i) => (
-            <div key={v.version} className="flex items-center flex-1">
-              <div className="flex flex-col items-center">
+            <div key={v.version} className="flex items-center flex-1 gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <div
-                  className="size-10 rounded-full border-2 flex items-center justify-center font-bold text-xs shrink-0"
+                  className="size-9 rounded-full border-2 flex items-center justify-center font-black text-[10px] shrink-0"
                   style={{ borderColor: v.color, backgroundColor: v.color + '20', color: v.color }}
                 >
                   {v.version}
                 </div>
-                <span className="text-xs text-muted-foreground mt-1">{v.year}</span>
+                <div className="leading-tight">
+                  <div className="text-xs font-bold text-foreground whitespace-nowrap">{v.name}</div>
+                  <div className="text-[10px] text-muted-foreground">{v.year}</div>
+                </div>
               </div>
               {i < CONSENSUS_VERSIONS.length - 1 && (
-                <div className="flex-1 h-0.5 bg-border mx-2 mt-[-12px]" />
+                <div className="flex-1 flex items-center gap-1 min-w-0">
+                  <div className="flex-1 h-0.5" style={{ background: `linear-gradient(to right, ${v.color}, ${CONSENSUS_VERSIONS[i + 1].color})` }} />
+                  <span className="text-[10px] text-muted-foreground">→</span>
+                </div>
               )}
             </div>
           ))}
         </div>
 
         {/* Cards */}
-        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-3">
           {CONSENSUS_VERSIONS.map((v, i) => (
             <motion.div
               key={v.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.12, duration: 0.35 }}
-              className="flex flex-col gap-2 p-4 rounded-xl border"
-              style={{ borderColor: v.color + '50', backgroundColor: v.color + '08' }}
+              transition={{ delay: i * 0.1, duration: 0.3 }}
+              className="flex flex-col gap-2 p-3 rounded-xl border min-h-0"
+              style={{ borderColor: v.color + '55', backgroundColor: v.color + '08', color: v.color }}
             >
+              {/* Header */}
               <div className="flex items-center justify-between shrink-0">
-                <div className="font-bold text-base text-foreground">{v.name}</div>
+                <div className="font-black text-sm text-foreground">{v.name}</div>
                 <span
-                  className="px-2 py-0.5 rounded-full text-xs font-medium border"
-                  style={{ borderColor: v.color + '60', color: v.color }}
+                  className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                  style={{ borderColor: v.color + '70', color: v.color, backgroundColor: v.color + '12' }}
                 >
                   {v.status}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground flex-1">{v.desc}</p>
+
+              {/* Mini diagram */}
+              <div className="rounded-lg border bg-card/50 p-2 shrink-0" style={{ borderColor: v.color + '30' }}>
+                <ConsensusMiniDiagram kind={v.diagram} color={v.color} />
+              </div>
+
+              {/* Stats row */}
+              <div className="grid grid-cols-3 gap-1 shrink-0">
+                {v.stats.map(s => (
+                  <div key={s.label} className="rounded-md border px-1.5 py-1 text-center bg-card" style={{ borderColor: v.color + '35' }}>
+                    <div className="text-[10px] font-black leading-tight" style={{ color: v.color }}>{s.value}</div>
+                    <div className="text-[8px] text-muted-foreground uppercase tracking-wider leading-tight mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Description */}
+              <p className="text-[11px] text-muted-foreground leading-snug flex-1">{v.desc}</p>
+
+              {/* Limit / Solved */}
               <div className="shrink-0 space-y-1">
-                <div
-                  className="p-2 rounded-lg text-xs"
-                  style={{ backgroundColor: '#ED1C240d', borderLeft: `3px solid #ED1C24` }}
-                >
-                  <span className="font-semibold text-[#ED1C24]">Limit: </span>
+                <div className="p-1.5 rounded text-[10px] leading-snug" style={{ backgroundColor: '#ED1C2410', borderLeft: '2px solid #ED1C24' }}>
+                  <span className="font-bold" style={{ color: '#ED1C24' }}>Limit: </span>
                   <span className="text-muted-foreground">{v.limit}</span>
                 </div>
-                {v.solved !== '—' && (
-                  <div
-                    className="p-2 rounded-lg text-xs"
-                    style={{ backgroundColor: '#39B54A0d', borderLeft: `3px solid #39B54A` }}
-                  >
-                    <span className="font-semibold text-[#39B54A]">Solved: </span>
-                    <span className="text-muted-foreground">{v.solved}</span>
-                  </div>
-                )}
+                <div className="p-1.5 rounded text-[10px] leading-snug" style={{ backgroundColor: '#39B54A10', borderLeft: '2px solid #39B54A' }}>
+                  <span className="font-bold" style={{ color: '#39B54A' }}>Solved: </span>
+                  <span className="text-muted-foreground">{v.solved}</span>
+                </div>
+              </div>
+
+              {/* Adoption note */}
+              <div className="shrink-0 text-[9px] italic text-muted-foreground leading-snug border-t pt-1.5" style={{ borderColor: v.color + '25' }}>
+                {v.adoption}
               </div>
             </motion.div>
           ))}
+        </div>
+
+        {/* Decision strip */}
+        <div className="shrink-0 rounded-xl border p-2.5 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-4" style={{ borderColor: '#6366f155', backgroundColor: '#6366f10d' }}>
+          <span className="text-[10px] font-black uppercase tracking-widest shrink-0" style={{ color: '#6366f1' }}>How to choose today</span>
+          <div className="flex flex-col lg:flex-row gap-2 lg:gap-5 text-[11px] text-muted-foreground leading-snug">
+            <div>
+              <span className="font-bold" style={{ color: '#f59e0b' }}>Raft</span> — when orderer operators are <span className="text-foreground font-medium">trusted partners</span> (most consortiums). Fastest, simplest, lightest.
+            </div>
+            <div>
+              <span className="font-bold" style={{ color: '#39B54A' }}>SmartBFT</span> — when orderer operators are <span className="text-foreground font-medium">competitors or regulated</span>. Pay the throughput cost for true Byzantine resilience.
+            </div>
+          </div>
         </div>
       </div>
     </div>
