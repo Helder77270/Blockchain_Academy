@@ -479,6 +479,315 @@ function UTXOExercise() {
   );
 }
 
+// ─── Trilemma ────────────────────────────────────────────────────────────────
+
+const TRILEMMA_VERTICES = {
+  security:         { color: '#f59e0b', icon: '🔒', name: 'Security',          desc: 'Resistant to attacks',         pos: { x: 270, y: 110 } },
+  decentralization: { color: '#39B54A', icon: '🌐', name: 'Decentralization',  desc: 'No single point of control',   pos: { x: 90,  y: 380 } },
+  scalability:      { color: '#ED1C24', icon: '⚡', name: 'Scalability',       desc: 'High throughput, low fees',    pos: { x: 450, y: 380 } },
+} as const;
+
+type VertexId = keyof typeof TRILEMMA_VERTICES;
+
+const TRILEMMA_PLATFORMS: {
+  id: string;
+  name: string;
+  symbol: string;
+  color: string;
+  picks: VertexId[];
+  sacrifices: VertexId | null;
+  tagline: string;
+  stats: { label: string; value: string }[];
+  detail: string;
+}[] = [
+  {
+    id: 'bitcoin',
+    name: 'Bitcoin',
+    symbol: '₿',
+    color: '#f59e0b',
+    picks: ['security', 'decentralization'],
+    sacrifices: 'scalability',
+    tagline: 'Security & decentralization first',
+    stats: [
+      { label: 'On-chain TPS', value: '~7' },
+      { label: 'Reachable nodes', value: '50k+' },
+    ],
+    detail: 'Every full node validates every transaction. Layer 2 (Lightning Network) handles micropayments off-chain.',
+  },
+  {
+    id: 'ethereum',
+    name: 'Ethereum + L2',
+    symbol: '◆',
+    color: '#6366f1',
+    picks: ['security', 'decentralization', 'scalability'],
+    sacrifices: null,
+    tagline: 'Modular: L1 secures, L2 scales',
+    stats: [
+      { label: 'L1 TPS', value: '~15' },
+      { label: 'Effective L2 TPS', value: '1000s' },
+    ],
+    detail: 'Rollups (Arbitrum, Optimism, zkSync) batch thousands of L2 transactions into a single L1 proof — inheriting Ethereum\'s security.',
+  },
+  {
+    id: 'solana',
+    name: 'Solana',
+    symbol: '◎',
+    color: '#ED1C24',
+    picks: ['security', 'scalability'],
+    sacrifices: 'decentralization',
+    tagline: 'Throughput first, fewer validators',
+    stats: [
+      { label: 'Theoretical TPS', value: '~65k' },
+      { label: 'Validators', value: '~2k' },
+    ],
+    detail: 'High hardware requirements concentrate the validator set. The network has experienced multiple outages.',
+  },
+];
+
+function TrilemmaSlide() {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const active = TRILEMMA_PLATFORMS.find(p => p.id === hovered) ?? null;
+
+  const isPicked = (v: VertexId) => active ? active.picks.includes(v) : false;
+  const isSacrificed = (v: VertexId) => active?.sacrifices === v;
+  const isEdgeActive = (a: VertexId, b: VertexId) => active ? active.picks.includes(a) && active.picks.includes(b) : false;
+
+  // Card position for each vertex (relative to the SVG container)
+  const vertexCardStyle = (id: VertexId): React.CSSProperties => {
+    if (id === 'security')         return { left: '50%', top: 0,        transform: 'translate(-50%, -8%)' };
+    if (id === 'decentralization') return { left: 0,    bottom: 0,      transform: 'translate(-4%, 20%)' };
+    return                                { right: 0,   bottom: 0,      transform: 'translate(4%, 20%)' };
+  };
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-10">
+      {/* Header */}
+      <div className="shrink-0 mb-5">
+        <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The Blockchain Trilemma</h2>
+        <p className="text-muted-foreground text-sm mt-1">A blockchain can excel at any two of these — the third becomes a trade-off.</p>
+      </div>
+
+      <div className="flex-1 min-h-0 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-6 lg:gap-8">
+        {/* ── Triangle column ── */}
+        <div className="relative flex items-center justify-center min-h-0">
+          <div className="relative w-full max-w-[540px]" style={{ aspectRatio: '540 / 500' }}>
+            <svg viewBox="0 0 540 500" className="absolute inset-0 w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="edge-S-D" gradientUnits="userSpaceOnUse" x1="270" y1="110" x2="90" y2="380">
+                  <stop offset="0%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#39B54A" />
+                </linearGradient>
+                <linearGradient id="edge-S-Sc" gradientUnits="userSpaceOnUse" x1="270" y1="110" x2="450" y2="380">
+                  <stop offset="0%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#ED1C24" />
+                </linearGradient>
+                <linearGradient id="edge-D-Sc" gradientUnits="userSpaceOnUse" x1="90" y1="380" x2="450" y2="380">
+                  <stop offset="0%" stopColor="#39B54A" />
+                  <stop offset="100%" stopColor="#ED1C24" />
+                </linearGradient>
+                <radialGradient id="triFill" cx="50%" cy="55%" r="55%">
+                  <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.08" />
+                  <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+
+              {/* Inner triangle fill */}
+              <polygon points="270,110 90,380 450,380" fill="url(#triFill)" />
+
+              {/* Edges (lines) */}
+              {([
+                { a: 'security', b: 'decentralization', x1: 270, y1: 110, x2: 90, y2: 380, gradient: 'edge-S-D' },
+                { a: 'security', b: 'scalability',     x1: 270, y1: 110, x2: 450, y2: 380, gradient: 'edge-S-Sc' },
+                { a: 'decentralization', b: 'scalability', x1: 90, y1: 380, x2: 450, y2: 380, gradient: 'edge-D-Sc' },
+              ] as const).map(e => {
+                const isActive = isEdgeActive(e.a, e.b);
+                const dim = active && !isActive;
+                return (
+                  <motion.line
+                    key={`${e.a}-${e.b}`}
+                    x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2}
+                    stroke={`url(#${e.gradient})`}
+                    strokeLinecap="round"
+                    initial={false}
+                    animate={{
+                      strokeWidth: isActive ? 6 : 3,
+                      strokeOpacity: dim ? 0.18 : isActive ? 1 : 0.55,
+                    }}
+                    transition={{ duration: 0.25 }}
+                    style={isActive ? { filter: `drop-shadow(0 0 10px currentColor)` } : undefined}
+                  />
+                );
+              })}
+
+              {/* Vertex dots inside the SVG (small connector points) */}
+              {(Object.entries(TRILEMMA_VERTICES) as [VertexId, typeof TRILEMMA_VERTICES[VertexId]][]).map(([id, v]) => {
+                const picked = isPicked(id);
+                const sacrificed = isSacrificed(id);
+                return (
+                  <motion.circle
+                    key={id}
+                    cx={v.pos.x} cy={v.pos.y}
+                    fill={v.color}
+                    initial={false}
+                    animate={{
+                      r: picked ? 12 : sacrificed ? 5 : 8,
+                      opacity: active && !picked && !sacrificed ? 0.4 : 1,
+                    }}
+                    transition={{ duration: 0.25 }}
+                    style={picked ? { filter: `drop-shadow(0 0 12px ${v.color})` } : undefined}
+                  />
+                );
+              })}
+
+              {/* Center label */}
+              <text x={270} y={258} textAnchor="middle" className="fill-muted-foreground" fontSize="11" letterSpacing="4" fontWeight="700">CHOOSE</text>
+              <text x={270} y={300} textAnchor="middle" className="fill-foreground" fontSize="44" fontWeight="900" letterSpacing="-1">TWO</text>
+              {active && (
+                <motion.text
+                  key={active.id}
+                  x={270} y={332}
+                  textAnchor="middle"
+                  fontSize="11"
+                  fontWeight="700"
+                  letterSpacing="2"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  fill={active.color}
+                >
+                  {active.name.toUpperCase()}
+                </motion.text>
+              )}
+            </svg>
+
+            {/* Vertex label cards (HTML, positioned around the triangle) */}
+            {(Object.entries(TRILEMMA_VERTICES) as [VertexId, typeof TRILEMMA_VERTICES[VertexId]][]).map(([id, v]) => {
+              const picked = isPicked(id);
+              const sacrificed = isSacrificed(id);
+              const dimmed = active && !picked && !sacrificed;
+              return (
+                <motion.div
+                  key={id}
+                  className="absolute"
+                  style={vertexCardStyle(id)}
+                  initial={false}
+                  animate={{
+                    scale: picked ? 1.06 : sacrificed ? 0.94 : 1,
+                    opacity: dimmed ? 0.5 : 1,
+                  }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <div
+                    className="flex flex-col items-center gap-1 px-3.5 py-2 rounded-2xl border-2 bg-card/90 backdrop-blur-sm whitespace-nowrap"
+                    style={{
+                      borderColor: picked ? v.color : v.color + '50',
+                      backgroundColor: picked ? v.color + '15' : undefined,
+                      boxShadow: picked ? `0 0 24px ${v.color}55, 0 4px 16px ${v.color}30` : undefined,
+                    }}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-base">{v.icon}</span>
+                      <span className="font-black text-[13px] tracking-tight" style={{ color: v.color }}>{v.name}</span>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground leading-none">{v.desc}</span>
+                    {sacrificed && (
+                      <span className="text-[9px] font-black uppercase tracking-[2px] mt-0.5 px-1.5 py-0.5 rounded" style={{ color: v.color, backgroundColor: v.color + '15' }}>
+                        ↓ traded off
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Platform cards column ── */}
+        <div className="flex flex-col gap-3 min-h-0">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground shrink-0">Hover a platform to compare ↓</p>
+          {TRILEMMA_PLATFORMS.map((p, i) => {
+            const isHovered = hovered === p.id;
+            return (
+              <motion.button
+                key={p.id}
+                type="button"
+                onMouseEnter={() => setHovered(p.id)}
+                onMouseLeave={() => setHovered(null)}
+                onFocus={() => setHovered(p.id)}
+                onBlur={() => setHovered(null)}
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 + i * 0.08, duration: 0.3 }}
+                whileHover={{ x: -3 }}
+                className="text-left rounded-xl border-2 p-3.5 bg-card flex flex-col gap-2 relative overflow-hidden cursor-pointer transition-colors flex-1 min-h-0"
+                style={{
+                  borderColor: isHovered ? p.color : p.color + '35',
+                  backgroundColor: isHovered ? p.color + '0a' : undefined,
+                }}
+              >
+                {/* Color accent bar */}
+                <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: p.color }} />
+
+                {/* Header row */}
+                <div className="flex items-start justify-between gap-3 pl-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div
+                      className="size-10 shrink-0 rounded-lg flex items-center justify-center text-xl font-black"
+                      style={{ backgroundColor: p.color + '20', color: p.color }}
+                    >
+                      {p.symbol}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-black text-sm text-foreground truncate">{p.name}</div>
+                      <div className="text-[10px] text-muted-foreground truncate">{p.tagline}</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-0.5 shrink-0">
+                    {p.stats.map(s => (
+                      <div key={s.label} className="text-right leading-tight">
+                        <span className="text-xs font-black text-foreground">{s.value}</span>
+                        <span className="text-[9px] text-muted-foreground ml-1 uppercase tracking-wider">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Pillars */}
+                <div className="flex flex-wrap gap-1 pl-2">
+                  {p.picks.map(pick => (
+                    <span
+                      key={pick}
+                      className="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider"
+                      style={{ backgroundColor: TRILEMMA_VERTICES[pick].color + '22', color: TRILEMMA_VERTICES[pick].color }}
+                    >
+                      ✓ {TRILEMMA_VERTICES[pick].name}
+                    </span>
+                  ))}
+                  {p.sacrifices && (
+                    <span
+                      className="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider"
+                      style={{
+                        backgroundColor: TRILEMMA_VERTICES[p.sacrifices].color + '12',
+                        color: TRILEMMA_VERTICES[p.sacrifices].color,
+                        textDecoration: 'line-through',
+                        opacity: 0.75,
+                      }}
+                    >
+                      {TRILEMMA_VERTICES[p.sacrifices].name}
+                    </span>
+                  )}
+                </div>
+
+                {/* Detail */}
+                <p className="text-xs text-muted-foreground leading-relaxed pl-2">{p.detail}</p>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function BP_Section1() {
   return (
     <div className="h-full w-full flex overflow-hidden">
@@ -832,124 +1141,8 @@ export function BP_Section1() {
         </div>
 
         {/* ═══════ TRILEMMA ═══════ */}
-        <div id="s1-trilemma" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-4">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The Blockchain Trilemma</h2>
-            <p className="text-muted-foreground text-sm mt-1">Security, Scalability, Decentralization — you can only optimise for two at a time.</p>
-          </div>
-
-          {/* ── Triangle ── */}
-          <div className="shrink-0 flex justify-center mb-4">
-            <div className="relative" style={{ width: 320, height: 200 }}>
-              <svg width="320" height="200" viewBox="0 0 320 200" className="absolute inset-0">
-                {/* Triangle fill */}
-                <polygon
-                  points="160,16 20,184 300,184"
-                  fill="none"
-                  stroke="#f59e0b"
-                  strokeWidth="2"
-                  strokeOpacity="0.5"
-                />
-                {/* Vertex dots */}
-                <circle cx="160" cy="16" r="5" fill="#f59e0b" />
-                <circle cx="20" cy="184" r="5" fill="#39B54A" />
-                <circle cx="300" cy="184" r="5" fill="#ED1C24" />
-                {/* Subtle inner shading */}
-                <polygon points="160,16 20,184 300,184" fill="#f59e0b08" />
-              </svg>
-
-              {/* Top vertex — Security */}
-              <div className="absolute" style={{ top: -8, left: '50%', transform: 'translateX(-50%)' }}>
-                <div className="text-center">
-                  <div className="text-xs font-black px-2 py-0.5 rounded-full" style={{ backgroundColor: '#f59e0b20', color: '#f59e0b', border: '1px solid #f59e0b60' }}>🔒 Security</div>
-                </div>
-              </div>
-
-              {/* Bottom-left — Decentralization */}
-              <div className="absolute" style={{ bottom: -8, left: -8 }}>
-                <div className="text-xs font-black px-2 py-0.5 rounded-full" style={{ backgroundColor: '#39B54A20', color: '#39B54A', border: '1px solid #39B54A60' }}>🌐 Decentral.</div>
-              </div>
-
-              {/* Bottom-right — Scalability */}
-              <div className="absolute" style={{ bottom: -8, right: -8 }}>
-                <div className="text-xs font-black px-2 py-0.5 rounded-full" style={{ backgroundColor: '#ED1C2420', color: '#ED1C24', border: '1px solid #ED1C2460' }}>⚡ Scalability</div>
-              </div>
-
-              {/* Center label */}
-              <div className="absolute inset-0 flex items-center justify-center" style={{ paddingTop: 20 }}>
-                <div className="text-center">
-                  <div className="text-xs font-bold text-muted-foreground">pick 2</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Platform comparison cards ── */}
-          <div className="flex-1 min-h-0 flex flex-col gap-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest shrink-0">How major platforms position themselves</p>
-            <div className="flex gap-4 flex-1 min-h-0">
-              {[
-                {
-                  name: 'Bitcoin',
-                  emoji: '₿',
-                  strengths: ['Security', 'Decentralization'],
-                  sacrifice: 'Scalability',
-                  sacrificeColor: '#ED1C24',
-                  color: '#f59e0b',
-                  detail: '~7 TPS on-chain. Every full node validates every transaction. 50,000+ reachable nodes worldwide.',
-                  answer: { label: 'Layer 2 answer', value: 'Lightning Network — payment channels enable near-instant, low-fee micropayments off-chain.' },
-                },
-                {
-                  name: 'Ethereum + L2',
-                  emoji: '🔷',
-                  strengths: ['Security', 'Scalability (via rollups)'],
-                  sacrifice: 'Some L1 throughput',
-                  sacrificeColor: '#f59e0b',
-                  color: '#6366f1',
-                  detail: 'L1 ~15 TPS, but rollups (Arbitrum, Optimism, zkSync) push effective throughput to thousands of TPS while inheriting L1 security.',
-                  answer: { label: 'The approach', value: 'Rollups batch thousands of L2 transactions into a single L1 proof, keeping security while boosting scalability.' },
-                },
-                {
-                  name: 'Solana',
-                  emoji: '◎',
-                  strengths: ['Security', 'Scalability'],
-                  sacrifice: 'Decentralization',
-                  sacrificeColor: '#39B54A',
-                  color: '#ED1C24',
-                  detail: '~65,000 theoretical TPS. Fewer validators (~2,000) due to high hardware requirements. Higher centralisation risk.',
-                  answer: { label: 'Trade-off', value: 'High-performance nodes concentrate power — network has suffered multiple outages, raising reliability questions.' },
-                },
-              ].map((platform, i) => (
-                <motion.div
-                  key={platform.name}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 + i * 0.12 }}
-                  className="flex-1 min-w-0 rounded-xl border-2 p-4 bg-card flex flex-col gap-2"
-                  style={{ borderColor: platform.color + '50' }}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{platform.emoji}</span>
-                    <span className="font-black text-sm text-foreground">{platform.name}</span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1">
-                    {platform.strengths.map(s => (
-                      <span key={s} className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: platform.color + '20', color: platform.color }}>✓ {s}</span>
-                    ))}
-                    <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: platform.sacrificeColor + '15', color: platform.sacrificeColor }}>↓ {platform.sacrifice}</span>
-                  </div>
-
-                  <p className="text-xs text-muted-foreground leading-relaxed">{platform.detail}</p>
-
-                  <div className="mt-auto rounded-lg p-2" style={{ backgroundColor: platform.color + '10', border: `1px solid ${platform.color}30` }}>
-                    <div className="text-xs font-bold mb-0.5" style={{ color: platform.color }}>{platform.answer.label}</div>
-                    <div className="text-xs text-muted-foreground">{platform.answer.value}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+        <div id="s1-trilemma" className="h-full">
+          <TrilemmaSlide />
         </div>
 
         {/* ═══════ QUIZ ═══════ */}
