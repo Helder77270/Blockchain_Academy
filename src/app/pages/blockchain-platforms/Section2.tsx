@@ -384,32 +384,44 @@ export function BP_Section2() {
           <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-5">
 
             {/* Left — Receipt */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-bold text-foreground shrink-0">Transaction fields</h3>
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="flex items-center justify-between shrink-0">
+                <h3 className="text-base font-bold text-foreground">Transaction fields</h3>
+                <span
+                  className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider"
+                  style={{ backgroundColor: '#627EEA20', color: '#627EEA' }}
+                >
+                  Type 2 · EIP-1559
+                </span>
+              </div>
               <div
-                className="flex-1 rounded-xl border p-4 font-mono text-xs flex flex-col gap-1.5"
+                className="flex-1 min-h-0 rounded-xl border p-4 font-mono text-[11px] flex flex-col gap-1 overflow-y-auto"
                 style={{ backgroundColor: 'var(--card)', borderColor: '#627EEA40' }}
               >
                 {[
-                  { field: 'nonce', value: '42', comment: '// tx count from this address' },
-                  { field: 'gasPrice', value: '20 Gwei', comment: '// price per unit of gas' },
-                  { field: 'gasLimit', value: '21000', comment: '// max gas to consume' },
-                  { field: 'to', value: '0xAbC…F1d2', comment: '// recipient address' },
-                  { field: 'value', value: '1.5 ETH', comment: '// ETH to send' },
-                  { field: 'data', value: '0x...', comment: '// calldata (empty for transfer)' },
-                  { field: 'v / r / s', value: '…', comment: '// ECDSA signature components' },
+                  { field: 'type',                 value: '0x02',         comment: '// EIP-1559 (default since London, Aug 2021)' },
+                  { field: 'chainId',              value: '1',            comment: '// mainnet · EIP-155 replay protection' },
+                  { field: 'nonce',                value: '42',           comment: '// tx count from this address' },
+                  { field: 'maxPriorityFeePerGas', value: '1.5 Gwei',     comment: '// tip paid to the validator' },
+                  { field: 'maxFeePerGas',         value: '25 Gwei',      comment: '// total cap = base fee + tip cap' },
+                  { field: 'gasLimit',             value: '21,000',       comment: '// max gas units to consume' },
+                  { field: 'to',                   value: '0xAbC…F1d2',   comment: '// recipient (null = contract deployment)' },
+                  { field: 'value',                value: '1.5 ETH',      comment: '// ETH to transfer' },
+                  { field: 'data',                 value: '0x',           comment: '// calldata (empty for plain transfer)' },
+                  { field: 'accessList',           value: '[]',           comment: '// EIP-2930 storage hint (optional)' },
+                  { field: 'yParity, r, s',        value: '…',            comment: '// ECDSA signature' },
                 ].map((row, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 + i * 0.08 }}
+                    transition={{ delay: 0.04 + i * 0.05 }}
                     className="flex items-baseline gap-2 py-1 border-b last:border-b-0"
                     style={{ borderColor: 'var(--border)' }}
                   >
-                    <span className="text-[#627EEA] font-bold w-24 shrink-0">{row.field}</span>
-                    <span className="text-foreground">{row.value}</span>
-                    <span className="text-muted-foreground ml-auto hidden lg:inline">{row.comment}</span>
+                    <span className="text-[#627EEA] font-bold w-36 shrink-0 truncate">{row.field}</span>
+                    <span className="text-foreground shrink-0">{row.value}</span>
+                    <span className="text-muted-foreground ml-auto hidden lg:inline truncate">{row.comment}</span>
                   </motion.div>
                 ))}
               </div>
