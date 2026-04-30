@@ -1650,6 +1650,34 @@ export function BP_Section3() {
           />
         </div>
 
+        {/* ═══════ QUIZ 2 — MSP / identity ═══════ */}
+        <div id="s3-quiz-2" className="h-full">
+          <QuizSlide
+            question="In a Fabric consortium between BankA and BankB, every peer must prove its identity when submitting a proposal or endorsement. Which Fabric component issues and validates these identities?"
+            options={[
+              { text: 'The Ordering Service — Raft nodes verify each transaction\'s identity before sequencing it into a block.', correct: false },
+              { text: 'The Membership Service Provider (MSP) — each organization runs its own MSP backed by a Certificate Authority that issues X.509 certificates to peers, clients and admins; remote peers validate signatures by trusting the issuer\'s root CA.', correct: true },
+              { text: 'The Channel Configuration Block — a static list of public keys committed at channel genesis is checked on every transaction.', correct: false },
+              { text: 'The Smart Contract (chaincode) — each chaincode must include identity-validation logic in its Init function.', correct: false },
+            ]}
+            explanation="Fabric is permissioned by design and relies on PKI. Every organization runs an MSP that maps cryptographic material (X.509 certificates issued by its CA) to roles (peer / client / admin / orderer). When a peer signs a proposal or endorsement, peers from other orgs validate the signature against the configured root certificate of the signer's MSP — listed in the channel configuration. The ordering service does NOT validate business identity; it only orders transactions that have already been endorsed. Identities are configured per-channel via the channel config, not hardcoded in chaincode, so adding a new org is a configuration change, not a redeployment."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3 — Endorsement policy ═══════ */}
+        <div id="s3-quiz-3" className="h-full">
+          <QuizSlide
+            question="A supply-chain chaincode is deployed to a channel with three orgs (Producer, Distributor, Retailer) and an endorsement policy of AND('Producer.peer', 'Distributor.peer'). The Retailer submits a transaction proposal that updates a delivery record. What is required for this transaction to be committed to the ledger?"
+            options={[
+              { text: 'A single Retailer peer endorses the proposal — the Retailer is the submitter, so its endorsement is sufficient.', correct: false },
+              { text: 'The proposal must be endorsed by at least one peer from Producer AND at least one peer from Distributor before reaching the orderer; the Retailer\'s endorsement is irrelevant to the policy.', correct: true },
+              { text: 'All three orgs (Producer, Distributor, Retailer) must endorse — Fabric defaults to unanimous endorsement when the submitter is on the channel.', correct: false },
+              { text: 'The Raft orderer endorses on behalf of any unspecified org once a quorum of orderer nodes is reached.', correct: false },
+            ]}
+            explanation="Endorsement policy is enforced independently of the submitter. The client (Retailer here) sends the proposal directly to the peers listed in the policy — Producer and Distributor — collects their signed read/write sets, and only then forwards the endorsed transaction to the ordering service. The orderer batches and orders transactions but never endorses. Committing peers verify on receipt that the collected endorsements satisfy the policy before applying the state change; if the policy isn't met, the transaction is marked invalid in the block but still recorded (so the audit trail captures every attempt). Submitter identity gives no special endorsement power."
+          />
+        </div>
+
         {/* ═══════ TAKEAWAYS ═══════ */}
         <div id="s3-takeaways" className="h-full">
           <TakeawaySlide

@@ -991,6 +991,34 @@ export function BP_Section2() {
           />
         </div>
 
+        {/* ═══════ QUIZ 2 — EIP-1559 fee mechanics ═══════ */}
+        <div id="s2-quiz-2" className="h-full">
+          <QuizSlide
+            question="An EIP-1559 transaction sets maxFeePerGas = 30 Gwei and maxPriorityFeePerGas = 2 Gwei. The current base fee is 25 Gwei. What does the sender actually pay per gas, and where does each part go?"
+            options={[
+              { text: '30 Gwei per gas, all of which is paid to the validator who includes the transaction.', correct: false },
+              { text: '25 Gwei base fee (burned, removed from supply) + 2 Gwei tip (paid to the validator) = 27 Gwei per gas. The remaining 3 Gwei of headroom in maxFeePerGas is refunded to the sender.', correct: true },
+              { text: '25 Gwei base fee paid to the validator + 2 Gwei priority fee burned. Total 27 Gwei per gas.', correct: false },
+              { text: '30 Gwei (max fee) + 2 Gwei (priority fee) = 32 Gwei per gas, paid entirely to the validator.', correct: false },
+            ]}
+            explanation="EIP-1559 split the gas price into two components. The protocol-determined base fee is BURNED (permanently destroyed — this is what makes ETH deflationary when activity is high). The priority fee is the tip the user offers the validator. Effective price per gas is min(maxFeePerGas, baseFee + maxPriorityFeePerGas) — here min(30, 25 + 2) = 27 Gwei. Any unused headroom is refunded. So the sender pays 27 Gwei × gasUsed: 25 burned, 2 to the validator. maxFeePerGas is a cap, not a target."
+          />
+        </div>
+
+        {/* ═══════ QUIZ 3 — Contract deployment address ═══════ */}
+        <div id="s2-quiz-3" className="h-full">
+          <QuizSlide
+            question="Bob deploys a smart contract by sending a transaction with to = null and the compiled bytecode in the data field. How is the new contract's address determined?"
+            options={[
+              { text: 'Bob picks any unused 20-byte address and includes it in the transaction\'s value field.', correct: false },
+              { text: 'The Ethereum protocol generates a random 20-byte address at deployment time, so the address is unpredictable until the transaction is mined.', correct: false },
+              { text: 'For a regular CREATE deployment, the address is derived deterministically from keccak256(senderAddress, senderNonce) — Bob can compute the future contract address before sending the transaction.', correct: true },
+              { text: 'The address equals keccak256(bytecode), so two deployments of identical contracts always share the same address.', correct: false },
+            ]}
+            explanation="CREATE derives the contract address from rlp(senderAddress, senderNonce), then takes the last 20 bytes of its keccak256 hash. This means anyone can predict the future contract address before deployment — useful for state channels and counterfactual instantiation. CREATE2 (introduced in Constantinople) uses keccak256(0xff, deployer, salt, keccak256(initCode)) so the address depends on a salt and the init code, decoupling it from nonce — enabling address pre-commitment regardless of deployment order. Identical bytecode does NOT share an address with CREATE; CREATE2 distinguishes by salt."
+          />
+        </div>
+
         {/* ═══════ TAKEAWAYS ═══════ */}
         <div id="s2-takeaways" className="h-full">
           <TakeawaySlide
