@@ -154,62 +154,68 @@ export function BP_Section4() {
           <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
 
             {/* Hall of shame */}
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-black uppercase tracking-widest text-muted-foreground">Largest Bridge Hacks</div>
-              {[
-                { name: 'Ronin Bridge', amount: '$625M', year: '2022', chain: 'Axie Infinity ↔ Ethereum', method: 'Attacker compromised 5 of 9 validator private keys — met the 5/9 multisig threshold and drained the entire lock-up contract.', color: '#ef4444' },
-                { name: 'Wormhole Bridge', amount: '$320M', year: '2022', chain: 'Solana ↔ Ethereum', method: 'Signature verification bypass — attacker forged a guardian signature to mint 120,000 wETH on Solana without locking real ETH.', color: '#f97316' },
-                { name: 'Nomad Bridge', amount: '$190M', year: '2022', chain: 'Multi-chain', method: 'Initialization bug — a root hash was set to 0x0, which is truthy in the verify function. Anyone could replay any message. Hundreds of copycats drained it simultaneously.', color: '#eab308' },
-                { name: 'Harmony Horizon', amount: '$100M', year: '2022', chain: 'Harmony ↔ Ethereum', method: '2-of-5 multisig with only 4 active signers — attacker compromised 2 keys, meeting the threshold with minimal effort.', color: '#6366f1' },
-              ].map(h => (
-                <div key={h.name} className="p-3 bg-card border rounded-xl flex flex-col gap-1" style={{ borderColor: h.color + '40' }}>
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-foreground">{h.name}</span>
-                    <span className="font-black text-sm" style={{ color: h.color }}>{h.amount}</span>
+            <div className="flex flex-col gap-2 min-h-0">
+              <div className="text-xs font-black uppercase tracking-widest text-muted-foreground shrink-0">Largest Bridge Hacks</div>
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+                {[
+                  { name: 'Ronin Bridge', amount: '$625M', year: '2022', chain: 'Axie Infinity ↔ Ethereum', method: 'Attacker compromised 5 of 9 validator private keys — met the 5/9 multisig threshold and drained the entire lock-up contract.', color: '#ef4444' },
+                  { name: 'Wormhole Bridge', amount: '$320M', year: '2022', chain: 'Solana ↔ Ethereum', method: 'Signature verification bypass — attacker forged a guardian signature to mint 120,000 wETH on Solana without locking real ETH.', color: '#f97316' },
+                  { name: 'Nomad Bridge', amount: '$190M', year: '2022', chain: 'Multi-chain', method: 'Initialization bug — a root hash was set to 0x0, which is truthy in the verify function. Anyone could replay any message. Hundreds of copycats drained it simultaneously.', color: '#eab308' },
+                  { name: 'Harmony Horizon', amount: '$100M', year: '2022', chain: 'Harmony ↔ Ethereum', method: '2-of-5 multisig with only 4 active signers — attacker compromised 2 keys, meeting the threshold with minimal effort.', color: '#6366f1' },
+                ].map(h => (
+                  <div key={h.name} className="min-h-0 p-3 bg-card border rounded-xl flex flex-col gap-1" style={{ borderColor: h.color + '40' }}>
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-foreground">{h.name}</span>
+                      <span className="font-black text-sm" style={{ color: h.color }}>{h.amount}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">{h.year} · {h.chain}</div>
+                    <div className="text-xs text-muted-foreground leading-snug">{h.method}</div>
                   </div>
-                  <div className="text-xs text-muted-foreground">{h.year} · {h.chain}</div>
-                  <div className="text-xs text-muted-foreground leading-snug">{h.method}</div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {/* Why bridges are risky */}
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-black uppercase tracking-widest text-muted-foreground">Why Bridges Are Structurally Dangerous</div>
-              {[
-                { icon: '🍯', title: 'Honeypot Architecture', desc: 'To bridge 1 ETH from Ethereum to another chain, you lock 1 ETH in a smart contract and mint wrapped ETH on the destination. Every user adds to the same pot — creating a target that grows with adoption. A bridge with $500M TVL is a $500M bug bounty.' },
-                { icon: '🔑', title: 'Centralized Trust Assumptions', desc: 'Most bridges rely on a multisig of validators to confirm cross-chain events. This is inherently centralized. If the validator key set is small (2-of-5) or the keys are stored insecurely, the entire TVL is at risk from a single coordinated key compromise.' },
-                { icon: '⚠️', title: 'Cross-Chain Complexity', desc: 'Bridges must reason about the state of two different blockchains simultaneously. Message passing, signature verification, and finality assumptions differ per chain. This surface area is enormous — and bugs in any layer can be fatal.' },
-                { icon: '⏱️', title: 'Finality Mismatch', desc: 'Optimistic bridges release funds before finality is confirmed on the source chain. If a transaction is later reorganized (reorged), the bridge may have already minted assets on the destination with no backing.' },
-              ].map(r => (
-                <div key={r.title} className="p-3 bg-card border border-border rounded-xl flex gap-2.5">
-                  <span className="text-xl shrink-0">{r.icon}</span>
-                  <div>
-                    <div className="font-bold text-xs text-foreground mb-0.5">{r.title}</div>
-                    <div className="text-xs text-muted-foreground leading-snug">{r.desc}</div>
+            <div className="flex flex-col gap-2 min-h-0">
+              <div className="text-xs font-black uppercase tracking-widest text-muted-foreground shrink-0">Why Bridges Are Structurally Dangerous</div>
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+                {[
+                  { icon: '🍯', title: 'Honeypot Architecture', desc: 'To bridge 1 ETH from Ethereum to another chain, you lock 1 ETH in a smart contract and mint wrapped ETH on the destination. Every user adds to the same pot — creating a target that grows with adoption. A bridge with $500M TVL is a $500M bug bounty.' },
+                  { icon: '🔑', title: 'Centralized Trust Assumptions', desc: 'Most bridges rely on a multisig of validators to confirm cross-chain events. This is inherently centralized. If the validator key set is small (2-of-5) or the keys are stored insecurely, the entire TVL is at risk from a single coordinated key compromise.' },
+                  { icon: '⚠️', title: 'Cross-Chain Complexity', desc: 'Bridges must reason about the state of two different blockchains simultaneously. Message passing, signature verification, and finality assumptions differ per chain. This surface area is enormous — and bugs in any layer can be fatal.' },
+                  { icon: '⏱️', title: 'Finality Mismatch', desc: 'Optimistic bridges release funds before finality is confirmed on the source chain. If a transaction is later reorganized (reorged), the bridge may have already minted assets on the destination with no backing.' },
+                ].map(r => (
+                  <div key={r.title} className="min-h-0 p-3 bg-card border border-border rounded-xl flex gap-2.5 items-start">
+                    <span className="text-xl shrink-0 leading-none">{r.icon}</span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-xs text-foreground mb-0.5">{r.title}</div>
+                      <div className="text-xs text-muted-foreground leading-snug">{r.desc}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {/* Safer alternatives + best practices */}
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-black uppercase tracking-widest text-muted-foreground">Safer Design Patterns</div>
-              {[
-                { title: 'Native IBC (Cosmos)', color: '#39B54A', desc: 'Inter-Blockchain Communication is baked into the protocol — no external multisig, no lock-up contract. Light client verification on both sides. Zero bridge hacks via IBC to date.' },
-                { title: 'Canonical Bridges', color: '#6366f1', desc: "Ethereum's official rollup bridges (Arbitrum, Optimism, Base) use the rollup's own fraud/validity proof system — inherited L1 security, not a separate trust set." },
-                { title: 'Large Multisig Thresholds', color: '#f97316', desc: '5-of-9 is the minimum acceptable. Ronin used 5-of-9 but had only 4 real signers. Hardware security modules (HSMs) for key storage are mandatory.' },
-                { title: 'Formal Verification', color: '#eab308', desc: 'Message passing logic and signature verification code should be formally verified — not just audited. Wormhole\'s bug passed manual audit.' },
-                { title: 'Rate Limits & Circuit Breakers', color: '#ef4444', desc: 'Cap how much can be withdrawn per hour. Nomad\'s $190M was drained by hundreds of copycats within minutes — a rate limiter would have saved $180M.' },
-              ].map(p => (
-                <div key={p.title} className="flex gap-2.5 p-3 bg-card border rounded-xl" style={{ borderColor: p.color + '30' }}>
-                  <div className="w-1 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
-                  <div>
-                    <div className="font-bold text-xs mb-0.5" style={{ color: p.color }}>{p.title}</div>
-                    <div className="text-xs text-muted-foreground leading-snug">{p.desc}</div>
+            <div className="flex flex-col gap-2 min-h-0">
+              <div className="text-xs font-black uppercase tracking-widest text-muted-foreground shrink-0">Safer Design Patterns</div>
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+                {[
+                  { title: 'Native IBC (Cosmos)', color: '#39B54A', desc: 'Inter-Blockchain Communication is baked into the protocol — no external multisig, no lock-up contract. Light client verification on both sides. Zero bridge hacks via IBC to date.' },
+                  { title: 'Canonical Bridges', color: '#6366f1', desc: "Ethereum's official rollup bridges (Arbitrum, Optimism, Base) use the rollup's own fraud/validity proof system — inherited L1 security, not a separate trust set." },
+                  { title: 'Large Multisig Thresholds', color: '#f97316', desc: '5-of-9 is the minimum acceptable. Ronin used 5-of-9 but had only 4 real signers. Hardware security modules (HSMs) for key storage are mandatory.' },
+                  { title: 'Formal Verification', color: '#eab308', desc: 'Message passing logic and signature verification code should be formally verified — not just audited. Wormhole\'s bug passed manual audit.' },
+                  { title: 'Rate Limits & Circuit Breakers', color: '#ef4444', desc: 'Cap how much can be withdrawn per hour. Nomad\'s $190M was drained by hundreds of copycats within minutes — a rate limiter would have saved $180M.' },
+                ].map(p => (
+                  <div key={p.title} className="min-h-0 flex gap-2.5 p-3 bg-card border rounded-xl items-start" style={{ borderColor: p.color + '30' }}>
+                    <div className="w-1 self-stretch rounded-full shrink-0" style={{ backgroundColor: p.color }} />
+                    <div className="min-w-0">
+                      <div className="font-bold text-xs mb-0.5" style={{ color: p.color }}>{p.title}</div>
+                      <div className="text-xs text-muted-foreground leading-snug">{p.desc}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
