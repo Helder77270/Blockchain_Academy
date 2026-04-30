@@ -1078,69 +1078,74 @@ const CONSENSUS_VERSIONS: ConsensusVersion[] = [
 function ConsensusMiniDiagram({ kind, color }: { kind: 'kafka' | 'raft' | 'bft'; color: string }) {
   if (kind === 'kafka') {
     return (
-      <svg viewBox="0 0 200 80" className="w-full h-16">
+      <svg viewBox="0 0 240 120" className="w-full h-28">
         {/* Peers row */}
-        {[35, 75, 115, 155].map((x, i) => (
+        {[40, 90, 150, 200].map((x, i) => (
           <g key={i}>
-            <circle cx={x} cy={14} r={6} fill={color + '30'} stroke={color} strokeWidth={1} />
-            <text x={x} y={17} textAnchor="middle" fontSize={6} fill="currentColor" className="text-foreground">P{i + 1}</text>
-            <line x1={x} y1={20} x2={100} y2={50} stroke={color} strokeWidth={0.6} strokeDasharray="2 2" opacity={0.6} />
+            <circle cx={x} cy={22} r={11} fill={color + '30'} stroke={color} strokeWidth={1.5} />
+            <text x={x} y={26} textAnchor="middle" fontSize={10} fontWeight="700" fill="currentColor" className="text-foreground">P{i + 1}</text>
+            <line x1={x} y1={33} x2={120} y2={75} stroke={color} strokeWidth={1} strokeDasharray="3 3" opacity={0.6} />
           </g>
         ))}
         {/* External Kafka box */}
-        <rect x={50} y={48} width={100} height={22} rx={4} fill={color + '20'} stroke={color} strokeWidth={1} strokeDasharray="3 2" />
-        <text x={100} y={59} textAnchor="middle" fontSize={7} fontWeight="700" fill={color}>Kafka cluster</text>
-        <text x={100} y={67} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">+ Zookeeper · external</text>
+        <rect x={50} y={70} width={140} height={38} rx={6} fill={color + '20'} stroke={color} strokeWidth={1.5} strokeDasharray="4 3" />
+        <text x={120} y={88} textAnchor="middle" fontSize={11} fontWeight="800" fill={color}>Kafka cluster</text>
+        <text x={120} y={102} textAnchor="middle" fontSize={9} fill="currentColor" className="text-muted-foreground">+ Zookeeper · external</text>
       </svg>
     );
   }
   if (kind === 'raft') {
     return (
-      <svg viewBox="0 0 200 80" className="w-full h-16">
+      <svg viewBox="0 0 240 120" className="w-full h-28">
         {/* Leader */}
-        <circle cx={100} cy={18} r={9} fill={color + '40'} stroke={color} strokeWidth={1.5} />
-        <text x={100} y={21} textAnchor="middle" fontSize={6} fontWeight="700" fill={color}>LEAD</text>
+        <circle cx={120} cy={28} r={16} fill={color + '40'} stroke={color} strokeWidth={2} />
+        <text x={120} y={32} textAnchor="middle" fontSize={10} fontWeight="800" fill={color}>LEAD</text>
         {/* Followers */}
-        {[55, 145].map((x, i) => (
+        {[60, 180].map((x, i) => (
           <g key={i}>
-            <circle cx={x} cy={58} r={7} fill={color + '20'} stroke={color} strokeWidth={1} />
-            <text x={x} y={61} textAnchor="middle" fontSize={5} fontWeight="600" fill={color}>F{i + 1}</text>
-            <line x1={100} y1={26} x2={x} y2={51} stroke={color} strokeWidth={1.2} markerEnd="url(#arrow-raft)" />
+            <circle cx={x} cy={88} r={13} fill={color + '20'} stroke={color} strokeWidth={1.5} />
+            <text x={x} y={92} textAnchor="middle" fontSize={9} fontWeight="700" fill={color}>F{i + 1}</text>
+            <line x1={120} y1={44} x2={x} y2={75} stroke={color} strokeWidth={1.8} markerEnd="url(#arrow-raft)" />
           </g>
         ))}
         <defs>
-          <marker id="arrow-raft" markerWidth={5} markerHeight={5} refX={4} refY={2.5} orient="auto">
-            <polygon points="0 0, 5 2.5, 0 5" fill={color} />
+          <marker id="arrow-raft" markerWidth={7} markerHeight={7} refX={6} refY={3.5} orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill={color} />
           </marker>
         </defs>
-        <text x={100} y={75} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">log replication</text>
+        <text x={120} y={114} textAnchor="middle" fontSize={9} fill="currentColor" className="text-muted-foreground">log replication</text>
       </svg>
     );
   }
   // bft
   return (
-    <svg viewBox="0 0 200 80" className="w-full h-16">
+    <svg viewBox="0 0 240 120" className="w-full h-28">
       {/* 4 nodes in a square */}
       {[
-        { x: 70, y: 22, label: 'N1', honest: true },
-        { x: 130, y: 22, label: 'N2', honest: true },
-        { x: 70, y: 56, label: 'N3', honest: true },
-        { x: 130, y: 56, label: 'N4', honest: false },
+        { x: 80,  y: 32, label: 'N1', honest: true },
+        { x: 160, y: 32, label: 'N2', honest: true },
+        { x: 80,  y: 84, label: 'N3', honest: true },
+        { x: 160, y: 84, label: 'N4', honest: false },
       ].map((n, i) => (
         <g key={i}>
-          <circle cx={n.x} cy={n.y} r={8} fill={n.honest ? color + '30' : '#ED1C2430'} stroke={n.honest ? color : '#ED1C24'} strokeWidth={1.2} />
-          <text x={n.x} y={n.y + 3} textAnchor="middle" fontSize={6} fontWeight="700" fill={n.honest ? color : '#ED1C24'}>
+          <circle
+            cx={n.x} cy={n.y} r={14}
+            fill={n.honest ? color + '30' : '#ED1C2430'}
+            stroke={n.honest ? color : '#ED1C24'}
+            strokeWidth={1.8}
+          />
+          <text x={n.x} y={n.y + 4} textAnchor="middle" fontSize={n.honest ? 10 : 13} fontWeight="800" fill={n.honest ? color : '#ED1C24'}>
             {n.honest ? n.label : '✗'}
           </text>
         </g>
       ))}
-      {/* Connecting lines between honest nodes */}
+      {/* Connecting lines between honest nodes (triangle) */}
       {[
-        [70, 22, 130, 22], [70, 22, 70, 56], [130, 22, 70, 56],
+        [80, 32, 160, 32], [80, 32, 80, 84], [160, 32, 80, 84],
       ].map(([x1, y1, x2, y2], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={0.8} opacity={0.55} />
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={1.2} opacity={0.55} />
       ))}
-      <text x={100} y={75} textAnchor="middle" fontSize={6} fill="currentColor" className="text-muted-foreground">≥ 2f+1 honest agree</text>
+      <text x={120} y={114} textAnchor="middle" fontSize={9} fill="currentColor" className="text-muted-foreground">≥ 2f+1 honest agree</text>
     </svg>
   );
 }
