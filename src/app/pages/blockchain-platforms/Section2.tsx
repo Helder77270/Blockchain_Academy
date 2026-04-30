@@ -17,6 +17,7 @@ const chapters = [
   { id: 's2-consensus', label: 'PoW → PoS' },
   { id: 's2-evmecosystem', label: 'EVM Everywhere' },
   { id: 's2-defi',        label: 'DeFi Mechanics' },
+  { id: 's2-apps',        label: 'Apps Beyond DeFi' },
   { id: 's2-comparison',  label: 'BTC vs ETH' },
   { id: 's2-quiz', label: 'Quiz' },
   { id: 's2-takeaways', label: 'Takeaways' },
@@ -952,6 +953,95 @@ export function BP_Section2() {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        {/* ═══════ APPS — Beyond DeFi ═══════ */}
+        <div id="s2-apps" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Beyond DeFi — what else runs on Ethereum</h2>
+            <p className="text-sm text-muted-foreground mt-1">DeFi is the most-discussed app category — but not the only one. The same EVM hosts ownership, governance, identity, and games at meaningful scale.</p>
+          </div>
+
+          <div className="shrink-0 mb-4 rounded-xl border p-3" style={{ borderColor: '#627EEA55', backgroundColor: '#627EEA0d' }}>
+            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#627EEA' }}>The token standards under everything</p>
+            <p className="text-sm text-foreground mt-0.5 leading-snug">
+              Most non-DeFi apps boil down to three token standards: <span className="font-semibold">ERC-20</span> (fungible — coins, shares, governance), <span className="font-semibold">ERC-721</span> (unique — NFTs, identity, deeds), <span className="font-semibold">ERC-1155</span> (mixed — game items). The "app" is really a smart contract that mints, transfers, or queries these tokens.
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-3">
+            {[
+              {
+                icon: '🎨',
+                title: 'NFTs & digital ownership',
+                sub: 'ERC-721 / ERC-1155',
+                color: '#8b5cf6',
+                what: 'A unique on-chain token whose tokenURI points to off-chain metadata (image, JSON). The token proves provenance; the bytes typically live on IPFS or a centralised server.',
+                examples: 'CryptoPunks (2017) · Bored Ape (2021) · Tickets: Liverpool FC, Coachella · Music: Sound.xyz · Brand IP: Nike RTFKT, Disney pilots.',
+                limit: 'Most metadata is off-chain — if the URL or IPFS pin disappears, the "NFT" is a broken pointer. The 2021-22 speculation cycle collapsed; survivors pivoted to utility (tickets, rights, identity) rather than JPEG flipping.',
+              },
+              {
+                icon: '🏛️',
+                title: 'DAOs & on-chain governance',
+                sub: 'ERC-20 voting · contract-controlled treasury',
+                color: '#10b981',
+                what: 'A Decentralized Autonomous Organization is a smart contract that controls a treasury and executes proposals approved by token-holder votes. The contract — not a CEO — moves the funds.',
+                examples: 'MakerDAO (DAI issuance) · Uniswap DAO (controls $7B+ in UNI) · ENS DAO (.eth registry) · Optimism Citizen House · Gitcoin grants.',
+                limit: 'Voter turnout often 1–5%. Token-weighted votes mean whales decide. Most "DAOs" delegate decisions to small core teams. Legal status of DAOs is unsettled in most jurisdictions.',
+              },
+              {
+                icon: '🆔',
+                title: 'Identity & decentralized social',
+                sub: 'ENS · SIWE · Lens · Farcaster',
+                color: '#f59e0b',
+                what: 'Replace email logins with wallet-based identity. ENS gives you a human name (alice.eth) for your address. Sign-In With Ethereum (SIWE) authenticates without passwords. Lens and Farcaster build social graphs on-chain.',
+                examples: 'ENS: 3M+ names registered · SIWE: 200+ apps integrated · Farcaster: ~300k DAU (2024) · Worldcoin: 7M+ verified humans · Lens: built around composable feed graphs.',
+                limit: 'Still niche vs Web2 social. Wallet-and-gas onboarding blocks most users. ENS names cost gas to mint. Decentralised social hasn\'t solved spam or moderation as well as centralised platforms — yet.',
+              },
+              {
+                icon: '🎮',
+                title: 'On-chain gaming & metaverse',
+                sub: 'Most assets now live on L2s',
+                color: '#ED1C24',
+                what: 'Game assets (skins, characters, items) as tokens players actually own and can trade. Ranges from "off-chain game with NFT cosmetics" to "fully on-chain games" where every game state lives in contracts (Dojo engine).',
+                examples: 'Immutable (zkEVM for games) · Ronin (Axie Infinity peaked $3B GMV in 2021) · Decentraland · Realms / Loot Survivor on Starknet · DFK Chain (Avalanche L1).',
+                limit: 'Most "Web3 games" failed (poor gameplay, predatory tokenomics, Ponzi-shaped incentives). Wallet UX still blocks mainstream gaming. Serious studios increasingly land on "game first, blockchain optional".',
+              },
+            ].map(app => (
+              <motion.div
+                key={app.title}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="rounded-xl border-2 p-3 flex flex-col gap-2 min-h-0"
+                style={{ borderColor: app.color + '50', backgroundColor: app.color + '08' }}
+              >
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xl shrink-0 leading-none">{app.icon}</span>
+                  <div className="min-w-0">
+                    <div className="font-black text-sm leading-tight" style={{ color: app.color }}>{app.title}</div>
+                    <div className="text-[10px] text-muted-foreground leading-tight">{app.sub}</div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-snug flex-1">{app.what}</p>
+                <div className="rounded-lg border bg-card/60 px-2 py-1 text-[10px] leading-snug" style={{ borderColor: app.color + '40' }}>
+                  <span className="font-bold" style={{ color: app.color }}>Examples: </span>
+                  <span className="text-muted-foreground">{app.examples}</span>
+                </div>
+                <div className="rounded-lg border bg-card/60 px-2 py-1 text-[10px] leading-snug" style={{ borderColor: '#ED1C2440' }}>
+                  <span className="font-bold" style={{ color: '#ED1C24' }}>Honest limit: </span>
+                  <span className="text-muted-foreground">{app.limit}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-3 rounded-xl border p-2.5" style={{ borderColor: '#627EEA55', backgroundColor: '#627EEA0d' }}>
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              <span className="font-bold" style={{ color: '#627EEA' }}>The URI gotcha — </span>
+              ERC-721 NFTs typically store only a URL pointing to off-chain metadata. The token on-chain proves you own a pointer; the actual image/asset lives on IPFS, Arweave, or — too often — a single web server. If the host disappears, your NFT renders blank. Always check where the metadata is pinned before buying.
+            </p>
           </div>
         </div>
 

@@ -14,6 +14,7 @@ const chapters = [
   { id: 's4-layer0', label: 'Layer 0' },
   { id: 's4-starknet', label: 'Starknet' },
   { id: 's4-layer2',   label: 'Layer 2: Optimistic vs ZK' },
+  { id: 's4-l2apps',   label: 'L2 App Landscape' },
   { id: 's4-quiz',     label: 'Quiz' },
   { id: 's4-takeaways', label: 'Takeaways' },
 ];
@@ -778,6 +779,141 @@ export function BP_Section4() {
                 </ul>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* ═══════ L2 APPS — what runs on each rollup ═══════ */}
+        <div id="s4-l2apps" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">What runs on each rollup</h2>
+            <p className="text-sm text-muted-foreground mt-1">Mechanism (optimistic vs ZK) is one axis. Culture is another — each major rollup has developed a distinct app character that often matters more than the proving system.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-5 gap-2.5">
+            {[
+              {
+                emoji: '🟦',
+                name: 'Arbitrum One',
+                type: 'Optimistic',
+                typeColor: '#f97316',
+                color: '#28A0F0',
+                culture: 'DeFi-heavy · mature ecosystem',
+                tvl: '~$13B TVL — highest of any L2',
+                apps: [
+                  { name: 'GMX',     kind: 'Decentralised perpetuals' },
+                  { name: 'Camelot', kind: 'Native DEX, concentrated liquidity' },
+                  { name: 'Pendle',  kind: 'Yield-tokenisation primitive' },
+                  { name: 'Radiant', kind: 'Cross-chain lending' },
+                ],
+              },
+              {
+                emoji: '🔴',
+                name: 'Optimism · OP Stack',
+                type: 'Optimistic',
+                typeColor: '#f97316',
+                color: '#FF0420',
+                culture: 'Public-goods · modular framework',
+                tvl: 'OP Stack also powers Base, Worldchain, Mode, opBNB',
+                apps: [
+                  { name: 'Velodrome',   kind: 'Vote-escrow DEX, cornerstone of OP DeFi' },
+                  { name: 'Synthetix',   kind: 'Synthetic assets and on-chain perps' },
+                  { name: 'Worldcoin',   kind: 'Iris-scan identity, $WLD' },
+                  { name: 'Retro Funding', kind: 'Public-goods grants via OP DAO' },
+                ],
+              },
+              {
+                emoji: '🔵',
+                name: 'Base (Coinbase)',
+                type: 'OP Stack',
+                typeColor: '#f97316',
+                color: '#0052FF',
+                culture: 'Consumer & social-first',
+                tvl: '~$5B TVL · fastest user growth in 2024',
+                apps: [
+                  { name: 'Aerodrome',        kind: 'Velodrome fork, dominant Base DEX' },
+                  { name: 'Zora',             kind: 'Mint-anything creator economy' },
+                  { name: 'Farcaster Frames', kind: 'Mini-apps inside social posts' },
+                  { name: 'friend.tech',      kind: '2023 hype-and-bust — honest case study' },
+                ],
+              },
+              {
+                emoji: '⬛',
+                name: 'zkSync Era',
+                type: 'ZK',
+                typeColor: '#8b5cf6',
+                color: '#1E69FF',
+                culture: 'Native account abstraction',
+                tvl: 'Earlier zkRollup · ZK Stack now powers other ZK chains',
+                apps: [
+                  { name: 'SyncSwap',  kind: 'Native AMM' },
+                  { name: 'Maverick',  kind: 'Directional liquidity AMM' },
+                  { name: 'ZeroLend',  kind: 'Lending market' },
+                  { name: 'Native AA', kind: 'Every wallet is a smart contract by default' },
+                ],
+              },
+              {
+                emoji: '🟪',
+                name: 'Starknet',
+                type: 'ZK · Cairo',
+                typeColor: '#8b5cf6',
+                color: '#EC796B',
+                culture: 'Gaming · AI agents · on-chain compute',
+                tvl: 'Cairo-native VM · STARK proofs · STRK token',
+                apps: [
+                  { name: 'Realms / Loot Survivor', kind: 'Fully on-chain games (Dojo engine)' },
+                  { name: 'Ekubo',                  kind: 'Starknet-native concentrated AMM' },
+                  { name: 'Influence',              kind: 'On-chain space MMO' },
+                  { name: 'AI Agent experiments',   kind: 'Autonomous agents with on-chain state' },
+                ],
+              },
+            ].map(rollup => (
+              <motion.div
+                key={rollup.name}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-1.5 p-2.5 rounded-xl border-2 min-h-0"
+                style={{ borderColor: rollup.color + '55', backgroundColor: rollup.color + '0a' }}
+              >
+                <div className="shrink-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-base shrink-0 leading-none">{rollup.emoji}</span>
+                    <div className="font-black text-[12px] leading-tight" style={{ color: rollup.color }}>{rollup.name}</div>
+                  </div>
+                  <span
+                    className="inline-block text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded mt-1"
+                    style={{ backgroundColor: rollup.typeColor + '20', color: rollup.typeColor, border: `1px solid ${rollup.typeColor}40` }}
+                  >
+                    {rollup.type}
+                  </span>
+                </div>
+
+                <div className="shrink-0">
+                  <div className="text-[10px] text-foreground font-medium leading-tight">{rollup.culture}</div>
+                  <div className="text-[9px] text-muted-foreground italic leading-snug mt-0.5">{rollup.tvl}</div>
+                </div>
+
+                <div className="flex-1 min-h-0 flex flex-col gap-1">
+                  {rollup.apps.map(app => (
+                    <div
+                      key={app.name}
+                      className="rounded-md border bg-card/60 px-1.5 py-1 min-h-0"
+                      style={{ borderColor: rollup.color + '35' }}
+                    >
+                      <div className="text-[10px] font-bold leading-tight" style={{ color: rollup.color }}>{app.name}</div>
+                      <div className="text-[9px] text-muted-foreground leading-snug mt-0.5">{app.kind}</div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-3 rounded-xl border p-2.5" style={{ borderColor: '#8b5cf655', backgroundColor: '#8b5cf60d' }}>
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              <span className="font-bold" style={{ color: '#8b5cf6' }}>How to choose — </span>
+              DeFi-mature builder → Arbitrum or Base. Public goods or rollup-as-a-service → Optimism / OP Stack. Consumer & social with Coinbase reach → Base. Account-abstraction native → zkSync. Games or proof-heavy compute → Starknet. The mechanism (optimistic vs ZK) increasingly matters less than the ecosystem fit.
+            </p>
           </div>
         </div>
 

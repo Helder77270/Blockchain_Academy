@@ -21,6 +21,7 @@ const chapters = [
   { id: 's3-txflow', label: 'Transaction Flow' },
   { id: 's3-exercise-supply', label: 'Exercise: Supply Chain' },
   { id: 's3-exercise-health', label: 'Exercise: Health Data' },
+  { id: 's3-production', label: 'In Production' },
   { id: 's3-comparison', label: 'ETH vs Fabric' },
   { id: 's3-quiz', label: 'Quiz' },
   { id: 's3-takeaways', label: 'Takeaways' },
@@ -1958,6 +1959,99 @@ export function BP_Section3() {
         {/* ═══════ EXERCISE: HEALTH DATA ═══════ */}
         <div id="s3-exercise-health" className="h-full">
           <HealthDataExercise />
+        </div>
+
+        {/* ═══════ PRODUCTION — Fabric in the wild ═══════ */}
+        <div id="s3-production" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Fabric in production — three honest case studies</h2>
+            <p className="text-sm text-muted-foreground mt-1">What real Fabric networks look like at scale — including one that succeeded, one that shut down, and one quietly becoming critical infrastructure.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-3">
+            {[
+              {
+                statusColor: '#39B54A',
+                statusLabel: '✓ Live · expanding',
+                name: 'IBM Food Trust',
+                sub: 'Food supply traceability · 2018+',
+                members: 'Walmart · Carrefour · Nestlé · Tyson · Unilever · Albertsons · 100+ orgs',
+                flow: 'Harvest → processing → shipping → retail. Each step writes provenance + cold-chain data to the channel.',
+                outcome: 'Walmart mango trace: 7 days → 2.2 sec. Used live in salmonella outbreak responses. Walmart now requires Food Trust onboarding for leafy-green suppliers.',
+                lesson: 'Worked because (a) Walmart could mandate adoption, and (b) the alternative was decades-old paper / EDI workflows that genuinely failed during recalls.',
+              },
+              {
+                statusColor: '#ED1C24',
+                statusLabel: '✗ Shut down 2022',
+                name: 'Maersk TradeLens',
+                sub: 'Global shipping container tracking · 2018-2022',
+                members: 'Maersk + IBM · select carriers · 50+ ports · 200M+ events / yr at peak',
+                flow: 'Shipping events (load, unload, customs, transhipment) written to the channel by carriers, ports, and customs authorities.',
+                outcome: 'Reduced docs processing time. But: rival carriers (MSC, CMA CGM, Hapag-Lloyd) refused to join a Maersk-branded network. Network effects collapsed. Both partners exited Q1 2022.',
+                lesson: 'Permissioned blockchain needs neutral governance OR a regulator mandate. A consortium owned by one competitor is a contradiction in terms — others won\'t feed data to a rival\'s ledger.',
+              },
+              {
+                statusColor: '#6366f1',
+                statusLabel: '◉ Critical infrastructure',
+                name: 'EU EBSI',
+                sub: 'European Blockchain Services Infrastructure · 2018+',
+                members: '27 EU member states + EEA · cross-border verifiable credentials · part of EU Digital Identity Wallet',
+                flow: 'Issues and verifies cross-border credentials: diplomas, professional licences, eIDAS attestations, customs documents — backed by member-state validators.',
+                outcome: 'Becomes mandatory infrastructure for the EU Digital Identity Wallet (eIDAS 2.0, member-state mandate by 2026). Universities issue Fabric-anchored diplomas verifiable across borders.',
+                lesson: 'Government-led consortiums sidestep the network-effect problem — participation is a regulatory obligation, not a market choice. The most boring Fabric deployments may end up the most consequential.',
+              },
+            ].map(p => (
+              <motion.div
+                key={p.name}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-2 p-3 rounded-xl border-2 min-h-0"
+                style={{ borderColor: p.statusColor + '55', backgroundColor: p.statusColor + '0a' }}
+              >
+                <div className="shrink-0">
+                  <span
+                    className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: p.statusColor + '18', color: p.statusColor, border: `1px solid ${p.statusColor}40` }}
+                  >
+                    {p.statusLabel}
+                  </span>
+                </div>
+
+                <div className="shrink-0">
+                  <div className="font-black text-base text-foreground leading-tight">{p.name}</div>
+                  <div className="text-[11px] text-muted-foreground leading-snug">{p.sub}</div>
+                </div>
+
+                <div className="shrink-0 rounded-lg border bg-card/50 px-2 py-1.5" style={{ borderColor: p.statusColor + '30' }}>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Consortium</div>
+                  <div className="text-[10px] text-foreground leading-snug mt-0.5">{p.members}</div>
+                </div>
+
+                <div className="shrink-0 rounded-lg border bg-card/50 px-2 py-1.5" style={{ borderColor: p.statusColor + '30' }}>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Data flow</div>
+                  <div className="text-[10px] text-muted-foreground leading-snug mt-0.5">{p.flow}</div>
+                </div>
+
+                <div className="rounded-lg border bg-card/50 px-2 py-1.5 flex-1 min-h-0" style={{ borderColor: p.statusColor + '30' }}>
+                  <div className="text-[9px] font-bold uppercase tracking-wider" style={{ color: p.statusColor }}>Outcome</div>
+                  <div className="text-[10px] text-muted-foreground leading-snug mt-0.5">{p.outcome}</div>
+                </div>
+
+                <div className="shrink-0 rounded-lg p-2 border-l-2" style={{ borderColor: p.statusColor, backgroundColor: p.statusColor + '12' }}>
+                  <div className="text-[9px] font-black uppercase tracking-widest" style={{ color: p.statusColor }}>Lesson</div>
+                  <div className="text-[10px] text-muted-foreground leading-snug mt-0.5">{p.lesson}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-3 rounded-xl border p-2.5" style={{ borderColor: '#39B54A55', backgroundColor: '#39B54A0d' }}>
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              <span className="font-bold" style={{ color: '#39B54A' }}>The pattern — </span>
+              Permissioned blockchain succeeds where (a) a credible authority can require participation (Walmart's market power, the EU's regulatory mandate), and (b) the alternative process — paper, EDI, faxes, siloed ERP — has been demonstrably broken for years. Where the alternative is "good enough Excel", consortiums fail quietly.
+            </p>
+          </div>
         </div>
 
         {/* ═══════ COMPARISON ═══════ */}
