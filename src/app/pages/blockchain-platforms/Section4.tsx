@@ -222,159 +222,193 @@ export function BP_Section4() {
 
         {/* ═══════ S4-COSMOS ═══════ */}
         <div id="s4-cosmos" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="mb-4 lg:mb-6">
-            <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-1 lg:mb-2">
+          <div className="shrink-0 mb-4">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">
               Cosmos: The Internet of Blockchains
             </h2>
-            <p className="text-sm lg:text-base text-muted-foreground">
-              Cosmos is a network of sovereign, interoperable blockchains connected by the IBC protocol — each chain optimised for its specific use case.
+            <p className="text-sm text-muted-foreground mt-1">
+              A network of sovereign, interoperable chains connected by the IBC protocol — each one optimised for its specific use case.
             </p>
           </div>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 min-h-0">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-5 min-h-0">
+
             {/* Left — Architecture visual */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 mb-1">
+            <div className="flex flex-col gap-2 min-h-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <div className="size-2 rounded-full bg-[#22d3ee]" />
                 <h3 className="text-base lg:text-lg font-semibold text-foreground">Hub & Zone Architecture</h3>
+                <span className="ml-auto text-[10px] text-muted-foreground italic">Zones can also IBC each other directly (mesh)</span>
               </div>
 
               {/* Hub visual */}
-              <div className="relative flex-1 flex items-center justify-center bg-card/50 rounded-xl border border-border p-4 min-h-[180px] lg:min-h-[220px]">
-                {/* Central hub */}
-                <div className="relative z-10 flex flex-col items-center">
-                  <div className="size-14 lg:size-16 rounded-full bg-[#22d3ee]/10 border-2 border-[#22d3ee] flex items-center justify-center">
-                    <span className="text-xs lg:text-sm font-bold text-[#22d3ee]">Cosmos<br/>Hub</span>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground mt-1">ATOM staking</p>
-                </div>
-
-                {/* Zone satellites */}
-                {[
-                  { label: 'Osmosis', angle: -90, color: '#f59e0b' },
-                  { label: 'dYdX', angle: -10, color: '#6366f1' },
-                  { label: 'Celestia', angle: 170, color: '#22d3ee' },
-                  { label: 'Injective', angle: 100, color: '#8b5cf6' },
-                ].map(({ label, angle, color }) => {
-                  const rad = (angle * Math.PI) / 180;
-                  const r = 80;
-                  const x = Math.cos(rad) * r;
-                  const y = Math.sin(rad) * r;
-                  return (
-                    <div
-                      key={label}
-                      className="absolute flex flex-col items-center"
-                      style={{
-                        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                        top: '50%',
-                        left: '50%',
-                      }}
-                    >
-                      {/* connector line */}
-                      <svg
-                        className="absolute"
-                        style={{
-                          width: Math.abs(x) + 10,
-                          height: Math.abs(y) + 10,
-                          left: x < 0 ? x - 5 : -5,
-                          top: y < 0 ? y - 5 : -5,
-                          pointerEvents: 'none',
-                          zIndex: 0,
-                        }}
-                      />
-                      <div
-                        className="size-10 lg:size-12 rounded-full flex items-center justify-center text-[9px] lg:text-[10px] font-bold text-white z-10"
-                        style={{ backgroundColor: `${color}30`, border: `1.5px solid ${color}`, color }}
-                      >
-                        {label}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {/* IBC lines — rendered as absolute positioned thin lines */}
+              <div className="relative flex-1 min-h-[260px] flex items-center justify-center bg-card/50 rounded-xl border border-border p-4">
+                {/* IBC mesh lines (drawn behind everything) */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                  {[
-                    { angle: -90 }, { angle: -10 }, { angle: 170 }, { angle: 100 },
-                  ].map(({ angle }, i) => {
+                  {/* Hub-to-zone (solid-ish) */}
+                  {[-90, -30, 30, 90, 150, -150].map((angle, i) => {
                     const rad = (angle * Math.PI) / 180;
-                    const r = 80;
-                    const cx = 50;
-                    const cy = 50;
-                    const ex = cx + (Math.cos(rad) * r * 100) / 200;
-                    const ey = cy + (Math.sin(rad) * r * 100) / 200;
+                    const r = 38;
+                    const ex = 50 + Math.cos(rad) * r;
+                    const ey = 50 + Math.sin(rad) * r;
                     return (
                       <line
-                        key={i}
-                        x1={`${cx}%`} y1={`${cy}%`}
+                        key={`spoke-${i}`}
+                        x1="50%" y1="50%"
                         x2={`${ex}%`} y2={`${ey}%`}
                         stroke="#22d3ee"
-                        strokeWidth="1"
+                        strokeWidth="1.2"
                         strokeDasharray="4 3"
-                        opacity="0.4"
+                        opacity="0.5"
+                      />
+                    );
+                  })}
+                  {/* A few zone-to-zone arcs to suggest the mesh */}
+                  {[
+                    { a: -90, b: -30 },
+                    { a: -30, b: 90 },
+                    { a: 90, b: 150 },
+                    { a: 150, b: -150 },
+                  ].map(({ a, b }, i) => {
+                    const ra = (a * Math.PI) / 180;
+                    const rb = (b * Math.PI) / 180;
+                    const r = 38;
+                    return (
+                      <line
+                        key={`mesh-${i}`}
+                        x1={`${50 + Math.cos(ra) * r}%`} y1={`${50 + Math.sin(ra) * r}%`}
+                        x2={`${50 + Math.cos(rb) * r}%`} y2={`${50 + Math.sin(rb) * r}%`}
+                        stroke="#22d3ee"
+                        strokeWidth="0.8"
+                        strokeDasharray="2 4"
+                        opacity="0.25"
                       />
                     );
                   })}
                 </svg>
+
+                {/* Central hub */}
+                <div className="relative z-10 flex flex-col items-center">
+                  <div className="size-16 lg:size-20 rounded-full bg-[#22d3ee]/15 border-2 border-[#22d3ee] flex flex-col items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.25)]">
+                    <span className="text-[11px] lg:text-xs font-black text-[#22d3ee] leading-tight">Cosmos</span>
+                    <span className="text-[11px] lg:text-xs font-black text-[#22d3ee] leading-tight">Hub</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1 font-medium">ATOM</p>
+                </div>
+
+                {/* Zone satellites */}
+                {[
+                  { label: 'Osmosis',   purpose: 'DEX',           angle: -90,  color: '#f59e0b' },
+                  { label: 'dYdX',      purpose: 'perps DEX',     angle: -30,  color: '#6366f1' },
+                  { label: 'Injective', purpose: 'finance L1',    angle: 30,   color: '#8b5cf6' },
+                  { label: 'Celestia',  purpose: 'data avail.',   angle: 90,   color: '#ec4899' },
+                  { label: 'Akash',     purpose: 'GPU compute',   angle: 150,  color: '#ef4444' },
+                  { label: 'Stride',    purpose: 'liquid staking', angle: -150, color: '#10b981' },
+                ].map(({ label, purpose, angle, color }) => {
+                  const rad = (angle * Math.PI) / 180;
+                  const rPct = 38;
+                  return (
+                    <div
+                      key={label}
+                      className="absolute flex flex-col items-center gap-0.5 z-10"
+                      style={{
+                        left: `calc(50% + ${Math.cos(rad) * rPct}%)`,
+                        top: `calc(50% + ${Math.sin(rad) * rPct}%)`,
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                    >
+                      <div
+                        className="size-11 lg:size-12 rounded-full flex items-center justify-center text-[9px] lg:text-[10px] font-black text-center px-1 leading-none"
+                        style={{ backgroundColor: `${color}20`, border: `1.5px solid ${color}`, color }}
+                      >
+                        {label}
+                      </div>
+                      <span className="text-[9px] text-muted-foreground whitespace-nowrap font-medium">{purpose}</span>
+                    </div>
+                  );
+                })}
               </div>
 
-              <div className="flex gap-2 text-[10px] lg:text-xs text-muted-foreground">
-                <span className="px-2 py-1 bg-card rounded border border-border">Tendermint BFT under each chain</span>
-                <span className="px-2 py-1 bg-card rounded border border-[#22d3ee]/30 text-[#22d3ee]">IBC = connection standard</span>
+              {/* Metric strip */}
+              <div className="grid grid-cols-3 gap-2 shrink-0">
+                {[
+                  { metric: '110+',     label: 'IBC-enabled chains' },
+                  { metric: '~1 s',     label: 'finality (CometBFT)' },
+                  { metric: '$XB+ / yr',label: 'IBC volume transferred' },
+                ].map(s => (
+                  <div key={s.label} className="px-2 py-1.5 rounded-lg border border-[#22d3ee]/30 bg-[#22d3ee]/5 text-center">
+                    <div className="text-xs font-black text-[#22d3ee] leading-none">{s.metric}</div>
+                    <div className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-wider leading-snug">{s.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Right — 4 property cards + ATOM */}
-            <div className="flex flex-col gap-2 lg:gap-3">
-              <div className="flex items-center gap-2 mb-1">
+            {/* Right — Properties + token role + IBC reach */}
+            <div className="flex flex-col gap-2 min-h-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <div className="size-2 rounded-full bg-[#6366f1]" />
                 <h3 className="text-base lg:text-lg font-semibold text-foreground">Core Properties</h3>
               </div>
 
-              {[
-                {
-                  emoji: '🌐',
-                  title: 'IBC Protocol',
-                  desc: 'Inter-Blockchain Communication — like TCP/IP for blockchains. Native, trustless messaging and asset transfer between any IBC-enabled chain.',
-                },
-                {
-                  emoji: '🔧',
-                  title: 'Cosmos SDK',
-                  desc: 'A Go framework for building app-specific blockchains in days, not years. Modular, customisable, battle-tested by Osmosis, dYdX, and dozens more.',
-                },
-                {
-                  emoji: '⚛️',
-                  title: 'Tendermint BFT',
-                  desc: 'Instant finality, ~1 second block time, no forks. Each zone runs Tendermint independently — Byzantine fault-tolerant with a known validator set.',
-                },
-                {
-                  emoji: '⚡',
-                  title: 'App-Specific Chains',
-                  desc: 'Each dApp gets its own chain tuned for its needs — no gas competition, custom tokenomics, and full sovereignty over governance and upgrades.',
-                },
-              ].map((card) => (
-                <motion.div
-                  key={card.title}
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3 }}
-                  className="flex gap-3 p-2 lg:p-3 bg-card rounded-lg border border-[#22d3ee]/20 hover:border-[#22d3ee]/50 transition-colors"
-                >
-                  <span className="text-lg lg:text-xl flex-shrink-0">{card.emoji}</span>
-                  <div>
-                    <p className="text-xs lg:text-sm font-semibold text-foreground">{card.title}</p>
-                    <p className="text-[10px] lg:text-xs text-muted-foreground mt-0.5 leading-relaxed">{card.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+                {[
+                  {
+                    emoji: '🌐',
+                    title: 'IBC Protocol',
+                    desc: 'Inter-Blockchain Communication — TCP/IP for blockchains. Light-client verification on each side; trustless messaging and asset transfer between any IBC-enabled chain.',
+                  },
+                  {
+                    emoji: '🔧',
+                    title: 'Cosmos SDK',
+                    desc: 'Go framework to build app-specific chains in weeks, not years. Modular (staking, governance, IBC, auth, bank…) — battle-tested by Osmosis, dYdX v4, Celestia, and 100+ chains.',
+                  },
+                  {
+                    emoji: '⚛️',
+                    title: 'CometBFT (ex-Tendermint)',
+                    desc: 'BFT engine renamed in 2023. Instant finality, ~1-second blocks, no forks. Known validator set per zone — secure as long as < 1/3 are Byzantine.',
+                  },
+                  {
+                    emoji: '⚡',
+                    title: 'App-Specific Sovereignty',
+                    desc: 'Each chain tunes gas, governance, and upgrades to its own use case — no shared block space competition, no need to fit inside someone else\'s VM.',
+                  },
+                ].map((card) => (
+                  <motion.div
+                    key={card.title}
+                    initial={{ opacity: 0, x: 16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3 }}
+                    className="flex gap-3 p-2.5 bg-card rounded-lg border border-[#22d3ee]/25 hover:border-[#22d3ee]/55 transition-colors min-h-0"
+                  >
+                    <span className="text-lg lg:text-xl flex-shrink-0 leading-none mt-0.5">{card.emoji}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs lg:text-sm font-semibold text-foreground">{card.title}</p>
+                      <p className="text-[10px] lg:text-xs text-muted-foreground mt-0.5 leading-relaxed">{card.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
 
-              {/* ATOM token role */}
-              <div className="mt-auto p-2 lg:p-3 bg-[#22d3ee]/5 rounded-lg border border-[#22d3ee]/30">
-                <p className="text-xs font-semibold text-[#22d3ee] mb-1">ATOM Token Role</p>
-                <p className="text-[10px] lg:text-xs text-muted-foreground">
-                  Staked on the Cosmos Hub to secure the network · Used for governance votes · Powers shared security (Interchain Security) for new chains that opt in.
-                </p>
+              {/* Two side-by-side panels: ATOM economics + IBC reach */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 shrink-0">
+                <div className="p-2.5 bg-[#22d3ee]/5 rounded-lg border border-[#22d3ee]/30">
+                  <p className="text-[11px] font-bold text-[#22d3ee] mb-1 flex items-center gap-1.5">
+                    <span>💎</span> ATOM economics
+                  </p>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    Hub security via staking · governance votes · Interchain Security lets opt-in chains rent the Hub validator set instead of bootstrapping their own.
+                  </p>
+                </div>
+                <div className="p-2.5 bg-[#6366f1]/5 rounded-lg border border-[#6366f1]/30">
+                  <p className="text-[11px] font-bold text-[#6366f1] mb-1 flex items-center gap-1.5">
+                    <span>🔗</span> Beyond Cosmos
+                  </p>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    IBC <span className="font-semibold text-foreground">Eureka</span> (2024+) extends IBC to Ethereum and other non-Cosmos chains — trust-minimised messaging, no centralised bridge.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
