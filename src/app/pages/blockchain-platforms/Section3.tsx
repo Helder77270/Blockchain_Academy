@@ -375,89 +375,148 @@ const FABRIC_COMPONENTS = [
 ];
 
 function FabricDeepDiveSlide() {
+  const ORGS = [
+    { name: 'Producer',    color: '#6366f1' },
+    { name: 'Distributor', color: '#39B54A' },
+    { name: 'Retailer',    color: '#ED1C24' },
+  ];
+
   return (
     <div className="h-full flex flex-col p-6 lg:p-10">
-      <div className="shrink-0 mb-5">
+      <div className="shrink-0 mb-3">
         <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Fabric Architecture Deep Dive</h2>
-        <p className="text-sm text-muted-foreground mt-1">Understanding the key actors and how they connect.</p>
+        <p className="text-sm text-muted-foreground mt-1">The five components and how they connect inside a single channel.</p>
       </div>
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Definition strip */}
+      <div className="shrink-0 mb-4 rounded-xl border p-3" style={{ borderColor: '#39B54A55', backgroundColor: '#39B54A0d' }}>
+        <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#39B54A' }}>In one line</p>
+        <p className="text-sm text-foreground mt-0.5 leading-snug">
+          A Fabric network = several <span className="font-semibold">organizations</span>, each running their own <span className="font-semibold">peers</span> and <span className="font-semibold">MSP/CA</span>, sharing one or more <span className="font-semibold">channels</span> whose transactions are sequenced by an external <span className="font-semibold">ordering service</span>.
+        </p>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Left — components list */}
-        <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1 shrink-0">Key Components</h3>
-          {FABRIC_COMPONENTS.map((c, i) => (
-            <motion.div
-              key={c.label}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.08, duration: 0.3 }}
-              className="flex items-center gap-3 p-3 rounded-xl border flex-1"
-              style={{ borderColor: c.color + '40', backgroundColor: c.color + '0d' }}
-            >
-              <span className="text-2xl shrink-0">{c.emoji}</span>
-              <div>
-                <div className="font-bold text-sm text-foreground">{c.label}</div>
-                <div className="text-xs text-muted-foreground">{c.desc}</div>
-              </div>
-            </motion.div>
-          ))}
+        <div className="flex flex-col gap-2 min-h-0">
+          <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">Key components</h3>
+          <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+            {FABRIC_COMPONENTS.map((c, i) => (
+              <motion.div
+                key={c.label}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08, duration: 0.3 }}
+                className="flex items-center gap-3 p-2.5 rounded-xl border min-h-0"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '0d' }}
+              >
+                <span className="text-2xl shrink-0 leading-none">{c.emoji}</span>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm leading-tight" style={{ color: c.color }}>{c.label}</div>
+                  <div className="text-[11px] text-muted-foreground leading-snug mt-0.5">{c.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
-        {/* Right — network diagram + chaincode note */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Network Diagram</h3>
+        {/* Right — network diagram (channel scope) */}
+        <div className="flex flex-col gap-2 min-h-0">
+          <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">Network diagram — one channel</h3>
 
-          {/* SVG-style diagram using divs */}
-          <div className="flex-1 relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-border bg-card/50">
-            {/* Orderer at top */}
-            <div className="px-4 py-2 rounded-lg border-2 border-[#f59e0b] bg-[#f59e0b]/10 text-sm font-bold text-foreground text-center">
-              📮 Orderer
+          {/* Channel scope */}
+          <div
+            className="flex-1 min-h-0 relative rounded-2xl border-2 border-dashed p-3 lg:p-4 flex flex-col gap-3"
+            style={{ borderColor: '#6366f155', backgroundColor: '#6366f108' }}
+          >
+            <span
+              className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest"
+              style={{ backgroundColor: 'hsl(var(--background))', color: '#6366f1', border: '1px solid #6366f180' }}
+            >
+              📡 Channel · supply-chain
+            </span>
+
+            {/* Orderer (Raft cluster) */}
+            <div className="flex justify-center shrink-0">
+              <div
+                className="rounded-xl border-2 px-3 py-2 flex items-center gap-2.5"
+                style={{ borderColor: '#f59e0b', backgroundColor: '#f59e0b15' }}
+              >
+                <span className="text-base leading-none">📮</span>
+                <div>
+                  <div className="text-xs font-black leading-tight" style={{ color: '#f59e0b' }}>Ordering Service</div>
+                  <div className="text-[10px] text-muted-foreground leading-tight">Raft · 3-node cluster · sequences blocks</div>
+                </div>
+                <div className="flex gap-1 ml-1">
+                  {[1, 2, 3].map(n => (
+                    <span key={n} className="size-1.5 rounded-full" style={{ backgroundColor: '#f59e0b' }} />
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Connecting line down */}
-            <div className="w-0.5 h-4 bg-border" />
+            {/* Bidirectional flow indicator */}
+            <div className="shrink-0 flex justify-center items-center gap-2 text-[10px] font-medium" style={{ color: '#f59e0b' }}>
+              <span>↑ proposals</span>
+              <span className="opacity-40">·</span>
+              <span>↓ ordered blocks</span>
+            </div>
 
-            {/* 3 orgs */}
-            <div className="flex gap-4 w-full justify-center">
-              {['Org A', 'Org B', 'Org C'].map((org, i) => (
-                <div key={org} className="flex flex-col items-center gap-1">
+            {/* 3 Orgs */}
+            <div className="flex-1 min-h-0 grid grid-cols-3 gap-2">
+              {ORGS.map(org => (
+                <div
+                  key={org.name}
+                  className="flex flex-col gap-1.5 rounded-lg border p-2"
+                  style={{ borderColor: org.color + '70', backgroundColor: org.color + '10' }}
+                >
                   <div
-                    className="px-3 py-1.5 rounded-lg border-2 text-xs font-bold text-center"
-                    style={{
-                      borderColor: ['#6366f1', '#39B54A', '#ED1C24'][i] + '80',
-                      backgroundColor: ['#6366f1', '#39B54A', '#ED1C24'][i] + '15',
-                      color: ['#6366f1', '#39B54A', '#ED1C24'][i],
-                    }}
+                    className="text-[10px] font-black uppercase tracking-wider text-center"
+                    style={{ color: org.color }}
                   >
-                    {org}
+                    🏢 {org.name}
                   </div>
-                  <div className="flex gap-1">
-                    {[1, 2].map(p => (
-                      <div
-                        key={p}
-                        className="px-2 py-0.5 rounded border text-xs text-muted-foreground"
-                        style={{ borderColor: ['#6366f1', '#39B54A', '#ED1C24'][i] + '40' }}
-                      >
-                        Peer {p}
-                      </div>
-                    ))}
+
+                  {[1, 2].map(p => (
+                    <div
+                      key={p}
+                      className="rounded-md border bg-card px-1.5 py-1 flex items-center justify-between gap-1"
+                      style={{ borderColor: org.color + '50' }}
+                    >
+                      <span className="text-[10px] font-semibold text-foreground flex items-center gap-1">
+                        <span>🖥</span>Peer {p}
+                      </span>
+                      <span className="text-[9px] opacity-70" title="Chaincode + Ledger replica">📜📁</span>
+                    </div>
+                  ))}
+
+                  <div
+                    className="rounded-md border border-dashed px-1.5 py-1 flex items-center justify-center gap-1 text-[10px] font-semibold"
+                    style={{ borderColor: org.color + '60', color: org.color, backgroundColor: org.color + '08' }}
+                  >
+                    🔑 MSP / CA
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Channel label */}
-            <div className="text-xs text-muted-foreground border border-dashed border-border px-3 py-1 rounded-full mt-1">
-              — channel —
+            {/* Footer note inside channel */}
+            <div className="shrink-0 text-[10px] text-muted-foreground text-center leading-snug">
+              Every peer in the channel holds an <span className="font-semibold text-foreground">identical ledger copy</span> + <span className="font-semibold text-foreground">chaincode binary</span>. Each org's MSP issues its own identities; cross-org identities are validated via the channel's trust roots.
             </div>
           </div>
 
           {/* Chaincode note */}
-          <div className="p-3 rounded-xl border border-[#39B54A]/40" style={{ backgroundColor: '#39B54A0d' }}>
-            <div className="font-bold text-sm text-foreground mb-1">Chaincode (Smart Contracts)</div>
-            <div className="text-xs text-muted-foreground">
-              Runs on peers, defines business logic, and is invoked via transactions. Written in Go, JavaScript, or Java. Chaincode executes during endorsement and its results are captured before ordering.
+          <div
+            className="shrink-0 p-2.5 rounded-xl border flex items-start gap-2.5"
+            style={{ borderColor: '#39B54A50', backgroundColor: '#39B54A0d' }}
+          >
+            <span className="text-base leading-none mt-0.5">📜</span>
+            <div className="min-w-0">
+              <div className="font-bold text-xs" style={{ color: '#39B54A' }}>Chaincode (Smart Contracts)</div>
+              <div className="text-[11px] text-muted-foreground leading-snug">
+                Go / JavaScript / Java programs deployed to peers. Executed during endorsement; their read/write set is signed and forwarded to the orderer for sequencing.
+              </div>
             </div>
           </div>
         </div>
