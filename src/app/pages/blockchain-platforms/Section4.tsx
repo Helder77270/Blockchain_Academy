@@ -416,114 +416,133 @@ export function BP_Section4() {
 
         {/* ═══════ S4-LAYER0 ═══════ */}
         <div id="s4-layer0" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="mb-4 lg:mb-6">
-            <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-1 lg:mb-2">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">
               Layer 0: Infrastructure for Blockchains
             </h2>
-            <p className="text-sm lg:text-base text-muted-foreground">
-              Layer 0 sits below Layer 1 blockchains — providing shared security, cross-chain messaging, and validator infrastructure that multiple chains inherit.
+            <p className="text-sm text-muted-foreground mt-1">
+              The substrate beneath Layer 1 chains — a shared validator set, security, and messaging fabric that multiple L1s plug into.
             </p>
           </div>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 min-h-0">
-            {/* Left */}
-            <div className="flex flex-col gap-3 min-h-0 overflow-y-auto">
-              <div className="flex items-center gap-2">
-                <div className="size-2 rounded-full bg-[#6366f1]" />
-                <h3 className="text-base lg:text-lg font-semibold text-foreground">What is Layer 0?</h3>
+          {/* One-line definition with analogy */}
+          <div className="shrink-0 mb-4 rounded-xl border p-3" style={{ borderColor: '#22d3ee55', backgroundColor: '#22d3ee0d' }}>
+            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#22d3ee' }}>In one line</p>
+            <p className="text-sm text-foreground mt-0.5 leading-snug">
+              A Layer 0 leases <span className="font-semibold">validators, security, and messaging</span> to many L1s at once — so a new chain doesn't need to bootstrap its own validator set from scratch.
+            </p>
+            <p className="text-[11px] text-muted-foreground italic mt-1.5">
+              Think of it as the internet backbone: many ISPs (L1s) plug into shared cables (L0) instead of each laying their own.
+            </p>
+          </div>
+
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-5 min-h-0">
+
+            {/* Left — Concept: stack + capabilities */}
+            <div className="flex flex-col gap-3 min-h-0">
+              {/* Stack visual — foundation-up */}
+              <div className="shrink-0 p-3 bg-card/50 rounded-xl border border-border">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">The stack — read bottom-up</p>
+                <div className="flex flex-col-reverse gap-1.5">
+                  {[
+                    { num: '0', label: 'Layer 0',  sub: 'Relay / Primary Network · shared validators',  border: '#22d3ee' },
+                    { num: '1', label: 'Layer 1',  sub: 'App-specific chains plugged into L0',          border: '#6366f1' },
+                    { num: '2', label: 'Layer 2',  sub: 'Rollups built on top of an L1',                border: '#8b5cf6' },
+                  ].map(layer => (
+                    <div
+                      key={layer.label}
+                      className="p-2 lg:p-2.5 rounded-lg flex items-center gap-3"
+                      style={{ backgroundColor: layer.border + '20', border: `1px solid ${layer.border}` }}
+                    >
+                      <div
+                        className="size-7 rounded-md flex items-center justify-center text-sm font-black shrink-0"
+                        style={{ backgroundColor: layer.border + '30', color: layer.border }}
+                      >L{layer.num}</div>
+                      <div className="min-w-0">
+                        <p className="text-xs lg:text-sm font-semibold leading-tight" style={{ color: layer.border }}>{layer.label}</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground leading-tight">{layer.sub}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* Layer stack visual */}
-              <div className="flex flex-col gap-1.5 p-3 bg-card/50 rounded-xl border border-border">
+              {/* What L0 provides — 3 capability cards */}
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">What Layer 0 provides</p>
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
                 {[
-                  { label: 'Layer 2 (Rollups)', sub: 'Scaling on top of L1', bg: '#8b5cf620', border: '#8b5cf6' },
-                  { label: 'Layer 1 (Parachains / Subnets)', sub: 'App-specific blockchains', bg: '#6366f120', border: '#6366f1' },
-                  { label: 'Layer 0 (Relay Chain / Primary Network)', sub: 'Shared security & messaging', bg: '#22d3ee20', border: '#22d3ee' },
-                ].map((layer) => (
-                  <div
-                    key={layer.label}
-                    className="p-2 lg:p-2.5 rounded-lg text-center"
-                    style={{ backgroundColor: layer.bg, border: `1px solid ${layer.border}` }}
-                  >
-                    <p className="text-xs lg:text-sm font-semibold" style={{ color: layer.border }}>{layer.label}</p>
-                    <p className="text-[10px] lg:text-xs text-muted-foreground">{layer.sub}</p>
+                  { icon: '🔐', title: 'Shared security',          desc: 'A pooled validator set secures every L1 connected to it. New chains inherit security on day 1 — no need to find their own validators.' },
+                  { icon: '📨', title: 'Native cross-chain messaging', desc: 'L0 defines the message format and trust model for inter-L1 communication (XCM, Warp) — no third-party bridge needed.' },
+                  { icon: '⚙️', title: 'Shared infrastructure',     desc: 'Block production, finality, governance and upgrades live at L0. L1s focus only on application logic and tokenomics.' },
+                ].map(c => (
+                  <div key={c.title} className="rounded-xl border border-[#22d3ee]/30 bg-card p-2.5 flex items-start gap-2.5 min-h-0">
+                    <span className="text-lg shrink-0 leading-none mt-0.5">{c.icon}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-foreground">{c.title}</p>
+                      <p className="text-[10px] lg:text-xs text-muted-foreground leading-relaxed mt-0.5">{c.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>
-
-              {/* Polkadot */}
-              <div className="p-3 bg-card rounded-xl border border-[#e6007a]/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-base">🔴</span>
-                  <p className="text-sm lg:text-base font-semibold text-foreground">Polkadot</p>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#e6007a]/10 text-[#e6007a] border border-[#e6007a]/20">DOT</span>
-                </div>
-                <ul className="space-y-1 text-[10px] lg:text-xs text-muted-foreground">
-                  <li><span className="text-foreground font-medium">Relay Chain</span> — provides shared security pooled from all validators</li>
-                  <li><span className="text-foreground font-medium">Parachains</span> — app-specific chains that lease slots via auction (100 slots); inherit Relay Chain security</li>
-                  <li><span className="text-foreground font-medium">XCM</span> — Cross-Consensus Messaging: native message format for inter-parachain communication</li>
-                  <li><span className="text-foreground font-medium">Consensus</span> — BABE (block production) + GRANDPA (finality)</li>
-                </ul>
-              </div>
-
-              {/* Avalanche */}
-              <div className="p-3 bg-card rounded-xl border border-[#e84142]/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-base">🔺</span>
-                  <p className="text-sm lg:text-base font-semibold text-foreground">Avalanche</p>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#e84142]/10 text-[#e84142] border border-[#e84142]/20">AVAX</span>
-                </div>
-                <ul className="space-y-1 text-[10px] lg:text-xs text-muted-foreground">
-                  <li><span className="text-foreground font-medium">Primary Network</span> — three built-in chains: X-Chain, C-Chain (EVM), P-Chain</li>
-                  <li><span className="text-foreground font-medium">Subnets</span> — custom networks for DeFi (Avalanche C-Chain), gaming (DFK), enterprise; no slot auctions</li>
-                  <li><span className="text-foreground font-medium">VM Support</span> — EVM-compatible or fully custom VMs per subnet</li>
-                  <li><span className="text-foreground font-medium">Consensus</span> — Snowman (probabilistic, sub-second finality)</li>
-                </ul>
-              </div>
             </div>
 
-            {/* Right — Comparison table */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <div className="size-2 rounded-full bg-[#6366f1]" />
-                <h3 className="text-base lg:text-lg font-semibold text-foreground">Platform Comparison</h3>
+            {/* Right — Implementations + trade-off */}
+            <div className="flex flex-col gap-3 min-h-0">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">Implementations in production</p>
+
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2.5">
+                {/* Polkadot */}
+                <div className="rounded-xl p-3 min-h-0 flex flex-col gap-1.5" style={{ borderWidth: '1px', borderColor: '#e6007a55', backgroundColor: '#e6007a08' }}>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-base">🔴</span>
+                    <p className="text-sm font-bold text-foreground">Polkadot</p>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: '#e6007a18', color: '#e6007a', border: '1px solid #e6007a35' }}>DOT</span>
+                    <span className="ml-auto text-[10px] text-muted-foreground">BABE + GRANDPA</span>
+                  </div>
+                  <ul className="space-y-0.5 text-[11px] text-muted-foreground leading-snug">
+                    <li>· <span className="text-foreground font-medium">Relay Chain</span> — pooled validator set securing every connected chain</li>
+                    <li>· <span className="text-foreground font-medium">Parachains</span> — L1s that buy <span className="text-foreground font-medium">Coretime</span> (replaced slot auctions in 2024) on the relay</li>
+                    <li>· <span className="text-foreground font-medium">XCM v3</span> — Cross-Consensus Messaging for native inter-parachain calls</li>
+                  </ul>
+                </div>
+
+                {/* Avalanche */}
+                <div className="rounded-xl p-3 min-h-0 flex flex-col gap-1.5" style={{ borderWidth: '1px', borderColor: '#e8414255', backgroundColor: '#e8414208' }}>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-base">🔺</span>
+                    <p className="text-sm font-bold text-foreground">Avalanche</p>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: '#e8414218', color: '#e84142', border: '1px solid #e8414235' }}>AVAX</span>
+                    <span className="ml-auto text-[10px] text-muted-foreground">Snowman (sub-1s)</span>
+                  </div>
+                  <ul className="space-y-0.5 text-[11px] text-muted-foreground leading-snug">
+                    <li>· <span className="text-foreground font-medium">Primary Network</span> — X-Chain (assets), P-Chain (validators), C-Chain (EVM)</li>
+                    <li>· <span className="text-foreground font-medium">Avalanche L1s</span> — ex-Subnets, renamed via ACP-13/77 in 2024 — sovereign chains using their own validator subset</li>
+                    <li>· <span className="text-foreground font-medium">Avalanche Warp</span> — native L1↔L1 messaging signed by the source validator set</li>
+                  </ul>
+                </div>
               </div>
 
-              <div className="flex-1 bg-card rounded-xl border border-border overflow-hidden">
-                <table className="w-full text-xs lg:text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-muted/30">
-                      <th className="text-left p-2 lg:p-3 text-muted-foreground font-medium">Property</th>
-                      <th className="text-center p-2 lg:p-3 font-semibold" style={{ color: '#e6007a' }}>Polkadot</th>
-                      <th className="text-center p-2 lg:p-3 font-semibold" style={{ color: '#e84142' }}>Avalanche</th>
-                      <th className="text-center p-2 lg:p-3 font-semibold" style={{ color: '#22d3ee' }}>Cosmos</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      ['Shared Security', '✅ Yes', '⚠️ Partial', '❌ No'],
-                      ['App Chains', 'Parachains', 'Subnets', 'Zones'],
-                      ['Consensus', 'BABE+GRANDPA', 'Snowman', 'Tendermint'],
-                      ['Token', 'DOT', 'AVAX', 'ATOM'],
-                      ['Slot Auctions', '✅ Yes', '❌ No', '❌ No'],
-                      ['EVM Support', '⚠️ Via Moonbeam', '✅ Native C-Chain', '⚠️ Via Evmos'],
-                      ['Cross-chain Msg', 'XCM', 'Warp Messages', 'IBC'],
-                    ].map(([prop, pol, ava, cos]) => (
-                      <tr key={prop} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
-                        <td className="p-2 lg:p-3 text-muted-foreground">{prop}</td>
-                        <td className="p-2 lg:p-3 text-center text-foreground">{pol}</td>
-                        <td className="p-2 lg:p-3 text-center text-foreground">{ava}</td>
-                        <td className="p-2 lg:p-3 text-center text-foreground">{cos}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="p-3 bg-[#6366f1]/5 rounded-xl border border-[#6366f1]/20">
-                <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed">
-                  <span className="text-[#6366f1] font-semibold">Key insight:</span> Layer 0 trades some sovereignty for shared security. Cosmos gives full sovereignty but each chain must bootstrap its own validators. The right choice depends on the use case.
-                </p>
+              {/* Trade-off vs Cosmos */}
+              <div className="shrink-0 rounded-xl p-3" style={{ borderWidth: '1px', borderColor: '#6366f155', backgroundColor: '#6366f10d' }}>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: '#6366f1' }}>The design trade-off</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-xs font-bold text-foreground mb-1">Layer 0 model</p>
+                    <p className="text-[11px] text-muted-foreground leading-snug">
+                      <span className="text-[#10b981]">↑</span> shared security on day 1<br/>
+                      <span className="text-[#10b981]">↑</span> native cross-chain messaging<br/>
+                      <span className="text-[#ef4444]">↓</span> chains must follow L0 rules
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-foreground mb-1">Cosmos model</p>
+                    <p className="text-[11px] text-muted-foreground leading-snug">
+                      <span className="text-[#10b981]">↑</span> full sovereignty per chain<br/>
+                      <span className="text-[#10b981]">↑</span> any consensus, any VM, any rules<br/>
+                      <span className="text-[#ef4444]">↓</span> each chain bootstraps own validators
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
