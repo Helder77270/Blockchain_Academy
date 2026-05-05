@@ -8,7 +8,7 @@ import { Brain } from 'lucide-react';
 
 const chapters = [
   { id: 's4-decision-intro',     label: 'Should You Use SC?' },
-  { id: 's4-decision-flow',      label: '🎯 Decision Flow' },
+  { id: 's4-decision-flow',      label: '🧩 Decision Flow' },
   { id: 's4-decision-yes',       label: 'When SC Make Sense' },
   { id: 's4-decision-no',        label: 'When to Rethink' },
   { id: 's4-adoption-intro',     label: 'Adoption Considerations' },
@@ -79,7 +79,7 @@ function DecisionFlow() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">Should you use a smart contract?</h2>
         <p className="text-muted-foreground text-sm">Answer 8 questions about your use case. Get a verdict — and the reasoning behind it.</p>
       </div>

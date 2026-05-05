@@ -12,7 +12,7 @@ const chapters = [
   { id: 's1-szabo',    label: 'Nick Szabo\'s Vending Machine' },
   { id: 's1-history',    label: 'Historical Evolution' },
   { id: 's1-standards',  label: 'Token Standards' },
-  { id: 's1-exercise',   label: '🎯 Exercise' },
+  { id: 's1-exercise',   label: '🧩 Exercise' },
   { id: 's1-quiz',     label: 'Quiz' },
   { id: 's1-takeaways', label: 'Takeaways' },
   { id: 's1-summary', label: 'Summary' },
@@ -55,7 +55,7 @@ function SmartContractSortingExercise() {
       <div className="shrink-0 flex items-center justify-between mb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Exercise</span>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Exercise</span>
           </div>
           <h2 className="text-2xl font-bold text-foreground">Is this a Smart Contract?</h2>
           <p className="text-muted-foreground text-sm mt-0.5">Click YES or NO for each scenario, then see the explanation.</p>

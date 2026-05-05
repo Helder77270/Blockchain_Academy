@@ -6,6 +6,8 @@ import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { Cog, Check, X } from 'lucide-react';
 
+import imgDisintermediation from '../../../assets/sc/disintermediation.png';
+
 const chapters = [
   { id: 's2-workflow',      label: 'Workflow' },
   { id: 's2-components',   label: 'Core Components' },
@@ -19,8 +21,8 @@ const chapters = [
   { id: 's2-gas',          label: 'Gas & Tx Economics' },
   { id: 's2-reshape',      label: 'Reshape Business' },
   { id: 's2-quiz',         label: 'Quizzes' },
-  { id: 's2-ex-gas',       label: '🎯 Exercise: Gas' },
-  { id: 's2-ex-stack',     label: '🎯 Exercise: Stack' },
+  { id: 's2-ex-gas',       label: '🧩 Exercise: Gas' },
+  { id: 's2-ex-stack',     label: '🧩 Exercise: Stack' },
   { id: 's2-takeaways',    label: 'Takeaways' },
   { id: 's2-summary',      label: 'Summary' },
 ];
@@ -69,7 +71,7 @@ function GasRankingExercise() {
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 flex items-center justify-between mb-5">
         <div>
-          <span className="px-2.5 py-0.5 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#f59e0b] text-xs font-bold">🎯 Exercise</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#f59e0b] text-xs font-bold">🧩 Exercise</span>
           <h2 className="text-2xl font-bold text-foreground mt-1">Gas Estimation Challenge</h2>
           <p className="text-muted-foreground text-sm">Click the 5 operations in order from <span className="text-[#39B54A] font-semibold">cheapest</span> to <span className="text-[#ED1C24] font-semibold">most expensive</span>.</p>
         </div>
@@ -233,7 +235,7 @@ function DAppStackExercise() {
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 flex items-center justify-between mb-4">
         <div>
-          <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Exercise</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Exercise</span>
           <h2 className="text-2xl font-bold text-foreground mt-1">Build the dApp Stack</h2>
           <p className="text-muted-foreground text-sm">
             {selected ? <span className="text-[#6366f1] font-semibold">Now click a layer to place <span className="font-black">{STACK_ITEMS.find(i=>i.id===selected)?.label}</span></span>
@@ -861,10 +863,10 @@ export function SC_Section2() {
             <p className="text-muted-foreground text-sm mt-1">Infrastructure and contracts — both transformed by the same underlying shift.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
+          <div className="flex-1 min-h-0 flex flex-col gap-4">
 
             {/* App infrastructure comparison */}
-            <div className="flex flex-col min-h-0">
+            <div className="flex flex-col min-h-0 flex-1">
               <div className="text-xs font-semibold text-[#6366f1] uppercase tracking-widest mb-2 shrink-0">App Infrastructure</div>
               <div className="flex-1 min-h-0 bg-card border border-border rounded-xl overflow-hidden flex flex-col">
                 {/* Header */}
@@ -893,7 +895,7 @@ export function SC_Section2() {
             </div>
 
             {/* Contract comparison */}
-            <div className="flex flex-col min-h-0">
+            <div className="flex flex-col min-h-0 flex-1">
               <div className="text-xs font-semibold text-[#8b5cf6] uppercase tracking-widest mb-2 shrink-0">Contract Execution</div>
               <div className="flex-1 min-h-0 bg-card border border-border rounded-xl overflow-hidden flex flex-col">
                 {/* Header */}
@@ -1160,9 +1162,12 @@ export function SC_Section2() {
 
         {/* ═══════ RESHAPE BUSINESS ═══════ */}
         <div id="s2-reshape" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">How Smart Contracts Reshape Traditional Business</h2>
-            <p className="text-muted-foreground text-sm mt-1">Five structural shifts that distinguish smart-contract-native businesses from traditional ones.</p>
+          <div className="shrink-0 mb-5 flex items-start gap-4">
+            <img src={imgDisintermediation} alt="Two people exchanging documents directly — disintermediation" className="hidden lg:block h-20 object-contain shrink-0" />
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">How Smart Contracts Reshape Traditional Business</h2>
+              <p className="text-muted-foreground text-sm mt-1">Five structural shifts that distinguish smart-contract-native businesses from traditional ones.</p>
+            </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-5 gap-3 content-center">
             {[
