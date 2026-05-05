@@ -17,6 +17,7 @@ const chapters = [
   { id: 's2-capabilities', label: 'New Capabilities' },
   { id: 's2-why',          label: 'Why Build with SC?' },
   { id: 's2-gas',          label: 'Gas & Tx Economics' },
+  { id: 's2-reshape',      label: 'Reshape Business' },
   { id: 's2-quiz',         label: 'Quizzes' },
   { id: 's2-ex-gas',       label: '🎯 Exercise: Gas' },
   { id: 's2-ex-stack',     label: '🎯 Exercise: Stack' },
@@ -1154,6 +1155,37 @@ export function SC_Section2() {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        {/* ═══════ RESHAPE BUSINESS ═══════ */}
+        <div id="s2-reshape" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">How Smart Contracts Reshape Traditional Business</h2>
+            <p className="text-muted-foreground text-sm mt-1">Five structural shifts that distinguish smart-contract-native businesses from traditional ones.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-5 gap-3 content-center">
+            {[
+              { num: '01', emoji: '🔓', title: 'Disintermediation',     color: '#6366f1', desc: 'Peer-to-peer execution. No banks, brokers, or escrow services needed for the agreement to clear.', src: 'IBM (2019)' },
+              { num: '02', emoji: '⚙️', title: 'Process Automation',    color: '#8b5cf6', desc: 'Autonomous "if X, then Y" rules execute the moment conditions are met — no manual approval step.', src: 'Akinsola & Mary (2025)' },
+              { num: '03', emoji: '🔍', title: 'Trustless & Transparent',color: '#22d3ee', desc: 'Trust shifts from people to code + consensus. All actions are verifiable, auditable, and global.', src: 'Nzuva (2019)' },
+              { num: '04', emoji: '💰', title: 'Cost Reduction',         color: '#39B54A', desc: 'Eliminates middlemen, manual paperwork, and ongoing legal oversight. Cuts escrow, reconciliation, and compliance costs.', src: 'Perlman (2019)' },
+              { num: '05', emoji: '🌐', title: 'New Value Chains',       color: '#f59e0b', desc: 'Entirely new business models, products, and ecosystems become possible — DAOs, tokenized assets, M2M payments.', src: 'Dal Mas et al. (2019)' },
+            ].map(c => (
+              <div key={c.num} className="p-4 bg-card border rounded-xl flex flex-col gap-2"
+                style={{ borderColor: c.color + '40' }}>
+                <div className="flex items-center gap-2">
+                  <div className="size-8 rounded-lg flex items-center justify-center text-white text-xs font-black" style={{ backgroundColor: c.color }}>{c.num}</div>
+                  <div className="text-2xl">{c.emoji}</div>
+                </div>
+                <div className="font-bold text-sm text-foreground">{c.title}</div>
+                <div className="text-xs text-muted-foreground leading-snug flex-1">{c.desc}</div>
+                <div className="text-[10px] italic text-muted-foreground">{c.src}</div>
+              </div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-muted/30 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">The pattern:</span> traditional businesses centralize trust in an intermediary. Smart-contract-native businesses distribute that trust into code + consensus, then build new economic primitives on top — composability, atomicity, and global reach. The next section explores where this works in practice.
           </div>
         </div>
 

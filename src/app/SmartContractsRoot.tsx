@@ -4,14 +4,16 @@ import { CourseNav } from './components/navigation/CourseNav';
 const BASE = '/smart-contracts';
 
 const sections = [
-  { id: 'home', number: '🏠', label: 'Home',         path: BASE },
-  { id: 'lo',   number: '🎯', label: 'Objectives',  path: `${BASE}/learning-objectives` },
-  { id: '1',    number: '01', label: 'Intro',        path: `${BASE}/section-1` },
-  { id: '2',    number: '02', label: 'How It Works', path: `${BASE}/section-2` },
-  { id: '3',    number: '03', label: 'Case Studies', path: `${BASE}/section-3` },
-  { id: '4',    number: '04', label: 'Dehype',       path: `${BASE}/section-4` },
-  { id: '5',    number: '05', label: 'Team Project', path: `${BASE}/section-5` },
-  { id: 'end',  number: '🏁', label: 'Conclusion',   path: `${BASE}/conclusion` },
+  { id: 'home', number: '🏠', label: 'Home',              path: BASE },
+  { id: 'lo',   number: '🎯', label: 'Objectives',        path: `${BASE}/learning-objectives` },
+  { id: '1',    number: '01', label: 'Intro',             path: `${BASE}/section-1` },
+  { id: '2',    number: '02', label: 'How It Works',      path: `${BASE}/section-2` },
+  { id: '3',    number: '03', label: 'Industries & Cases',path: `${BASE}/section-3` },
+  { id: '4',    number: '04', label: 'Critical Thinking', path: `${BASE}/section-4` },
+  { id: '5',    number: '05', label: 'Limitations',       path: `${BASE}/section-5` },
+  { id: '6',    number: '06', label: 'Build',             path: `${BASE}/section-6` },
+  { id: '7',    number: '07', label: 'Team Project',      path: `${BASE}/section-7` },
+  { id: 'end',  number: '🏁', label: 'Conclusion',        path: `${BASE}/conclusion` },
 ];
 
 export function SmartContractsRoot() {
