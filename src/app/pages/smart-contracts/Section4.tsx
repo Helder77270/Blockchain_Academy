@@ -4,330 +4,130 @@ import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
 import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
-import { ShieldAlert } from 'lucide-react';
+import { Brain } from 'lucide-react';
 
 const chapters = [
-  { id: 's4-oracle',     label: 'The Oracle Problem' },
-  { id: 's4-challenges', label: 'Challenges & Limitations' },
-  { id: 's4-technical',  label: 'Technical Challenges' },
-  { id: 's4-ex-oracle',  label: '🎯 Exercise: Oracle' },
-  { id: 's4-ex-verdict', label: '🎯 Exercise: Adv/Prob' },
-  { id: 's4-quiz',       label: 'Quiz' },
-  { id: 's4-takeaways',  label: 'Takeaways' },
-  { id: 's4-summary',    label: 'Summary' },
+  { id: 's4-decision-intro',     label: 'Should You Use SC?' },
+  { id: 's4-decision-flow',      label: '🎯 Decision Flow' },
+  { id: 's4-decision-yes',       label: 'When SC Make Sense' },
+  { id: 's4-decision-no',        label: 'When to Rethink' },
+  { id: 's4-adoption-intro',     label: 'Adoption Considerations' },
+  { id: 's4-adoption-strategy',  label: 'Strategic Alignment' },
+  { id: 's4-adoption-tech',      label: 'Tech Infrastructure' },
+  { id: 's4-adoption-legal',     label: 'Legal & Regulatory' },
+  { id: 's4-adoption-risk',      label: 'Risk Management' },
+  { id: 's4-adoption-finance',   label: 'Financial Planning' },
+  { id: 's4-opportunities',      label: 'Opportunities' },
+  { id: 's4-challenges-academic',label: 'Challenges' },
+  { id: 's4-strategies',         label: 'Competitive Strategy' },
+  { id: 's4-quiz',               label: 'Quiz' },
+  { id: 's4-takeaways',          label: 'Takeaways' },
 ];
 
-function Stub({ id, label }: { id: string; label: string }) {
-  return (
-    <div id={id} className="h-full flex items-center justify-center p-8">
-      <div className="text-center text-muted-foreground">
-        <div className="text-4xl mb-4">⚠️</div>
-        <p className="text-lg font-medium">{label} — coming soon</p>
-      </div>
-    </div>
-  );
-}
+// ─── Interactive Decision Flow ───────────────────────────────────────────────
 
-// ─── Exercise: Oracle Attack Scenario ───────────────────────────────────────
+type Verdict = 'sc' | 'hybrid' | 'db';
 
-// mitigation: null = no tip for this row
-const ORACLE_ROWS = [
-  {
-    emoji: '🌾', actor: 'Farmer',           color: '#39B54A',
-    event: 'Pays $500 premium into smart contract',
-    consequence: 'Contract stores: if rainfall < 50mm in June → pay out $5,000 automatically.',
-    mitigation: null,
-  },
-  {
-    emoji: '🏢', actor: 'Oracle Provider',  color: '#6366f1',
-    event: 'A single company runs the only weather oracle',
-    consequence: "The smart contract trusts this oracle completely. It's the only source of truth for rainfall data.",
-    mitigation: { title: 'Decentralised Oracle (Chainlink)', desc: 'Aggregate from 15+ independent nodes — attacker must compromise a majority simultaneously.' },
-  },
-  {
-    emoji: '🔓', actor: 'Attacker',         color: '#ED1C24',
-    event: "Hacker compromises the oracle's API key",
-    consequence: "The attacker can now submit any rainfall figure they want — the blockchain has no way to verify it.",
-    mitigation: { title: 'Multiple Data Sources', desc: 'Cross-check NOAA + Weather.com + satellite data — one compromised source is caught by the others.' },
-  },
-  {
-    emoji: '📡', actor: 'Attacker',         color: '#ED1C24',
-    event: 'Submits fake data: "rainfall = 10mm"',
-    consequence: 'The smart contract reads this value, sees the condition is met (10 < 50), and executes automatically.',
-    mitigation: { title: 'Dispute Window', desc: 'Add a 24h challenge period before payout — observers can flag suspicious oracle data.' },
-  },
-  {
-    emoji: '💸', actor: 'Smart Contract',   color: '#f59e0b',
-    event: "Releases $5,000 to the attacker's wallet",
-    consequence: "The contract behaved exactly as coded. It did nothing wrong. The vulnerability was the oracle — not the contract.",
-    mitigation: { title: 'Multisig Oracle Control', desc: 'Require 3-of-5 oracle operators to sign the data — no single point of control.' },
-  },
-  {
-    emoji: '🔒', actor: 'Farmer',           color: '#ED1C24',
-    event: 'Tries to dispute the payout',
-    consequence: 'The transaction is immutable. The code has already executed. There is no appeals process, no reversal.',
-    mitigation: null,
-  },
-];
+const QUESTIONS = [
+  { id: 'parties',   q: 'Multiple distrusting parties need shared data?',                yes: 'sc',     no: 'db' },
+  { id: 'auto',      q: 'Does automation create significant value (cost, speed, fraud)?', yes: 'sc',     no: 'db' },
+  { id: 'inter',     q: 'Are intermediary costs high or disintermediation desirable?',    yes: 'sc',     no: 'db' },
+  { id: 'immut',     q: 'Is immutability a feature, not a bug?',                          yes: 'sc',     no: 'hybrid' },
+  { id: 'trans',     q: 'Is transparency important to all stakeholders?',                 yes: 'sc',     no: 'hybrid' },
+  { id: 'priv',      q: 'Is privacy paramount (GDPR, HIPAA, sensitive data)?',            yes: 'hybrid', no: 'sc' },
+  { id: 'reg',       q: 'Is your regulatory environment hostile or unclear?',             yes: 'hybrid', no: 'sc' },
+  { id: 'flex',      q: 'Do you need flexibility to change rules frequently?',            yes: 'db',     no: 'sc' },
+] as const;
 
-function OracleAttackExercise() {
-  const [revealed, setRevealed] = useState(0);
-  const allDone = revealed >= ORACLE_ROWS.length;
-  const reset = () => setRevealed(0);
+const VERDICTS: Record<Verdict, { emoji: string; title: string; color: string; desc: string }> = {
+  sc:     { emoji: '✅', title: 'Smart Contract',  color: '#39B54A', desc: 'Your use case fits the smart-contract pattern. Multi-party, automation-heavy, immutability-friendly. Proceed — but audit obsessively.' },
+  hybrid: { emoji: '⚠️', title: 'Hybrid Approach',  color: '#f59e0b', desc: 'Pure on-chain is risky here. Use a hybrid: on-chain hashes + off-chain encrypted data, or permissioned chain with off-chain governance overrides.' },
+  db:     { emoji: '❌', title: 'Traditional DB',    color: '#ED1C24', desc: 'A traditional database (with audit logs and proper access control) will be faster, cheaper, and more flexible. Skip blockchain — you don\'t need it.' },
+};
 
-  return (
-    <div className="h-full flex flex-col p-6 lg:p-8">
-      <div className="shrink-0 flex items-center justify-between mb-4">
-        <div>
-          <span className="px-2.5 py-0.5 rounded-full bg-[#ED1C24]/15 border border-[#ED1C24]/40 text-[#ED1C24] text-xs font-bold">🎯 Exercise</span>
-          <h2 className="text-2xl font-bold text-foreground mt-1">Oracle Attack — Step by Step</h2>
-          <p className="text-muted-foreground text-sm">A crop insurance contract is hacked via its oracle. Click through each step — and see how to prevent it.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="text-xs text-muted-foreground">{Math.min(revealed, ORACLE_ROWS.length)} / {ORACLE_ROWS.length} steps</div>
-          {allDone && <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors">↺ Reset</button>}
-        </div>
-      </div>
+function DecisionFlow() {
+  const [answers, setAnswers] = useState<Record<string, 'yes' | 'no'>>({});
+  const [done,    setDone]    = useState(false);
+  const idx = Object.keys(answers).length;
+  const current = QUESTIONS[idx];
 
-      {/* Column headers */}
-      <div className="shrink-0 grid grid-cols-2 gap-4 mb-2 px-1">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">What happened</p>
-        <p className="text-xs font-semibold text-[#39B54A] uppercase tracking-widest">How to prevent it</p>
-      </div>
+  const verdict: Verdict | null = (() => {
+    if (!done) return null;
+    const counts: Record<Verdict, number> = { sc: 0, hybrid: 0, db: 0 };
+    QUESTIONS.forEach(q => {
+      const a = answers[q.id];
+      if (!a) return;
+      const v = (a === 'yes' ? q.yes : q.no) as Verdict;
+      counts[v]++;
+    });
+    // Prefer most-frequent; tie-break: hybrid > db > sc
+    const max = Math.max(counts.sc, counts.hybrid, counts.db);
+    if (counts.hybrid >= 3) return 'hybrid';
+    if (counts.db >= 4)     return 'db';
+    if (counts.sc >= 4)     return 'sc';
+    return 'hybrid';
+  })();
 
-      {/* Paired rows */}
-      <div className="flex-1 min-h-0 flex flex-col gap-2">
-        {ORACLE_ROWS.map((row, i) => (
-          <motion.div
-            key={i}
-            className="flex-1 grid grid-cols-2 gap-4 min-h-0"
-            initial={{ opacity: 0.15 }}
-            animate={{ opacity: i < revealed ? 1 : 0.15 }}
-          >
-            {/* Step */}
-            <div
-              className="flex items-start gap-2.5 p-3 rounded-xl border transition-colors"
-              style={{
-                borderColor: i < revealed ? row.color + '40' : 'var(--border)',
-                backgroundColor: i < revealed ? row.color + '08' : 'transparent',
-              }}
-            >
-              <div className="size-7 rounded-full flex items-center justify-center text-base shrink-0"
-                style={{ backgroundColor: i < revealed ? row.color + '20' : 'var(--muted)' }}>
-                {i < revealed ? row.emoji : '?'}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                  <span className="text-xs font-bold shrink-0" style={{ color: i < revealed ? row.color : 'var(--muted-foreground)' }}>{row.actor}</span>
-                  <span className="text-xs font-semibold text-foreground">{i < revealed ? row.event : '···'}</span>
-                </div>
-                {i < revealed && <div className="text-xs text-muted-foreground leading-snug">{row.consequence}</div>}
-              </div>
-            </div>
-
-            {/* Mitigation — aligned to the same row */}
-            <div className="p-3 rounded-xl border transition-colors"
-              style={{
-                borderColor: row.mitigation && allDone ? '#39B54A40' : 'transparent',
-                backgroundColor: row.mitigation && allDone ? '#39B54A08' : 'transparent',
-              }}
-            >
-              {row.mitigation && allDone && (
-                <motion.div initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-                  <div className="font-bold text-xs text-[#39B54A] mb-1">✓ {row.mitigation.title}</div>
-                  <div className="text-xs text-muted-foreground leading-snug">{row.mitigation.desc}</div>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {!allDone && (
-        <div className="shrink-0 mt-3">
-          <button
-            onClick={() => setRevealed(r => r + 1)}
-            className="px-4 py-2 rounded-lg bg-[#ED1C24] text-white text-xs font-bold hover:bg-[#ED1C24]/90 transition-colors"
-          >
-            Reveal next step →
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Exercise: Advantages vs Problems ────────────────────────────────────────
-
-const ADV_PROB_ITEMS = [
-  { id: 'trustless',    label: 'Trustless execution',         emoji: '🤝', category: 'advantage', hint: 'No intermediary needed — the code enforces the rules.' },
-  { id: 'global',       label: 'Global by default',           emoji: '🌍', category: 'advantage', hint: 'Deploy once, accessible to anyone on Earth instantly.' },
-  { id: 'transparent',  label: 'Fully transparent code',      emoji: '🔍', category: 'advantage', hint: 'Anyone can read and audit the logic before using it.' },
-  { id: 'automation',   label: 'Always-on automation',        emoji: '⚡', category: 'advantage', hint: 'Executes the moment conditions are met — no office hours.' },
-  { id: 'composable',   label: 'Permissionless composability', emoji: '🧩', category: 'advantage', hint: '"Money legos" — any contract can call any other contract.' },
-  { id: 'programmoney', label: 'Programmable money',          emoji: '💸', category: 'advantage', hint: 'Native value transfer with conditional logic baked in.' },
-  { id: 'immutbug',     label: 'Bugs cannot be patched',      emoji: '🐛', category: 'problem',   hint: 'Code is immutable — a vulnerability found after deployment stays forever.' },
-  { id: 'oracle',       label: 'Oracle dependency',           emoji: '🔮', category: 'problem',   hint: 'Contracts cannot access real-world data without a trusted oracle.' },
-  { id: 'gascost',      label: 'High gas costs',              emoji: '⛽', category: 'problem',   hint: 'Complex logic or storage-heavy operations can cost hundreds of dollars.' },
-  { id: 'slowspeed',    label: 'Slow transaction speed',      emoji: '🐢', category: 'problem',   hint: '12-second block times vs millisecond Web2 responses.' },
-  { id: 'mev',          label: 'MEV / front-running',         emoji: '🤖', category: 'problem',   hint: 'Validators can reorder transactions to extract value from users.' },
-  { id: 'audit',        label: 'Complex security auditing',   emoji: '🔐', category: 'problem',   hint: '$6B+ lost to exploits — every line of code is a potential attack surface.' },
-];
-
-// Shuffled display order
-const ITEM_DISPLAY_ORDER = [2, 7, 0, 10, 4, 8, 1, 11, 5, 6, 3, 9];
-
-function AdvProblExercise() {
-  const [placements, setPlacements] = useState<Record<string, string>>({});
-  const [selected,   setSelected]   = useState<string | null>(null);
-  const [checked,    setChecked]    = useState(false);
-
-  const placed   = Object.keys(placements);
-  const unplaced = ITEM_DISPLAY_ORDER.map(i => ADV_PROB_ITEMS[i]).filter(it => !placed.includes(it.id));
-  const allPlaced = placed.length === ADV_PROB_ITEMS.length;
-
-  const score = Object.entries(placements).filter(([id, cat]) =>
-    ADV_PROB_ITEMS.find(i => i.id === id)?.category === cat
-  ).length;
-
-  const handleItemClick = (id: string) => {
-    if (checked) return;
-    setSelected(id === selected ? null : id);
+  const answer = (a: 'yes' | 'no') => {
+    const next = { ...answers, [current.id]: a };
+    setAnswers(next);
+    if (Object.keys(next).length === QUESTIONS.length) setDone(true);
   };
 
-  const handleZoneClick = (cat: string) => {
-    if (!selected || checked) return;
-    setPlacements(prev => ({ ...prev, [selected]: cat }));
-    setSelected(null);
-  };
-
-  const handleRemove = (id: string) => {
-    if (checked) return;
-    setPlacements(prev => { const n = { ...prev }; delete n[id]; return n; });
-  };
-
-  const reset = () => { setPlacements({}); setSelected(null); setChecked(false); };
-
-  const zones = [
-    { id: 'advantage', label: '✅ Advantages',   color: '#39B54A', desc: 'Properties that make smart contracts powerful' },
-    { id: 'problem',   label: '⚠️ Problems',      color: '#ED1C24', desc: 'Limitations and risks to keep in mind' },
-  ];
+  const reset = () => { setAnswers({}); setDone(false); };
 
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
-      {/* Header */}
-      <div className="shrink-0 flex items-center justify-between mb-4">
-        <div>
-          <span className="px-2.5 py-0.5 rounded-full bg-[#8b5cf6]/15 border border-[#8b5cf6]/40 text-[#8b5cf6] text-xs font-bold">🎯 Exercise</span>
-          <h2 className="text-2xl font-bold text-foreground mt-1">Advantages vs Problems</h2>
-          <p className="text-muted-foreground text-sm">
-            {selected
-              ? <span className="text-[#8b5cf6] font-semibold">Now click a box to place <span className="font-black">{ADV_PROB_ITEMS.find(i => i.id === selected)?.label}</span></span>
-              : 'Click a card to select it, then click a box to place it.'}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {allPlaced && !checked && (
-            <button onClick={() => setChecked(true)} className="px-3 py-1.5 rounded-lg bg-[#8b5cf6] text-white text-xs font-bold hover:bg-[#8b5cf6]/90 transition-colors">
-              Check answers
-            </button>
-          )}
-          {checked && (
-            <>
-              <div className="font-black text-lg" style={{ color: score === ADV_PROB_ITEMS.length ? '#39B54A' : score >= 9 ? '#f59e0b' : '#ED1C24' }}>
-                {score}/{ADV_PROB_ITEMS.length}
-              </div>
-              <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors">↺ Reset</button>
-            </>
-          )}
-        </div>
+      <div className="shrink-0 mb-3">
+        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Interactive</span>
+        <h2 className="text-2xl font-bold text-foreground mt-1">Should you use a smart contract?</h2>
+        <p className="text-muted-foreground text-sm">Answer 8 questions about your use case. Get a verdict — and the reasoning behind it.</p>
       </div>
 
-      <div className="flex-1 min-h-0 flex flex-col gap-3">
+      <div className="flex-1 min-h-0 flex flex-col gap-4">
 
-        {/* Drop zones */}
-        <div className="grid grid-cols-2 gap-4 shrink-0" style={{ height: '42%' }}>
-          {zones.map(zone => {
-            const items = ADV_PROB_ITEMS.filter(it => placements[it.id] === zone.id);
-            return (
-              <motion.div
-                key={zone.id}
-                onClick={() => handleZoneClick(zone.id)}
-                className="rounded-xl border-2 p-3 flex flex-col gap-2 overflow-hidden transition-colors"
-                style={{
-                  borderColor: selected ? zone.color + '80' : zone.color + '30',
-                  backgroundColor: selected ? zone.color + '06' : 'var(--card)',
-                  cursor: selected ? 'pointer' : 'default',
-                }}
-                whileHover={selected ? { scale: 1.01 } : {}}
-              >
-                <div className="shrink-0 flex items-center gap-2">
-                  <span className="text-sm font-black" style={{ color: zone.color }}>{zone.label}</span>
-                  <span className="text-[10px] text-muted-foreground">{zone.desc}</span>
-                  {selected && <span className="ml-auto text-[10px] text-muted-foreground italic animate-pulse">← click to place</span>}
-                </div>
-                <div className="flex-1 min-h-0 flex flex-wrap content-start gap-1.5 overflow-hidden">
-                  <AnimatePresence>
-                    {items.map(item => {
-                      const correct = item.category === zone.id;
-                      return (
-                        <motion.div
-                          key={item.id}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          onClick={e => { e.stopPropagation(); handleRemove(item.id); }}
-                          title={checked ? item.hint : 'Click to unplace'}
-                          className="flex items-center gap-1.5 px-2 py-1 rounded-lg border text-xs font-semibold cursor-pointer transition-colors"
-                          style={{
-                            borderColor: !checked ? zone.color + '50' : correct ? '#39B54A' : '#ED1C24',
-                            backgroundColor: !checked ? zone.color + '12' : correct ? '#39B54A12' : '#ED1C2412',
-                            color: !checked ? 'var(--foreground)' : correct ? '#39B54A' : '#ED1C24',
-                          }}
-                        >
-                          <span>{item.emoji}</span>
-                          <span>{item.label}</span>
-                          {checked && (correct
-                            ? <span className="text-[10px] font-black">✓</span>
-                            : <span className="text-[10px] font-black">✗</span>
-                          )}
-                        </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
-                  {items.length === 0 && (
-                    <span className="text-[10px] text-muted-foreground italic">{selected ? 'Drop here' : 'Empty'}</span>
-                  )}
-                </div>
+        {/* Progress */}
+        <div className="shrink-0 flex items-center gap-1.5">
+          {QUESTIONS.map((q, i) => (
+            <div key={q.id} className="flex-1 h-1.5 rounded-full transition-colors"
+              style={{ backgroundColor: i < idx || done ? '#6366f1' : 'var(--muted)' }} />
+          ))}
+          <div className="text-xs text-muted-foreground ml-2 w-12 text-right">{Math.min(idx + 1, QUESTIONS.length)} / {QUESTIONS.length}</div>
+        </div>
+
+        <div className="flex-1 min-h-0 flex items-center justify-center">
+          {!done && current ? (
+            <motion.div key={current.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+              className="max-w-2xl w-full p-6 bg-card border border-[#6366f1]/30 rounded-2xl flex flex-col gap-5">
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest">Question {idx + 1}</div>
+              <div className="text-2xl font-bold text-foreground">{current.q}</div>
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => answer('yes')}
+                  className="px-5 py-3 rounded-xl bg-[#39B54A] text-white font-bold hover:bg-[#39B54A]/90 transition-colors">
+                  ✓ Yes
+                </button>
+                <button onClick={() => answer('no')}
+                  className="px-5 py-3 rounded-xl bg-[#ED1C24] text-white font-bold hover:bg-[#ED1C24]/90 transition-colors">
+                  ✗ No
+                </button>
+              </div>
+            </motion.div>
+          ) : verdict ? (
+            <AnimatePresence>
+              <motion.div key="verdict" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                className="max-w-3xl w-full p-8 bg-card border-4 rounded-2xl flex flex-col gap-4 text-center"
+                style={{ borderColor: VERDICTS[verdict].color }}>
+                <div className="text-6xl">{VERDICTS[verdict].emoji}</div>
+                <div className="text-xs font-bold uppercase tracking-widest" style={{ color: VERDICTS[verdict].color }}>Verdict</div>
+                <div className="text-3xl font-black text-foreground">{VERDICTS[verdict].title}</div>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-xl mx-auto">{VERDICTS[verdict].desc}</p>
+                <button onClick={reset}
+                  className="self-center mt-3 px-5 py-2 rounded-xl bg-muted text-sm font-semibold text-muted-foreground hover:bg-muted/80 transition-colors">
+                  ↺ Start over
+                </button>
               </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Unplaced cards */}
-        <div className="flex-1 min-h-0 flex flex-col gap-2">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest shrink-0">
-            {unplaced.length > 0 ? `${unplaced.length} remaining — click to select` : 'All placed! Hit "Check answers" above.'}
-          </p>
-          <div className="flex-1 min-h-0 flex flex-wrap content-start gap-2 overflow-y-auto">
-            {unplaced.map(item => (
-              <motion.button
-                key={item.id}
-                onClick={() => handleItemClick(item.id)}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.96 }}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-colors"
-                style={{
-                  borderColor: selected === item.id ? '#8b5cf6' : 'var(--border)',
-                  backgroundColor: selected === item.id ? '#8b5cf615' : 'var(--card)',
-                  color: 'var(--foreground)',
-                }}
-              >
-                <span className="text-base">{item.emoji}</span>
-                {item.label}
-              </motion.button>
-            ))}
-          </div>
+            </AnimatePresence>
+          ) : null}
         </div>
 
       </div>
@@ -347,431 +147,426 @@ export function SC_Section4() {
         <div className="h-full">
           <TitleSlide
             sectionNumber="SECTION 04"
-            title="Dehype Smart Contracts"
-            subtitle="An honest look at the oracle problem, real limitations, and where smart contracts fall short"
-            icon={<ShieldAlert className="size-20 text-[#6366f1]" />}
-            gradient="from-[#ED1C24] to-[#6366f1]"
+            title="Critical Thinking"
+            subtitle="When to use a smart contract — and when not to. Adoption considerations for serious business deployment."
+            icon={<Brain className="size-20 text-[#6366f1]" />}
+            gradient="from-[#6366f1] to-[#8b5cf6]"
           />
         </div>
 
-        {/* ═══════ THE ORACLE PROBLEM ═══════ */}
-        <div id="s4-oracle" className="h-full flex flex-col p-6 lg:p-10">
+        {/* ═══════ DECISION INTRO ═══════ */}
+        <div id="s4-decision-intro" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The Oracle Problem</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts are deterministic and closed — they cannot reach outside the blockchain on their own.</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The Most Important Question</h2>
+            <p className="text-muted-foreground text-sm mt-1">Before writing a single line of Solidity, answer this honestly.</p>
+          </div>
+          <div className="flex-1 min-h-0 flex items-center justify-center">
+            <div className="max-w-3xl text-center space-y-6">
+              <div className="text-5xl lg:text-6xl font-black text-foreground leading-tight">
+                Should you<br/>
+                <span className="text-[#6366f1]">actually</span> use a<br/>
+                smart contract?
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-8">
+                <div className="p-5 bg-card border border-[#6366f1]/30 rounded-xl">
+                  <div className="text-2xl mb-2">🚫</div>
+                  <div className="font-bold text-foreground mb-1">Not every problem needs blockchain.</div>
+                </div>
+                <div className="p-5 bg-card border border-[#8b5cf6]/30 rounded-xl">
+                  <div className="text-2xl mb-2">🚫</div>
+                  <div className="font-bold text-foreground mb-1">Not every blockchain needs smart contracts.</div>
+                </div>
+              </div>
+              <p className="text-muted-foreground text-sm italic">
+                Build a decision framework. Develop critical thinking. The next slide is interactive — try it.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ INTERACTIVE DECISION FLOW ═══════ */}
+        <div id="s4-decision-flow" className="h-full">
+          <DecisionFlow />
+        </div>
+
+        {/* ═══════ WHEN SC MAKE SENSE ═══════ */}
+        <div id="s4-decision-yes" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">When Smart Contracts Make Sense ✅</h2>
+            <p className="text-muted-foreground text-sm mt-1">If most of these are true, blockchain is worth the engineering cost.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4 content-center">
+            {[
+              { emoji: '👥', title: 'Multiple parties with trust issues', desc: 'No single entity is trusted by all. A shared, neutral source of truth pays for itself.' },
+              { emoji: '⚡', title: 'Automation creates significant value', desc: 'Manual reconciliation, escrow, or settlement is the bottleneck — not just a nuisance.' },
+              { emoji: '🔍', title: 'Transparency matters to stakeholders', desc: 'Customers, regulators, or investors need to verify behavior themselves — not take your word for it.' },
+              { emoji: '💰', title: 'Intermediary costs are high', desc: 'Brokers, lawyers, escrow agents, clearinghouses — disintermediation produces real savings.' },
+              { emoji: '🔓', title: 'Disintermediation is desirable', desc: 'Removing a gatekeeper improves the product (e.g. global DEXs vs centralized brokers).' },
+              { emoji: '🔒', title: 'Immutability is a feature', desc: 'Audit trails, ownership records, votes — you WANT them to be unchangeable forever.' },
+              { emoji: '🌍', title: 'Asset ownership needs to be portable', desc: 'Users move between platforms, jurisdictions, or wallets. Their assets shouldn\'t be locked in.' },
+            ].map(p => (
+              <div key={p.title} className="flex items-start gap-3 p-4 bg-card border border-[#39B54A]/25 rounded-xl">
+                <div className="size-10 rounded-xl bg-[#39B54A]/15 flex items-center justify-center text-2xl shrink-0">{p.emoji}</div>
+                <div>
+                  <div className="font-bold text-sm text-foreground mb-1">{p.title}</div>
+                  <div className="text-xs text-muted-foreground">{p.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════ WHEN TO RETHINK ═══════ */}
+        <div id="s4-decision-no" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">When to Rethink Smart Contracts ❌</h2>
+            <p className="text-muted-foreground text-sm mt-1">Any of these is a red flag. Multiple = a database is almost certainly the better answer.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-4 content-center">
+            {[
+              { emoji: '🏢', title: 'Single party can be trusted', desc: 'You ARE the trusted intermediary — like a stock exchange clearing trades. A database is simpler.' },
+              { emoji: '⚡', title: 'Centralized is cheaper and faster', desc: 'For internal workflows, a Postgres database with proper audit logs beats a blockchain on every metric.' },
+              { emoji: '🔄', title: 'Flexibility to change rules is critical', desc: 'If business logic evolves weekly, immutability becomes a liability rather than an asset.' },
+              { emoji: '📦', title: 'Off-chain data drives most logic', desc: 'If 80% of your inputs come from oracles or APIs, the trust assumption sits there — not on-chain.' },
+              { emoji: '🤐', title: 'Privacy is paramount', desc: 'Public chains expose everything. GDPR, HIPAA, trade secrets — these conflict directly with public ledgers.' },
+              { emoji: '⚖️', title: 'Regulatory environment is hostile', desc: 'If your jurisdiction prohibits or heavily restricts on-chain operations, fighting that is a strategic mistake.' },
+              { emoji: '🧑', title: 'Users aren\'t tech-savvy enough', desc: 'Wallet UX, gas fees, seed phrases — these still cripple adoption for mainstream consumers.' },
+              { emoji: '💸', title: 'No one will pay for development', desc: 'Smart contract dev + audit costs are 5–10× a typical web app. If there\'s no clear ROI, don\'t start.' },
+            ].map(p => (
+              <div key={p.title} className="flex items-start gap-3 p-4 bg-card border border-[#ED1C24]/25 rounded-xl">
+                <div className="size-10 rounded-xl bg-[#ED1C24]/15 flex items-center justify-center text-2xl shrink-0">{p.emoji}</div>
+                <div>
+                  <div className="font-bold text-sm text-foreground mb-1">{p.title}</div>
+                  <div className="text-xs text-muted-foreground">{p.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════ ADOPTION INTRO — 5 PILLARS ═══════ */}
+        <div id="s4-adoption-intro" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Key Considerations for Business Adoption</h2>
+            <p className="text-muted-foreground text-sm mt-1">Introducing smart contracts isn't just a technology project — it's an organizational change.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+          <div className="flex-1 min-h-0 grid grid-cols-5 gap-3 content-center">
+            {[
+              { num: '01', emoji: '🎯', label: 'Strategic Alignment',     color: '#6366f1', desc: 'Use case clarity, success metrics, exec buy-in, staff training' },
+              { num: '02', emoji: '🏗', label: 'Technical Infrastructure', color: '#8b5cf6', desc: 'Scalable platform, legacy integration, IT readiness' },
+              { num: '03', emoji: '⚖️', label: 'Legal & Regulatory',       color: '#22d3ee', desc: 'Enforceability, jurisdictional compliance' },
+              { num: '04', emoji: '🛡', label: 'Risk Management',          color: '#ED1C24', desc: 'Audits, incident response, contract immutability planning' },
+              { num: '05', emoji: '💰', label: 'Financial Planning',       color: '#39B54A', desc: 'Upfront costs, ongoing gas, ROI timeline' },
+            ].map(p => (
+              <div key={p.num} className="p-4 bg-card border rounded-xl flex flex-col gap-2"
+                style={{ borderColor: p.color + '40' }}>
+                <div className="flex items-center gap-2">
+                  <div className="size-8 rounded-lg flex items-center justify-center text-white text-xs font-black" style={{ backgroundColor: p.color }}>{p.num}</div>
+                  <div className="text-2xl">{p.emoji}</div>
+                </div>
+                <div className="font-bold text-sm text-foreground">{p.label}</div>
+                <div className="text-xs text-muted-foreground leading-snug">{p.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-muted/30 text-xs text-muted-foreground italic">
+            Smart Contracts have huge market potential. But they are not plug-and-play — businesses need strategic purpose, infrastructure, skills, compliance, risk controls, and resources. The next 5 chapters cover each pillar.
+          </div>
+        </div>
 
-            {/* Left: problem → solution → risk */}
+        {/* ═══════ STRATEGIC ALIGNMENT ═══════ */}
+        <div id="s4-adoption-strategy" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest mb-1">Pillar 01</div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Strategic Alignment</h2>
+            <p className="text-muted-foreground text-sm mt-1">Adopting smart contracts must serve a clear business purpose and align with company strategy.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+            {[
+              { title: 'Clarify the use case', desc: 'Pinpoint where a smart contract solves a real pain point — automating a manual workflow, removing a costly intermediary, or building shared truth across distrusting parties. Align this with the company\'s strategic priorities — not the other way around.', color: '#6366f1' },
+              { title: 'Define success metrics', desc: 'Set specific, measurable targets: cost reduction (e.g. 30% in dispute resolution), speed improvement (e.g. days → minutes), error rate reduction. Forms the basis of a business case for stakeholders.', color: '#8b5cf6' },
+              { title: 'Secure executive buy-in', desc: 'Demonstrate how smart contracts support the broader business vision — disintermediation, transparency, automation. Without C-suite support, projects stall when the first technical hurdle hits.', color: '#22d3ee' },
+              { title: 'Train staff', desc: 'Educate employees about blockchain basics and the specifics of the chosen platform/tooling. Provide hands-on training for those directly using or supporting smart contracts. This is non-trivial — budget for it.', color: '#39B54A' },
+            ].map(c => (
+              <div key={c.title} className="p-5 bg-card border rounded-xl flex flex-col gap-3" style={{ borderColor: c.color + '30' }}>
+                <div className="font-bold text-sm" style={{ color: c.color }}>{c.title}</div>
+                <p className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════ TECHNICAL INFRASTRUCTURE ═══════ */}
+        <div id="s4-adoption-tech" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <div className="text-xs font-bold text-[#8b5cf6] uppercase tracking-widest mb-1">Pillar 02</div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Technical Infrastructure</h2>
+            <p className="text-muted-foreground text-sm mt-1">Implementing smart contracts demands a solid technical foundation — platform, integration, and IT capacity.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+            {[
+              { title: 'Scalable platform', emoji: '⚡', desc: 'Choose a chain that meets your throughput, latency, and finality needs (Section 6 covers this in depth). EVM compatibility = vast tooling ecosystem.', color: '#8b5cf6' },
+              { title: 'Legacy integration', emoji: '🔌', desc: 'Smart contracts must talk to ERPs, CRMs, and SaaS systems. Plan middleware (The Graph, Moralis), event listeners, and data sync from day one.', color: '#6366f1' },
+              { title: 'IT capacity & ops', emoji: '🛠', desc: 'You need on-call engineers who understand blockchain incident response. Hiring or training them takes months — start before you deploy.', color: '#22d3ee' },
+              { title: 'Identity & access', emoji: '🔐', desc: 'On-chain != anonymous in business contexts. Plan KYC, role-based access, and key management (HSMs, multisigs) ahead of any real deployment.', color: '#39B54A' },
+              { title: 'Data architecture', emoji: '💾', desc: 'Decide on-chain vs off-chain split early. Sensitive data NEVER lives on a public chain — use hashes + IPFS + encryption.', color: '#f59e0b' },
+              { title: 'Monitoring & analytics', emoji: '📊', desc: 'Block explorers, indexers, and dashboards (Dune, The Graph) — these are the prod tools. Set them up like you would any SRE stack.', color: '#ec4899' },
+            ].map(c => (
+              <div key={c.title} className="p-4 bg-card border rounded-xl flex flex-col gap-2" style={{ borderColor: c.color + '30' }}>
+                <div className="flex items-center gap-2">
+                  <div className="size-9 rounded-lg flex items-center justify-center text-xl" style={{ backgroundColor: c.color + '15' }}>{c.emoji}</div>
+                  <div className="font-bold text-sm" style={{ color: c.color }}>{c.title}</div>
+                </div>
+                <div className="text-xs text-muted-foreground leading-snug">{c.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════ LEGAL & REGULATORY ═══════ */}
+        <div id="s4-adoption-legal" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <div className="text-xs font-bold text-[#22d3ee] uppercase tracking-widest mb-1">Pillar 03</div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Legal & Regulatory</h2>
+            <p className="text-muted-foreground text-sm mt-1">Smart contracts blend code and law — raising challenges around enforceability, jurisdiction, and compliance.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+            <div className="p-5 bg-card border border-[#22d3ee]/30 rounded-xl flex flex-col gap-3">
+              <div className="font-bold text-sm text-[#22d3ee]">Things to engage legal counsel on early</div>
+              <ul className="text-xs text-muted-foreground space-y-2 flex-1">
+                <li className="flex gap-2"><span className="text-[#22d3ee]">›</span>Is this contract a "contract" under your jurisdiction's law?</li>
+                <li className="flex gap-2"><span className="text-[#22d3ee]">›</span>Does the token issued constitute a security (Howey test in US, MiCA in EU)?</li>
+                <li className="flex gap-2"><span className="text-[#22d3ee]">›</span>How do you handle disputes? Is there a "kill switch" or arbitration mechanism?</li>
+                <li className="flex gap-2"><span className="text-[#22d3ee]">›</span>What jurisdictions can users come from? KYC/AML implications?</li>
+                <li className="flex gap-2"><span className="text-[#22d3ee]">›</span>Data privacy: does the chain store anything that triggers GDPR?</li>
+                <li className="flex gap-2"><span className="text-[#22d3ee]">›</span>Tax treatment: where does revenue accrue? Where do users owe taxes?</li>
+              </ul>
+            </div>
+            <div className="p-5 bg-gradient-to-br from-[#22d3ee]/10 to-transparent border border-[#22d3ee]/30 rounded-xl flex flex-col gap-3">
+              <div className="font-bold text-sm text-[#22d3ee]">Cross-jurisdictional reality</div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                With global transactions, what's valid in one country may be illegal in another. A token sale legal in Singapore may attract SEC enforcement in the US. A contract enforceable in the EU may be unenforceable in countries with no DLT framework.
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-1.5 mt-1">
+                <li className="flex gap-1.5"><span className="text-[#22d3ee]">›</span>Geo-fence cautiously — sanctions compliance is non-negotiable</li>
+                <li className="flex gap-1.5"><span className="text-[#22d3ee]">›</span>EU MiCA (2024) sets a global precedent — expect emulation</li>
+                <li className="flex gap-1.5"><span className="text-[#22d3ee]">›</span>"Code is law" was rejected by courts in The DAO — plan for human override paths</li>
+              </ul>
+              <div className="p-2 bg-[#22d3ee]/10 rounded-lg text-xs text-muted-foreground mt-auto">
+                <span className="font-semibold text-foreground">Practical:</span> early legal review is cheaper than late legal fixes. Engage counsel before you write the first line of contract code.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ RISK MANAGEMENT ═══════ */}
+        <div id="s4-adoption-risk" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest mb-1">Pillar 04</div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Risk Management</h2>
+            <p className="text-muted-foreground text-sm mt-1">Once deployed, smart contracts are typically immutable and execute automatically. There is little room for error.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+            {[
+              { title: 'Pre-deployment audits', emoji: '🔍', desc: 'At least one — ideally two independent — security audits before mainnet. Budget $20k–$100k+ depending on contract complexity.', color: '#ED1C24' },
+              { title: 'Formal verification', emoji: '🧮', desc: 'For high-value contracts, formal verification (Certora, Halmos) proves properties mathematically — beyond what audits catch.', color: '#f59e0b' },
+              { title: 'Bug bounty program', emoji: '💰', desc: 'Immunefi and similar programs offer ongoing crowd-sourced security review. Treat bounties as a cost of doing business.', color: '#8b5cf6' },
+              { title: 'Upgrade pattern (carefully)', emoji: '⚙️', desc: 'Proxy contracts allow logic upgrades — but introduce admin keys. Use only when necessary; protect with timelocks and multisig.', color: '#6366f1' },
+              { title: 'Incident response plan', emoji: '🚨', desc: 'When (not if) something goes wrong, who pauses the contract, contacts users, communicates with media, and coordinates with exchanges?', color: '#22d3ee' },
+              { title: 'Monitor in production', emoji: '📡', desc: 'Set up real-time alerts for suspicious flows, unusual gas patterns, or governance attacks. Forta, OpenZeppelin Defender automate this.', color: '#39B54A' },
+            ].map(c => (
+              <div key={c.title} className="p-4 bg-card border rounded-xl flex flex-col gap-2" style={{ borderColor: c.color + '30' }}>
+                <div className="flex items-center gap-2">
+                  <div className="size-9 rounded-lg flex items-center justify-center text-xl" style={{ backgroundColor: c.color + '15' }}>{c.emoji}</div>
+                  <div className="font-bold text-sm" style={{ color: c.color }}>{c.title}</div>
+                </div>
+                <div className="text-xs text-muted-foreground leading-snug flex-1">{c.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════ FINANCIAL PLANNING ═══════ */}
+        <div id="s4-adoption-finance" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest mb-1">Pillar 05</div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Financial / Resource Planning</h2>
+            <p className="text-muted-foreground text-sm mt-1">Smart contract adoption demands solid financial planning. Long-term automation savings can be significant — but upfront costs are real.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
             <div className="flex flex-col gap-3">
+              <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest">Upfront costs (one-time)</div>
               {[
-                {
-                  color: '#ED1C24', emoji: '🔒', label: 'The Problem',
-                  content: 'Blockchains are closed, deterministic systems. A smart contract cannot fetch stock prices, check the weather, verify a sports score, or confirm a package delivery. Any external call would produce different results on different nodes — breaking consensus.',
-                  sub: 'The blockchain knows nothing about the world outside itself.',
-                },
-                {
-                  color: '#6366f1', emoji: '🌉', label: 'The Solution: Oracles',
-                  content: 'Oracles are off-chain services that fetch real-world data and submit it on-chain as a signed transaction. The smart contract reads oracle-provided data just like any other on-chain value. Chainlink is the dominant oracle network.',
-                  sub: 'Oracle = a trusted data bridge between the real world and the blockchain.',
-                },
-                {
-                  color: '#f59e0b', emoji: '⚠️', label: 'The Risk: New Centralization',
-                  content: 'By introducing an oracle, you reintroduce trust. If the oracle is controlled by one entity, it becomes a centralized point of failure — and the single source of manipulation. A corrupt or hacked oracle can drain millions from dependent contracts.',
-                  sub: '"A smart contract is only as decentralized as its weakest data source."',
-                },
-              ].map(p => (
-                <div key={p.label} className="flex-1 p-4 bg-card border border-border rounded-xl flex gap-3" style={{ borderColor: p.color + '30' }}>
-                  <div className="size-9 rounded-xl flex items-center justify-center text-xl shrink-0" style={{ backgroundColor: p.color + '18' }}>{p.emoji}</div>
-                  <div>
-                    <div className="font-black text-sm mb-1" style={{ color: p.color }}>{p.label}</div>
-                    <p className="text-xs text-muted-foreground leading-relaxed mb-1.5">{p.content}</p>
-                    <p className="text-xs italic text-muted-foreground border-l-2 pl-2" style={{ borderColor: p.color + '50' }}>{p.sub}</p>
+                { label: 'Infrastructure setup', range: '$5k–$50k', desc: 'Nodes, monitoring, deployment pipeline, dev environments' },
+                { label: 'Smart contract development', range: '$30k–$300k', desc: 'Architecture, Solidity dev, testing — depends heavily on complexity' },
+                { label: 'Security audits', range: '$20k–$150k', desc: 'Independent firms (Trail of Bits, OpenZeppelin, ConsenSys Diligence)' },
+                { label: 'Legal & regulatory consultation', range: '$10k–$100k+', desc: 'Especially for regulated industries — financial, healthcare, government' },
+                { label: 'Staff training', range: '$5k–$50k', desc: 'Workshops, certifications, time-off-task during onboarding' },
+              ].map(c => (
+                <div key={c.label} className="p-3 bg-card border border-[#39B54A]/25 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div className="font-bold text-sm text-foreground">{c.label}</div>
+                    <div className="font-mono text-xs text-[#39B54A]">{c.range}</div>
                   </div>
+                  <div className="text-[10px] text-muted-foreground mt-1">{c.desc}</div>
                 </div>
               ))}
             </div>
-
-            {/* Right: real example + oracle landscape */}
             <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Real-world example</div>
-
-              <div className="p-5 bg-gradient-to-br from-[#6366f1]/12 to-transparent border border-[#6366f1]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-2xl">🌾</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Crop Insurance Smart Contract</div>
-                    <div className="text-xs text-[#6366f1]">parametric insurance — no claims adjuster needed</div>
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest">Ongoing costs (recurring)</div>
+              {[
+                { label: 'Gas fees', range: 'Variable', desc: 'Pay-per-transaction; can spike 10–100× during congestion. L2s help significantly.' },
+                { label: 'Node infrastructure', range: '$200–$5k/mo', desc: 'Self-hosted full nodes, or managed (Infura, Alchemy, QuickNode)' },
+                { label: 'Maintenance & monitoring', range: '$5k–$30k/mo', desc: 'On-call engineers, alerts, incident response retainer' },
+                { label: 'Bug bounty program', range: '$10k–$1M+ pool', desc: 'Funded reserve to pay out responsibly disclosed vulnerabilities' },
+                { label: 'Compliance & reporting', range: '$5k–$50k/mo', desc: 'KYC providers, AML monitoring, tax reporting tools' },
+              ].map(c => (
+                <div key={c.label} className="p-3 bg-card border border-[#6366f1]/25 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div className="font-bold text-sm text-foreground">{c.label}</div>
+                    <div className="font-mono text-xs text-[#6366f1]">{c.range}</div>
                   </div>
+                  <div className="text-[10px] text-muted-foreground mt-1">{c.desc}</div>
                 </div>
-                <div className="space-y-2 mb-3">
-                  {[
-                    { step: '1', desc: 'Farmer pays premium into smart contract' },
-                    { step: '2', desc: 'Contract stores: if rainfall < X mm in region Y by date Z → pay out $5,000' },
-                    { step: '3', desc: 'Oracle (Chainlink + NOAA weather data) submits daily rainfall figures on-chain' },
-                    { step: '4', desc: 'Contract reads oracle data → condition met → payout released automatically' },
-                  ].map(s => (
-                    <div key={s.step} className="flex gap-2 text-xs text-muted-foreground">
-                      <span className="size-4 rounded-full bg-[#6366f1]/20 flex items-center justify-center font-bold text-[#6366f1] shrink-0">{s.step}</span>
-                      {s.desc}
-                    </div>
-                  ))}
-                </div>
-                <div className="p-2 bg-[#ED1C24]/10 border border-[#ED1C24]/20 rounded-lg text-xs text-muted-foreground">
-                  <span className="font-bold text-[#ED1C24]">Risk:</span> if the weather oracle is compromised or goes offline, the contract can't execute. The oracle is now the single point of trust.
-                </div>
-              </div>
-
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Oracle solutions in practice</div>
-              <div className="flex flex-col gap-2">
-                {[
-                  { name: 'Chainlink', color: '#375BD2', desc: 'Decentralised oracle network — aggregates from many independent nodes, reducing manipulation risk' },
-                  { name: 'Pyth Network', color: '#E6DAFE', darkColor: '#8b5cf6', desc: 'High-frequency financial data from institutional providers (exchanges, market makers) — 400ms latency' },
-                  { name: 'API3', color: '#6366f1', desc: 'First-party oracles — data providers run their own oracle nodes, removing the middleman layer entirely' },
-                  { name: 'UMA Optimistic', color: '#f59e0b', desc: 'Assume data is correct unless disputed within a window — cheaper but slower for edge cases' },
-                ].map(o => (
-                  <div key={o.name} className="flex items-start gap-2 p-2.5 bg-card border border-border rounded-lg">
-                    <div className="px-2 py-0.5 rounded font-bold text-xs shrink-0 text-white" style={{ backgroundColor: o.darkColor ?? o.color }}>{o.name}</div>
-                    <div className="text-xs text-muted-foreground">{o.desc}</div>
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
-
+          </div>
+          <div className="shrink-0 mt-3 p-3 rounded-xl border border-border bg-muted/30 text-xs text-muted-foreground italic">
+            Ranges are illustrative and vary widely by region, complexity, and specific requirements. Use them as a starting point for conversations with vendors and finance.
           </div>
         </div>
 
-        {/* ═══════ CHALLENGES & LIMITATIONS ═══════ */}
-        <div id="s4-challenges" className="h-full flex flex-col p-6 lg:p-10">
+        {/* ═══════ OPPORTUNITIES ═══════ */}
+        <div id="s4-opportunities" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Challenges & Limitations</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts inherit the constraints of their underlying blockchain — and those constraints are significant.</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Opportunities</h2>
+            <p className="text-muted-foreground text-sm mt-1">Where smart contracts demonstrably outperform legacy approaches — backed by academic research.</p>
           </div>
-
           <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
-
-            {/* Left: throughput + latency */}
-            <div className="flex flex-col gap-4">
-              {/* Throughput */}
-              <div className="flex-1 p-4 bg-card border border-[#ED1C24]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">🚦</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Throughput</div>
-                    <div className="text-xs text-[#ED1C24]">Blockchain can't match Web2 transaction volume</div>
-                  </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest">Operational opportunities</div>
+              {[
+                { label: 'Cost reduction', desc: 'Eliminate intermediaries, automate manual reconciliation, reduce escrow and dispute costs' },
+                { label: 'Speed of execution', desc: 'Settle in seconds rather than days. Cross-border value moves at internet speed.' },
+                { label: 'Transparency & auditability', desc: 'Every state change is recorded permanently — regulatory examinations become simpler.' },
+                { label: 'Programmable cash flows', desc: 'Encode business rules directly into payments — escrow, royalties, and milestones automate themselves.' },
+              ].map(o => (
+                <div key={o.label} className="p-3 bg-card border border-[#39B54A]/25 rounded-xl">
+                  <div className="font-bold text-sm text-foreground">{o.label}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{o.desc}</div>
                 </div>
-                <div className="space-y-2 mb-3">
-                  {[
-                    { label: 'Bitcoin', tps: 7, max: 24000, color: '#f59e0b' },
-                    { label: 'Ethereum', tps: 15, max: 24000, color: '#627EEA' },
-                    { label: 'Solana', tps: 5000, max: 24000, color: '#9945FF' },
-                    { label: 'Visa', tps: 24000, max: 24000, color: '#39B54A' },
-                  ].map(c => (
-                    <div key={c.label} className="flex items-center gap-2">
-                      <div className="w-20 text-xs font-medium text-muted-foreground shrink-0">{c.label}</div>
-                      <div className="flex-1 h-5 bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full flex items-center justify-end pr-1.5 transition-all"
-                          style={{ width: `${Math.max(2, (c.tps / c.max) * 100)}%`, backgroundColor: c.color }}
-                        >
-                          {c.tps >= 1000 && <span className="text-[9px] font-bold text-white">{c.tps.toLocaleString()}</span>}
-                        </div>
-                      </div>
-                      <div className="text-xs font-bold w-16 text-right shrink-0" style={{ color: c.color }}>{c.tps.toLocaleString()} TPS</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="text-xs text-muted-foreground p-2 bg-muted rounded-lg">
-                  Bitcoin and Ethereum L1 are 1,600–3,400× slower than Visa. L2s narrow this gap significantly but don't fully close it.
-                </div>
-              </div>
-
-              {/* Latency */}
-              <div className="flex-1 p-4 bg-card border border-[#f59e0b]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">⏱️</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Latency</div>
-                    <div className="text-xs text-[#f59e0b]">Block times vs. millisecond web responses</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { label: 'Ethereum block time', value: '12 seconds', sub: 'Per block — finality takes 2–3 blocks', color: '#627EEA' },
-                    { label: 'Bitcoin block time', value: '~10 minutes', sub: '6 confirmations for high-value tx = 1 hour', color: '#f59e0b' },
-                    { label: 'Web2 API response', value: '<100ms', sub: 'REST APIs, CDN-backed — imperceptible to user', color: '#39B54A' },
-                    { label: 'L2 (Arbitrum)', value: '~250ms', sub: 'Near-instant UX, final on L1 in ~7 days', color: '#6366f1' },
-                  ].map(l => (
-                    <div key={l.label} className="p-2 bg-muted rounded-lg">
-                      <div className="font-bold text-sm" style={{ color: l.color }}>{l.value}</div>
-                      <div className="text-[10px] font-semibold text-foreground">{l.label}</div>
-                      <div className="text-[10px] text-muted-foreground">{l.sub}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
-
-            {/* Right: storage + computation */}
-            <div className="flex flex-col gap-4">
-              {/* Storage */}
-              <div className="flex-1 p-4 bg-card border border-[#8b5cf6]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">💾</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Storage Costs</div>
-                    <div className="text-xs text-[#8b5cf6]">On-chain storage is extraordinarily expensive</div>
-                  </div>
+            <div className="flex flex-col gap-3">
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest">Strategic opportunities</div>
+              {[
+                { label: 'New business models', desc: 'DAOs, tokenized assets, fractional ownership, and machine-to-machine payments — none possible without smart contracts.' },
+                { label: 'Network effects', desc: 'Composability: each new contract amplifies the value of every other contract on the same chain.' },
+                { label: 'Global reach', desc: 'Permissionless markets reach users in any jurisdiction with internet — no banking partnerships required.' },
+                { label: 'Trust without intermediaries', desc: 'Multi-party agreements between strangers — fundamentally new economic primitive.' },
+              ].map(o => (
+                <div key={o.label} className="p-3 bg-card border border-[#6366f1]/25 rounded-xl">
+                  <div className="font-bold text-sm text-foreground">{o.label}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{o.desc}</div>
                 </div>
-                <div className="grid grid-cols-2 gap-3 mb-3">
-                  <div className="p-3 bg-[#ED1C24]/10 border border-[#ED1C24]/20 rounded-xl text-center">
-                    <div className="text-2xl font-black text-[#ED1C24]">~$1,000</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">per MB on-chain (Ethereum)</div>
-                  </div>
-                  <div className="p-3 bg-[#39B54A]/10 border border-[#39B54A]/20 rounded-xl text-center">
-                    <div className="text-2xl font-black text-[#39B54A]">~$0.02</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">per MB on AWS S3</div>
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground p-2 bg-muted rounded-lg">
-                  <span className="font-semibold text-foreground">50,000× more expensive.</span> This is why NFT metadata is stored on IPFS, not on-chain. Smart contracts only store the minimum required state — everything else lives off-chain.
-                </div>
-              </div>
-
-              {/* Computation */}
-              <div className="flex-1 p-4 bg-card border border-[#6366f1]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">⚙️</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Computation Limits</div>
-                    <div className="text-xs text-[#6366f1]">Gas limits cap what contracts can calculate</div>
-                  </div>
-                </div>
-                <ul className="space-y-2 text-xs text-muted-foreground mb-3">
-                  {[
-                    'Every block has a gas limit (~30M gas on Ethereum) — no transaction can exceed this',
-                    'Complex machine learning inference, large sorting algorithms, or image processing: impossible on-chain',
-                    'Deep recursive loops will either hit gas limits and revert, or drain user wallets',
-                    'On-chain computation is ~1,000,000× more expensive than off-chain for equivalent work',
-                  ].map(l => (
-                    <li key={l} className="flex gap-2"><span className="text-[#6366f1] shrink-0 mt-0.5">›</span>{l}</li>
-                  ))}
-                </ul>
-                <div className="p-2 bg-[#6366f1]/10 rounded-lg text-xs text-muted-foreground">
-                  <span className="font-semibold text-foreground">Pattern:</span> move heavy computation off-chain, submit only the result + proof on-chain. Zero-knowledge proofs (ZK-SNARKs) make this verifiable.
-                </div>
-              </div>
+              ))}
             </div>
-
+          </div>
+          <div className="shrink-0 mt-3 text-[10px] text-muted-foreground italic">
+            Sources: Nzuva (2019); Perlman (2019); Dal Mas, Dicuonzo, Massaro & Dell'Atti (2019).
           </div>
         </div>
 
-        {/* ═══════ TECHNICAL CHALLENGES ═══════ */}
-        <div id="s4-technical" className="h-full flex flex-col p-6 lg:p-10">
+        {/* ═══════ CHALLENGES (ACADEMIC) ═══════ */}
+        <div id="s4-challenges-academic" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Technical Challenges & Limitations</h2>
-            <p className="text-muted-foreground text-sm mt-1">Four structural problems that define the frontier of blockchain engineering.</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Challenges</h2>
+            <p className="text-muted-foreground text-sm mt-1">The systemic obstacles to mainstream smart contract adoption — as documented in research.</p>
           </div>
-
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
-
-            {/* MEV */}
-            <div className="p-5 bg-card border border-[#ED1C24]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#ED1C24]/15 flex items-center justify-center text-xl shrink-0">🤖</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">MEV — Maximal Extractable Value</div>
-                  <div className="text-xs font-semibold text-[#ED1C24]">Validators (and anyone) can reorder transactions for profit</div>
-                </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+            {[
+              { emoji: '⚙️', title: 'Technical complexity', desc: 'Solidity, EVM gas mechanics, and asynchronous execution flatten the developer pool. Few engineers know this stack deeply.', color: '#6366f1' },
+              { emoji: '⚖️', title: 'Regulatory uncertainty', desc: 'Securities, tax, KYC, and consumer-protection laws are still evolving. Compliance is a moving target across jurisdictions.', color: '#8b5cf6' },
+              { emoji: '🐛', title: 'Security vulnerabilities', desc: 'Reentrancy, oracle manipulation, and access-control bugs have led to billions in losses. Audits are mandatory, not optional.', color: '#ED1C24' },
+              { emoji: '⚡', title: 'Scalability limits', desc: 'Public L1s cap throughput. L2s help but introduce their own complexity (sequencers, fraud proofs, withdrawal delays).', color: '#f59e0b' },
+              { emoji: '🤝', title: 'Interoperability', desc: 'Cross-chain bridges remain fragile and have been a major source of exploits. Single-chain ecosystems are siloed.', color: '#22d3ee' },
+              { emoji: '🧑', title: 'User experience', desc: 'Wallet setup, key management, gas fees, and confirmation times all create friction that mainstream users won\'t tolerate.', color: '#39B54A' },
+            ].map(c => (
+              <div key={c.title} className="p-4 bg-card border rounded-xl flex flex-col gap-2" style={{ borderColor: c.color + '30' }}>
+                <div className="text-3xl">{c.emoji}</div>
+                <div className="font-bold text-sm" style={{ color: c.color }}>{c.title}</div>
+                <div className="text-xs text-muted-foreground leading-snug">{c.desc}</div>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Block producers choose which transactions to include and in what order. This gives them the power to front-run users — seeing a profitable trade in the mempool and inserting their own transaction first to capture the price difference.
-              </p>
-              <ul className="space-y-1.5 text-xs text-muted-foreground">
-                {[
-                  'Front-running: validator sees your DEX trade → inserts same trade before yours → sells into your transaction',
-                  'Sandwich attacks: buy before you, sell after you — you get a worse price, they profit',
-                  '$1.3B+ extracted from Ethereum users since 2020 (Flashbots data)',
-                ].map(l => (
-                  <li key={l} className="flex gap-1.5"><span className="text-[#ED1C24] shrink-0">›</span>{l}</li>
-                ))}
-              </ul>
-              <div className="mt-auto p-2 bg-[#ED1C24]/08 rounded-lg text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Mitigation:</span> Flashbots SUAVE, private mempools, commit-reveal schemes, and MEV-aware DEX designs (e.g. CoW Protocol).
-              </div>
-            </div>
-
-            {/* Upgradability */}
-            <div className="p-5 bg-card border border-[#f59e0b]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#f59e0b]/15 flex items-center justify-center text-xl shrink-0">🔧</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">Upgradability</div>
-                  <div className="text-xs font-semibold text-[#f59e0b]">Immutable code makes fixing bugs extremely difficult</div>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Once deployed, a smart contract's code cannot be changed. A bug discovered post-deployment — even a critical one — cannot be patched directly. Adding upgrade patterns reintroduces centralisation and complexity.
-              </p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2 bg-[#ED1C24]/08 border border-[#ED1C24]/20 rounded-lg">
-                  <div className="font-bold text-[#ED1C24] mb-1">Immutable risk</div>
-                  <div className="text-muted-foreground">Bug = permanent. The DAO hack: $60M lost, required Ethereum hard fork to recover.</div>
-                </div>
-                <div className="p-2 bg-[#f59e0b]/08 border border-[#f59e0b]/20 rounded-lg">
-                  <div className="font-bold text-[#f59e0b] mb-1">Proxy pattern risk</div>
-                  <div className="text-muted-foreground">Upgradeable contracts require an admin key — making the protocol only as decentralised as that key holder.</div>
-                </div>
-              </div>
-              <div className="mt-auto p-2 bg-[#f59e0b]/08 rounded-lg text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Best practice:</span> immutable core logic + audits before deployment. Upgrade patterns only where strictly necessary, with timelocks and multisig governance.
-              </div>
-            </div>
-
-            {/* Blockchain Trilemma */}
-            <div className="p-5 bg-card border border-[#6366f1]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#6366f1]/15 flex items-center justify-center text-xl shrink-0">🔺</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">The Blockchain Trilemma</div>
-                  <div className="text-xs font-semibold text-[#6366f1]">Cannot optimise security, scalability, and decentralisation simultaneously</div>
-                </div>
-              </div>
-              <div className="flex justify-center">
-                <div className="relative w-48 h-36">
-                  {/* Triangle */}
-                  <svg viewBox="0 0 200 160" className="w-full h-full">
-                    <polygon points="100,10 190,150 10,150" fill="none" stroke="#6366f180" strokeWidth="2" />
-                    <circle cx="100" cy="10" r="5" fill="#ED1C24" />
-                    <circle cx="190" cy="150" r="5" fill="#39B54A" />
-                    <circle cx="10" cy="150" r="5" fill="#f59e0b" />
-                    <text x="100" y="6" textAnchor="middle" className="text-[10px]" fill="#ED1C24" fontSize="10">Security</text>
-                    <text x="196" y="148" textAnchor="start" fill="#39B54A" fontSize="9">Scalability</text>
-                    <text x="4" y="148" textAnchor="end" fill="#f59e0b" fontSize="9">Decentralisation</text>
-                    <text x="100" y="95" textAnchor="middle" fill="#6366f180" fontSize="9">pick 2</text>
-                  </svg>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-1.5 text-[10px] text-center">
-                {[
-                  { name: 'Bitcoin', pick: 'Security + Decentralisation', sacrifice: 'Scalability (7 TPS)', color: '#f59e0b' },
-                  { name: 'Ethereum L1', pick: 'Security + Decentralisation', sacrifice: 'Scalability → L2s solve this', color: '#627EEA' },
-                  { name: 'Solana', pick: 'Security + Scalability', sacrifice: 'Decentralisation (fewer validators)', color: '#9945FF' },
-                ].map(t => (
-                  <div key={t.name} className="p-1.5 bg-muted rounded-lg">
-                    <div className="font-bold" style={{ color: t.color }}>{t.name}</div>
-                    <div className="text-muted-foreground leading-tight">{t.sacrifice}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* State Growth */}
-            <div className="p-5 bg-card border border-[#39B54A]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#39B54A]/15 flex items-center justify-center text-xl shrink-0">📈</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">State Growth</div>
-                  <div className="text-xs font-semibold text-[#39B54A]">Blockchain size grows 50 GB+ annually — forever</div>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Every transaction ever executed is stored permanently on every full node. The blockchain is append-only — nothing is ever deleted. As adoption grows, so does the burden of running a full node.
-              </p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {[
-                  { label: 'Bitcoin full chain', value: '~600 GB', color: '#f59e0b', note: 'Growing ~50 GB/year' },
-                  { label: 'Ethereum full chain', value: '~1.2 TB', color: '#627EEA', note: 'Archive node: 15+ TB' },
-                  { label: 'Pruned node', value: '~10 GB', color: '#39B54A', note: 'Stores only recent state' },
-                  { label: 'State growth risk', value: 'Centralisation', color: '#ED1C24', note: 'Only datacenters can run full nodes' },
-                ].map(s => (
-                  <div key={s.label} className="p-2 bg-muted rounded-lg">
-                    <div className="font-black text-sm" style={{ color: s.color }}>{s.value}</div>
-                    <div className="font-semibold text-[10px] text-foreground">{s.label}</div>
-                    <div className="text-[10px] text-muted-foreground">{s.note}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-auto p-2 bg-[#39B54A]/08 rounded-lg text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Mitigation:</span> EIP-4444 (Ethereum history expiry), stateless clients, and Verkle trees aim to decouple state storage from full node requirements.
-              </div>
-            </div>
-
+            ))}
+          </div>
+          <div className="shrink-0 mt-3 text-[10px] text-muted-foreground italic">
+            Sources: Khan et al. (2021); Virani (2024); Perlman (2019).
           </div>
         </div>
 
-        {/* ═══════ EXERCISE: ORACLE ATTACK ═══════ */}
-        <div id="s4-ex-oracle" className="h-full">
-          <OracleAttackExercise />
-        </div>
-
-        {/* ═══════ EXERCISE: BUILD OR NOT? ═══════ */}
-        <div id="s4-ex-verdict" className="h-full">
-          <AdvProblExercise />
+        {/* ═══════ STRATEGIES — APPLIED ═══════ */}
+        <div id="s4-strategies" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Strategies for Competitive Advantage</h2>
+            <p className="text-muted-foreground text-sm mt-1">How real companies turn smart contracts into a durable strategic moat — applied examples.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+            {[
+              { name: 'Compound', emoji: '🏦', moat: 'Trustless lending', desc: 'Eliminates intermediaries; on-chain interest rates set algorithmically. Capital efficiency that legacy banks cannot match.', color: '#6366f1' },
+              { name: 'We.trade', emoji: '🌐', moat: 'B2B trade finance', desc: 'Bank consortium platform built on Hyperledger Fabric for SME cross-border trade. Eventually shut down — illustrating that "consortium" governance is hard.', color: '#8b5cf6' },
+              { name: 'Uniswap', emoji: '🦄', moat: 'Permissionless liquidity', desc: 'Anyone can list any token instantly. AMM model removes order-book complexity. Deepest moat: composability with the rest of DeFi.', color: '#39B54A' },
+              { name: 'Propy', emoji: '🏡', moat: 'Real-estate friction', desc: 'NFT deeds for legitimate property sales. Compresses 30-day closing into hours where law allows.', color: '#22d3ee' },
+              { name: 'AXA Fizzy', emoji: '✈️', moat: 'Parametric insurance', desc: 'Flight delay insurance with automatic payouts via Ethereum + flight oracle. Eventually wound down — but proved the parametric pattern.', color: '#f59e0b' },
+              { name: 'Home Depot', emoji: '🛠', moat: 'Supply chain truth', desc: 'Hyperledger Fabric for supplier disputes. Reduced resolution time from weeks to hours — competitive advantage in operating margin.', color: '#ec4899' },
+            ].map(s => (
+              <div key={s.name} className="p-4 bg-card border rounded-xl flex flex-col gap-2" style={{ borderColor: s.color + '30' }}>
+                <div className="flex items-center gap-2">
+                  <div className="text-3xl">{s.emoji}</div>
+                  <div>
+                    <div className="font-black text-sm text-foreground">{s.name}</div>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{s.moat}</div>
+                  </div>
+                </div>
+                <div className="text-xs text-muted-foreground leading-snug flex-1">{s.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-3 text-[10px] text-muted-foreground italic">
+            Sources: IBM (2017, 2019); Gemini Cryptopedia (2025); Eurofinance (2024).
+          </div>
         </div>
 
         {/* ═══════ QUIZ ═══════ */}
         <div id="s4-quiz" className="h-full">
           <QuizSlide
-            question="A DeFi lending protocol uses a single on-chain DEX spot price as its collateral oracle. An attacker takes a $50M flash loan, manipulates the DEX price, borrows against inflated collateral, and repays the loan — all in one transaction. Which property of flash loans makes this attack unique compared to a standard market manipulation?"
+            question="A bank wants to issue digital bonds. Their internal audit team holds the master record. They have 5 trusted institutional buyers, all KYC'd. Settlement is currently T+2. Which is the strongest reason to STILL choose a smart contract on a public blockchain?"
             options={[
-              { text: 'Flash loans are anonymous — the attacker cannot be traced or prosecuted.', correct: false },
-              { text: 'Flash loans require no capital — the entire attack is atomic and self-financing within a single block, leaving no trace between blocks.', correct: true },
-              { text: 'Flash loans exploit a bug in the Ethereum protocol itself, making them impossible to prevent at the contract level.', correct: false },
-              { text: 'Flash loans allow attackers to bypass gas fees, making the attack economically viable even for small protocols.', correct: false },
+              { text: 'Reduces internal audit costs because the blockchain replaces the audit team entirely.', correct: false },
+              { text: 'Cross-border interoperability — buyers in different jurisdictions can settle without correspondent banks, even if all are KYC\'d.', correct: true },
+              { text: 'Public blockchains are cheaper than databases for any volume of transactions.', correct: false },
+              { text: 'Smart contracts cannot be hacked, so they\'re inherently more secure than the bank\'s database.', correct: false },
             ]}
-            explanation="Traditional market manipulation requires large capital held at risk over time. Flash loans change the economics completely: the attacker borrows an enormous amount, executes the attack, and repays everything within a single atomic transaction. If any step fails, the entire transaction reverts — the attacker risks only gas fees. This means any protocol using a single on-chain spot price is vulnerable to an adversary with virtually zero capital. The fix: time-weighted average prices (TWAP) cannot be manipulated within a single block, and decentralized oracle networks aggregate from multiple independent sources."
+            explanation="The first three options reflect common misconceptions: (1) blockchains do NOT replace audit functions — auditors still verify business logic, just with better evidence. (2) Public chains have ongoing gas costs that exceed databases for high-volume internal use. (3) Smart contracts are routinely hacked — security is a discipline, not a property. The legitimate reason in this scenario is cross-jurisdictional settlement: even with KYC'd parties, removing correspondent banks reduces friction, FX costs, and time. This is exactly why Santander chose Ethereum for their $20M bond. If the bond stayed entirely within one jurisdiction with one issuer and trusted buyers, a database would win — but the moment you span borders, blockchain unlocks real value."
           />
         </div>
 
+        {/* ═══════ TAKEAWAYS ═══════ */}
         <div id="s4-takeaways" className="h-full">
           <TakeawaySlide
             title="Section 04 — Key Takeaways"
             takeaways={[
-              'The oracle problem: smart contracts cannot access external data trustlessly — bridges introduce new attack surfaces',
-              'Immutability is a double-edged sword — bugs are permanent unless upgrade patterns are used',
-              '"Code is law" means users have no recourse when code behaves correctly but harmfully',
-              'Gas costs make complex on-chain logic economically impractical for many use cases',
-              'Smart contracts are not always the answer — a database is faster, cheaper, and easier in many contexts',
-              'Security audits are not optional — $6B+ lost since 2016; Shayan Eskandari has audited dozens of real contracts',
+              'Not every problem needs blockchain — start by asking "who do we not trust?" If the answer is "no one," use a database',
+              '7 signals favoring smart contracts: multi-party, automation value, transparency, intermediary cost, disintermediation, immutability-as-feature, portable ownership',
+              '8 red flags: single trusted party, centralized is faster/cheaper, flexibility critical, off-chain data dominates, privacy paramount, hostile regulation, low user tech literacy, no clear ROI',
+              '5-pillar adoption framework: Strategic Alignment · Technical Infrastructure · Legal & Regulatory · Risk Management · Financial Planning',
+              'Strategic: clear use case, success metrics, exec buy-in, staff training — without these, the project will stall',
+              'Legal: engage counsel BEFORE writing code. Securities classification, jurisdictional reach, GDPR all matter from day one',
+              'Risk: audits are non-optional. Bug bounties, formal verification, incident response — all baseline requirements',
+              'Cost reality: $50k–$500k+ to deploy a serious contract. Plan for ongoing gas, monitoring, and maintenance',
+              'Real strategic advantage comes from removing genuine intermediation pain — not from "doing blockchain"',
             ]}
           />
-        </div>
-
-        {/* ═══════ SUMMARY ═══════ */}
-        <div id="s4-summary" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Section Summary</h2>
-            <p className="text-sm text-muted-foreground mt-1">Everything covered in this section — at a glance</p>
-          </div>
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-start">
-            {[
-              { icon: '🔒', title: 'Reentrancy', summary: 'Attacker re-enters function before state updates — The DAO hack ($60M, 2016). Fix: Checks-Effects-Interactions pattern' },
-              { icon: '🔮', title: 'Oracle Attacks', summary: 'Flash loan → manipulate AMM price → drain protocol — Harvest Finance ($34M, 2020). Fix: multi-oracle, TWAP' },
-              { icon: '⛽', title: 'Gas & Scale', summary: 'Computation is metered and expensive on L1 — L2 rollups (Arbitrum, Optimism) reduce cost 10–100×' },
-              { icon: '⚖️', title: 'Advantages', summary: 'Trustless settlement · Composability · Global access · No intermediary · Censorship resistance · 24/7 operation' },
-              { icon: '⚠️', title: 'Problems', summary: 'Immutable bugs · Oracle dependency · Complex UX · Legal grey area · High gas on congested networks' },
-              { icon: '🛡️', title: 'Mitigations', summary: 'Audits + formal verification · Multi-oracle design · Timelocks · Upgrade proxy patterns · Bug bounties' },
-            ].map((card, i) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.08, duration: 0.3 }}
-                className="flex flex-col gap-2 p-4 rounded-2xl border bg-card"
-                style={{ borderColor: '#6366f130' }}
-              >
-                <div className="text-3xl">{card.icon}</div>
-                <div className="font-bold text-sm text-foreground">{card.title}</div>
-                <div className="text-xs text-muted-foreground leading-relaxed">{card.summary}</div>
-              </motion.div>
-            ))}
-          </div>
-          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-card/50 text-center">
-            <span className="text-xs text-muted-foreground">Course 2 complete — explore Course 3 for Blockchain Platforms →</span>
-          </div>
         </div>
 
         </div>
