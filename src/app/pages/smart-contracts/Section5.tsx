@@ -10,7 +10,7 @@ const chapters = [
   { id: 's5-oracle',           label: 'The Oracle Problem' },
   { id: 's5-challenges',       label: 'Challenges & Limits' },
   { id: 's5-technical',        label: 'Technical Challenges' },
-  { id: 's5-ex-oracle',        label: '🎯 Oracle Attack' },
+  { id: 's5-ex-oracle',        label: '🧩 Oracle Attack' },
   { id: 's5-risks-security',   label: 'Security Risks' },
   { id: 's5-risks-cost',       label: 'Cost Risks' },
   { id: 's5-risks-regulatory', label: 'Regulatory Risks' },
@@ -69,7 +69,7 @@ function OracleAttackExercise() {
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 flex items-center justify-between mb-4">
         <div>
-          <span className="px-2.5 py-0.5 rounded-full bg-[#ED1C24]/15 border border-[#ED1C24]/40 text-[#ED1C24] text-xs font-bold">🎯 Exercise</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#ED1C24]/15 border border-[#ED1C24]/40 text-[#ED1C24] text-xs font-bold">🧩 Exercise</span>
           <h2 className="text-2xl font-bold text-foreground mt-1">Oracle Attack — Step by Step</h2>
           <p className="text-muted-foreground text-sm">A crop insurance contract is hacked via its oracle. Click through each step — and see how to prevent it.</p>
         </div>

@@ -9,15 +9,15 @@ import { Wrench } from 'lucide-react';
 const chapters = [
   { id: 's6-standards-intro',    label: 'Standards Intro' },
   { id: 's6-erc-explain',        label: 'What is an ERC' },
-  { id: 's6-erc-table',          label: '🎯 ERC Explorer' },
+  { id: 's6-erc-table',          label: '🧩 ERC Explorer' },
   { id: 's6-erc-evolve',         label: 'Why Standards Evolve' },
-  { id: 's6-eip-process',        label: '🎯 EIP Process' },
+  { id: 's6-eip-process',        label: '🧩 EIP Process' },
   { id: 's6-erc-example',        label: 'OpenZeppelin Example' },
   { id: 's6-frameworks-intro',   label: 'Frameworks Intro' },
-  { id: 's6-frameworks-table',   label: '🎯 Frameworks Compare' },
+  { id: 's6-frameworks-table',   label: '🧩 Frameworks Compare' },
   { id: 's6-tools',              label: 'Useful Tools' },
-  { id: 's6-platform-checklist', label: '🎯 Platform Checklist' },
-  { id: 's6-platform-table',     label: '🎯 Platforms' },
+  { id: 's6-platform-checklist', label: '🧩 Platform Checklist' },
+  { id: 's6-platform-table',     label: '🧩 Platforms' },
   { id: 's6-platform-usecase',   label: 'Use Case → Platform' },
   { id: 's6-integration-intro',  label: 'Integration Intro' },
   { id: 's6-integration-nodes',  label: 'Node Infrastructure' },
@@ -125,7 +125,7 @@ function ERCExplorer() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">ERC Standards Explorer</h2>
         <p className="text-muted-foreground text-sm">Click any ERC to see its functions, events, and where it's used in the wild.</p>
       </div>
@@ -207,7 +207,7 @@ function EIPProcessFlow() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#22d3ee]/15 border border-[#22d3ee]/40 text-[#22d3ee] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#22d3ee]/15 border border-[#22d3ee]/40 text-[#22d3ee] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">How an EIP becomes a standard</h2>
         <p className="text-muted-foreground text-sm">From idea to network upgrade — click any step to see what happens.</p>
       </div>
@@ -287,7 +287,7 @@ function FrameworksCompare() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">Smart Contract Frameworks · Side by Side</h2>
         <p className="text-muted-foreground text-sm">Click a row label to highlight that comparison dimension across all frameworks.</p>
       </div>
@@ -362,7 +362,7 @@ function PlatformChecklist() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#39B54A]/15 border border-[#39B54A]/40 text-[#39B54A] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#39B54A]/15 border border-[#39B54A]/40 text-[#39B54A] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">Platform Selection Checklist</h2>
         <p className="text-muted-foreground text-sm">Toggle the requirements that matter for your use case. The top 5 matching platforms surface live.</p>
       </div>
@@ -435,7 +435,7 @@ function PlatformsTable() {
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3 flex items-start justify-between gap-3">
         <div>
-          <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Interactive</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Interactive</span>
           <h2 className="text-2xl font-bold text-foreground mt-1">Platforms · Filter & Compare</h2>
           <p className="text-muted-foreground text-sm">17 production platforms — filter by capability.</p>
         </div>

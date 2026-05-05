@@ -6,12 +6,26 @@ import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { Building2 } from 'lucide-react';
 
+import imgDefiIntro      from '../../../assets/sc/defi-intro.png';
+import imgDefiBorderless from '../../../assets/sc/defi-borderless.png';
+import imgNftGaming      from '../../../assets/sc/nft-gaming.png';
+import imgP2eEcosystem   from '../../../assets/sc/p2e-ecosystem.png';
+import imgZhartaLoans    from '../../../assets/sc/zharta-loans.png';
+import imgRwaProcess     from '../../../assets/sc/rwa-process.png';
+import imgSupplyProv     from '../../../assets/sc/supply-provenance.png';
+import imgGsbnEbl        from '../../../assets/sc/gsbn-ebl.png';
+import imgCertDecent     from '../../../assets/sc/cert-decentralization.png';
+import imgWalmart        from '../../../assets/sc/walmart-food-trust.jpg';
+import imgSantander      from '../../../assets/sc/santander-bank.jpg';
+import imgDaoTimeline    from '../../../assets/sc/dao-timeline.png';
+import imgAsxAsic        from '../../../assets/sc/asx-asic.jpg';
+
 const chapters = [
   { id: 's3-industries-intro', label: 'Industries Overview' },
 
   { kind: 'group' as const, id: 'g-defi',    label: '💸 DeFi' },
   { id: 's3-defi-intro',       label: 'Intro' },
-  { id: 's3-defi-amm',         label: '🎯 AMM Curve' },
+  { id: 's3-defi-amm',         label: '🧩 AMM Curve' },
   { id: 's3-defi-dex',         label: 'DEX Examples' },
   { id: 's3-defi-stablecoins', label: 'Stablecoins' },
   { id: 's3-defi-borderless',  label: 'Borderless' },
@@ -26,7 +40,7 @@ const chapters = [
 
   { kind: 'group' as const, id: 'g-rwa',     label: '🏢 RWA' },
   { id: 's3-rwa-intro',        label: 'Intro' },
-  { id: 's3-rwa-spectrum',     label: '🎯 Spectrum' },
+  { id: 's3-rwa-spectrum',     label: '🧩 Spectrum' },
   { id: 's3-rwa-securitize',   label: 'BUIDL' },
   { id: 's3-rwa-mortgages',    label: 'Mortgages' },
   { id: 's3-rwa-collateral',   label: 'Collateral' },
@@ -41,7 +55,7 @@ const chapters = [
 
   { kind: 'group' as const, id: 'g-cert',    label: '📜 Certification' },
   { id: 's3-cert-intro',       label: 'Intro' },
-  { id: 's3-cert-howitworks',  label: '🎯 Proof of Exist' },
+  { id: 's3-cert-howitworks',  label: '🧩 Proof of Exist' },
   { id: 's3-cert-law',         label: 'Estonia KSI' },
   { id: 's3-cert-education',   label: 'MIT Blockcerts' },
   { id: 's3-cert-products',    label: 'AURA Luxury' },
@@ -59,7 +73,7 @@ const chapters = [
   { id: 's3-asx',              label: 'ASX ❌' },
 
   { kind: 'group' as const, id: 'g-close',   label: '✅ Wrap Up' },
-  { id: 's3-exercise',         label: '🎯 Design Your Own' },
+  { id: 's3-exercise',         label: '🧩 Design Your Own' },
   { id: 's3-quiz',             label: 'Quiz' },
   { id: 's3-takeaways',        label: 'Takeaways' },
   { id: 's3-summary',          label: 'Summary' },
@@ -68,14 +82,18 @@ const chapters = [
 // ─── Industry Vertical Divider ───────────────────────────────────────────────
 
 function VerticalDivider({
-  emoji, title, subtitle, color,
-}: { emoji: string; title: string; subtitle: string; color: string }) {
+  emoji, title, subtitle, color, image,
+}: { emoji: string; title: string; subtitle: string; color: string; image?: string }) {
   return (
     <div className="h-full flex items-center justify-center p-10">
       <div className="text-center max-w-2xl">
-        <div className="text-7xl mb-5">{emoji}</div>
+        {image ? (
+          <img src={image} alt="" className="mx-auto mb-4 h-40 lg:h-48 object-contain" />
+        ) : (
+          <div className="text-7xl mb-5">{emoji}</div>
+        )}
         <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color }}>
-          Industry Vertical
+          {emoji} &nbsp; Industry Vertical
         </div>
         <h2 className="text-4xl lg:text-5xl font-black text-foreground mb-3">{title}</h2>
         <p className="text-base text-muted-foreground leading-relaxed">{subtitle}</p>
@@ -166,7 +184,7 @@ function InteractiveAMM() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">AMM Bonding Curve · <code className="text-[#6366f1]">x · y = k</code></h2>
         <p className="text-muted-foreground text-sm">Drag the slider to simulate trading on a Uniswap-style pool. Watch how the curve, prices, and slippage move in real time.</p>
       </div>
@@ -329,7 +347,7 @@ function RWASpectrum() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#39B54A]/15 border border-[#39B54A]/40 text-[#39B54A] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#39B54A]/15 border border-[#39B54A]/40 text-[#39B54A] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">Tokenization Spectrum · Easier → Harder</h2>
         <p className="text-muted-foreground text-sm">Click any asset class to see the complexity factors and current adoption examples.</p>
       </div>
@@ -424,7 +442,7 @@ function ProofOfExistenceDemo() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-3">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#22d3ee]/15 border border-[#22d3ee]/40 text-[#22d3ee] text-xs font-bold">🎯 Interactive</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#22d3ee]/15 border border-[#22d3ee]/40 text-[#22d3ee] text-xs font-bold">🧩 Interactive</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">Proof of Existence · Try it yourself</h2>
         <p className="text-muted-foreground text-sm">Hash a credential, anchor it on-chain, then verify it. The blockchain never sees the document — only the hash.</p>
       </div>
@@ -554,7 +572,7 @@ function DesignYourOwnExercise() {
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
       <div className="shrink-0 mb-4">
-        <span className="px-2.5 py-0.5 rounded-full bg-[#39B54A]/15 border border-[#39B54A]/40 text-[#39B54A] text-xs font-bold">🎯 Exercise</span>
+        <span className="px-2.5 py-0.5 rounded-full bg-[#39B54A]/15 border border-[#39B54A]/40 text-[#39B54A] text-xs font-bold">🧩 Exercise</span>
         <h2 className="text-2xl font-bold text-foreground mt-1">Design Your Own Smart Contract</h2>
         <p className="text-muted-foreground text-sm">Pick an industry, then think through each prompt before revealing the example answer.</p>
       </div>
@@ -713,6 +731,7 @@ export function SC_Section3() {
             title="Decentralized Finance"
             subtitle="Blockchain-based financial applications that operate without banks or brokers — peer-to-peer transactions enforced by smart contracts."
             color="#6366f1"
+            image={imgDefiIntro}
           />
         </div>
 
@@ -873,9 +892,12 @@ export function SC_Section3() {
 
         {/* DeFi: Borderless transfers */}
         <div id="s3-defi-borderless" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Borderless Value Transfers</h2>
-            <p className="text-muted-foreground text-sm mt-1">Moving digital assets entirely by smart contract — no correspondent banks, no clearing networks.</p>
+          <div className="shrink-0 mb-5 flex items-start gap-4">
+            <img src={imgDefiBorderless} alt="A laptop with a shield, a wallet, and a secure cloud — borderless value transfer" className="hidden lg:block h-24 object-contain shrink-0" />
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Borderless Value Transfers</h2>
+              <p className="text-muted-foreground text-sm mt-1">Moving digital assets entirely by smart contract — no correspondent banks, no clearing networks.</p>
+            </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center">
             <div className="p-5 bg-card border border-[#ED1C24]/30 rounded-xl flex flex-col gap-2">
@@ -946,6 +968,7 @@ export function SC_Section3() {
             title="Gaming & NFTs"
             subtitle="Non-Fungible Tokens turn digital items into player-owned assets — with embedded royalties and tradeable secondary markets."
             color="#8b5cf6"
+            image={imgNftGaming}
           />
         </div>
 
@@ -1032,9 +1055,12 @@ export function SC_Section3() {
 
         {/* NFTs: Play-to-Earn */}
         <div id="s3-nft-p2e" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Play-to-Earn Economies</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts link in-game achievements to token rewards, turning gameplay into income.</p>
+          <div className="shrink-0 mb-5 flex items-start gap-4">
+            <img src={imgP2eEcosystem} alt="Play-to-Earn ecosystem icons: gaming, NFTs, tokens, creatures" className="hidden lg:block h-20 object-contain shrink-0" />
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Play-to-Earn Economies</h2>
+              <p className="text-muted-foreground text-sm mt-1">Smart contracts link in-game achievements to token rewards, turning gameplay into income.</p>
+            </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
             <div className="p-5 bg-card border border-[#8b5cf6]/30 rounded-xl flex flex-col gap-3">
@@ -1074,19 +1100,30 @@ export function SC_Section3() {
             <p className="text-muted-foreground text-sm mt-1">If digital assets have value, secondary liquidity can be built around them.</p>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
-            <div className="p-5 bg-card border border-[#8b5cf6]/30 rounded-xl flex flex-col gap-3">
-              <div className="font-bold text-sm text-[#8b5cf6]">Collateralized lending</div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                NFT holders borrow against their assets without selling. The NFT is locked in a smart contract; if the loan defaults, the contract auctions or transfers the NFT to the lender. Liquidity unlocked, ownership preserved.
-              </p>
-              <div className="text-[10px] text-muted-foreground italic">Examples: NFTfi, BendDAO, Zharta</div>
+            <div className="flex flex-col gap-3">
+              <div className="p-4 bg-card border border-[#8b5cf6]/30 rounded-xl flex flex-col gap-2">
+                <div className="font-bold text-sm text-[#8b5cf6]">Collateralized lending</div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  NFT holders borrow against their assets without selling. The NFT is locked in a smart contract; if the loan defaults, the contract auctions or transfers the NFT to the lender. Liquidity unlocked, ownership preserved.
+                </p>
+                <div className="text-[10px] text-muted-foreground italic">Examples: NFTfi, BendDAO, Zharta</div>
+              </div>
+              <div className="p-4 bg-card border border-[#22d3ee]/30 rounded-xl flex flex-col gap-2">
+                <div className="font-bold text-sm text-[#22d3ee]">Rentals & flywheels</div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  NFTs can be rented to new players for a revenue split. As assets circulate, utilization grows, lenders earn yield secured by on-chain collateral, liquidity deepens, better pricing emerges, attracting more capital — a self-reinforcing flywheel.
+                </p>
+                <div className="text-[10px] text-muted-foreground italic">Pattern: borrow → use in-game → earn → split with owner</div>
+              </div>
             </div>
-            <div className="p-5 bg-card border border-[#22d3ee]/30 rounded-xl flex flex-col gap-3">
-              <div className="font-bold text-sm text-[#22d3ee]">Rentals & flywheels</div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                NFTs can be rented to new players for a revenue split. As assets circulate, utilization grows, lenders earn yield secured by on-chain collateral, liquidity deepens, better pricing emerges, attracting more capital — a self-reinforcing flywheel.
-              </p>
-              <div className="text-[10px] text-muted-foreground italic">Pattern: borrow → use in-game → earn → split with owner</div>
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#8b5cf6] uppercase tracking-widest">Real-world example · Zharta</div>
+              <div className="p-3 bg-card border border-[#8b5cf6]/30 rounded-xl">
+                <img src={imgZhartaLoans} alt="Zharta loan volume — Borrow chart over a year, +300 loans, 13.6% APR" className="w-full h-auto rounded-lg" />
+                <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+                  Borrow against your NFT — keep 100% upside, retain investing opportunities, share the risk. Zharta's smart contracts grew to <span className="font-semibold text-foreground">300+ loans</span> at <span className="font-semibold text-foreground">13.6% APR</span>, with 2-year terms — secured by on-chain collateral.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -1126,6 +1163,7 @@ export function SC_Section3() {
             title="Real Asset Tokenization"
             subtitle="Converting ownership rights in physical or financial assets into digital tokens — automated by smart contracts."
             color="#39B54A"
+            image={imgRwaProcess}
           />
         </div>
 
@@ -1310,6 +1348,7 @@ export function SC_Section3() {
             title="Supply Chain"
             subtitle="Recording every hand-off of a physical good — from raw-material pickup to retail shelf — as a tamper-proof block."
             color="#f59e0b"
+            image={imgSupplyProv}
           />
         </div>
 
@@ -1370,8 +1409,8 @@ export function SC_Section3() {
               </ul>
             </div>
             <div className="p-5 bg-gradient-to-br from-[#39B54A]/10 to-transparent border border-[#39B54A]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">🚢</span>
+              <div className="flex items-center gap-3">
+                <img src={imgGsbnEbl} alt="Container ship and an electronic Bill of Lading with QR code" className="hidden lg:block h-16 object-contain shrink-0" />
                 <div>
                   <div className="font-black text-sm text-foreground">Global Shipping Business Network (GSBN)</div>
                   <div className="text-xs text-[#39B54A]">COSCO · Hapag-Lloyd · OOCL · ONE + major ports</div>
@@ -1426,6 +1465,7 @@ export function SC_Section3() {
             title="Digital Certification"
             subtitle="Tamper-proof, easily verifiable digital records — diplomas, land titles, product authenticity — issued and validated on-chain."
             color="#22d3ee"
+            image={imgCertDecent}
           />
         </div>
 
@@ -1869,10 +1909,13 @@ export function SC_Section3() {
 
         {/* ═══════ CASE STUDY — WALMART FOOD TRUST ═══════ */}
         <div id="s3-walmart" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-1">
-            <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest mb-1">Case Study 04 — Food Supply</div>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Walmart · Food Trust</h2>
-            <p className="text-muted-foreground text-sm mt-1">Tracing food contamination from 7 days to 2.2 seconds — IBM Hyperledger Fabric in production.</p>
+          <div className="shrink-0 mb-1 flex items-start gap-4">
+            <img src={imgWalmart} alt="Walmart Food Trust — IBM Blockchain on a phone next to a crate of oranges" className="hidden lg:block h-24 rounded-lg object-cover shrink-0" />
+            <div>
+              <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest mb-1">Case Study 04 — Food Supply</div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Walmart · Food Trust</h2>
+              <p className="text-muted-foreground text-sm mt-1">Tracing food contamination from 7 days to 2.2 seconds — IBM Hyperledger Fabric in production.</p>
+            </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center mt-4">
             <div className="p-4 bg-gradient-to-br from-[#ED1C24]/10 to-transparent border border-[#ED1C24]/30 rounded-xl flex flex-col gap-2">
@@ -1922,10 +1965,13 @@ export function SC_Section3() {
 
         {/* ═══════ CASE STUDY — SANTANDER BOND ═══════ */}
         <div id="s3-santander" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-1">
-            <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest mb-1">Case Study 05 — Banking</div>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Santander · End-to-End Blockchain Bond</h2>
-            <p className="text-muted-foreground text-sm mt-1">$20M bond issued entirely on Ethereum — the first major bank to settle a security on a public chain.</p>
+          <div className="shrink-0 mb-1 flex items-start gap-4">
+            <img src={imgSantander} alt="Santander branch storefront" className="hidden lg:block h-24 rounded-lg object-cover shrink-0" />
+            <div>
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest mb-1">Case Study 05 — Banking</div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Santander · End-to-End Blockchain Bond</h2>
+              <p className="text-muted-foreground text-sm mt-1">$20M bond issued entirely on Ethereum — the first major bank to settle a security on a public chain.</p>
+            </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center mt-4">
             <div className="p-4 bg-gradient-to-br from-[#6366f1]/10 to-transparent border border-[#6366f1]/30 rounded-xl flex flex-col gap-2">
@@ -2020,10 +2066,13 @@ export function SC_Section3() {
 
         {/* ═══════ CASE STUDY — THE DAO HACK ═══════ */}
         <div id="s3-dao" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-1">
-            <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest mb-1">Case Study 07 — Cautionary Tale</div>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The DAO · Decentralized Autonomous Organization</h2>
-            <p className="text-muted-foreground text-sm mt-1">$150M raised, $60M drained. The hack that split Ethereum and proved "code is law" has limits.</p>
+          <div className="shrink-0 mb-1 flex items-start gap-4">
+            <img src={imgDaoTimeline} alt="The DAO timeline: idea → launch → hack → fork" className="hidden lg:block h-24 rounded-lg object-contain shrink-0 bg-white p-1" />
+            <div>
+              <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest mb-1">Case Study 07 — Cautionary Tale</div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The DAO · Decentralized Autonomous Organization</h2>
+              <p className="text-muted-foreground text-sm mt-1">$150M raised, $60M drained. The hack that split Ethereum and proved "code is law" has limits.</p>
+            </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center mt-4">
             <div className="p-4 bg-gradient-to-br from-[#6366f1]/10 to-transparent border border-[#6366f1]/30 rounded-xl flex flex-col gap-2">
@@ -2061,10 +2110,13 @@ export function SC_Section3() {
 
         {/* ═══════ CASE STUDY — ASX CHESS FAILURE ═══════ */}
         <div id="s3-asx" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-1">
-            <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest mb-1">Case Study 08 — When Blockchain Doesn't Fit</div>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">ASX · CHESS Replacement Project</h2>
-            <p className="text-muted-foreground text-sm mt-1">$255M+ AUD spent, six years of work — abandoned in 2022. Just because you CAN use blockchain doesn't mean you SHOULD.</p>
+          <div className="shrink-0 mb-1 flex items-start gap-4">
+            <img src={imgAsxAsic} alt="ASIC vs ASX with a gavel" className="hidden lg:block h-24 rounded-lg object-cover shrink-0" />
+            <div>
+              <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest mb-1">Case Study 08 — When Blockchain Doesn't Fit</div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">ASX · CHESS Replacement Project</h2>
+              <p className="text-muted-foreground text-sm mt-1">$255M+ AUD spent, six years of work — abandoned in 2022. Just because you CAN use blockchain doesn't mean you SHOULD.</p>
+            </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center mt-4">
             <div className="p-4 bg-gradient-to-br from-[#6366f1]/10 to-transparent border border-[#6366f1]/30 rounded-xl flex flex-col gap-2">
