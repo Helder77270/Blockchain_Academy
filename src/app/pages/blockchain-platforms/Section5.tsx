@@ -12,7 +12,11 @@ const chapters = [
   { id: 's5-starknet-compare', label: 'Starknet: ZK in Practice' },
   { id: 's5-starknet-eco',     label: 'Starknet Apps' },
   { id: 's5-layer2',       label: 'Layer 2: Optimistic vs ZK' },
-  { id: 's5-l2apps',       label: 'L2 App Landscape' },
+  { id: 's5-l2apps',        label: 'L2 App Landscape' },
+  { id: 's5-polkadot',     label: 'Polkadot' },
+  { id: 's5-polkadot-eco', label: 'Polkadot Apps' },
+  { id: 's5-avalanche',    label: 'Avalanche' },
+  { id: 's5-avalanche-eco', label: 'Avalanche Apps' },
   { id: 's5-privacy',      label: 'Privacy' },
   { id: 's5-evaluate',     label: 'Evaluate a Project' },
   { id: 's5-decision',          label: 'Decision Framework' },
@@ -704,6 +708,386 @@ export function BP_Section5() {
             <p className="text-[11px] text-muted-foreground leading-snug">
               <span className="font-bold" style={{ color: '#8b5cf6' }}>How to choose — </span>
               DeFi-mature builder → Arbitrum or Base. Public goods or rollup-as-a-service → Optimism / OP Stack. Consumer & social with Coinbase reach → Base. Account-abstraction native → zkSync. Games or proof-heavy compute → Starknet. The mechanism (optimistic vs ZK) increasingly matters less than the ecosystem fit.
+            </p>
+          </div>
+        </div>
+
+        {/* ═══════ S5-POLKADOT ═══════ */}
+        <div id="s5-polkadot" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Polkadot — shared security for sovereign parachains</h2>
+            <p className="text-sm text-muted-foreground mt-1">A Relay Chain that pools ~300 validators to secure all connected parachains simultaneously. Cross-chain calls between parachains use XCM — no bridge contract, no wrapped token.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Left — Architecture cards */}
+            <div className="flex flex-col gap-2 min-h-0">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">Architecture</p>
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+                {[
+                  { icon: '🔗', title: 'Relay Chain', color: '#e6007a', desc: 'The L0 backbone. ~300 validators (BABE block production + GRANDPA finality) secure every parachain slot simultaneously. Validators rotate across parachains, so no single chain can be attacked in isolation.' },
+                  { icon: '🧩', title: 'Parachains & Coretime', color: '#8b5cf6', desc: 'Parachains are L1s that rent block-production time (Coretime) on the Relay Chain — replacing the old slot-auction model in 2024. Each parachain gets shared security without bootstrapping its own validator set.' },
+                  { icon: '📨', title: 'XCM — Cross-Consensus Messaging', color: '#10b981', desc: 'A native message format for calls between parachains. Assets and instructions travel trustlessly — verified by the Relay Chain validators, not a bridge multisig. No lock-and-mint, no honeypot.' },
+                  { icon: '🌉', title: 'Bridges to external chains', color: '#f59e0b', desc: 'Snowbridge (Ethereum ↔ Polkadot) and other dedicated bridge parachains connect to chains outside the Relay Chain. These use traditional bridge security, distinct from XCM.' },
+                ].map(c => (
+                  <div key={c.title} className="rounded-xl border bg-card p-2.5 flex items-start gap-2.5 min-h-0" style={{ borderColor: c.color + '40' }}>
+                    <span className="text-base shrink-0 leading-none mt-0.5">{c.icon}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold leading-tight" style={{ color: c.color }}>{c.title}</p>
+                      <p className="text-[10px] text-muted-foreground leading-snug mt-0.5">{c.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — Key metrics + DOT economics + 2024 */}
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="grid grid-cols-3 gap-2 shrink-0">
+                {[
+                  { metric: '~300', label: 'active validators' },
+                  { metric: '6 s', label: 'epoch finality' },
+                  { metric: '50+', label: 'active parachains' },
+                ].map(s => (
+                  <div key={s.label} className="px-2 py-1.5 rounded-lg border border-[#e6007a]/30 bg-[#e6007a]/05 text-center">
+                    <div className="text-xs font-black text-[#e6007a] leading-none">{s.metric}</div>
+                    <div className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-wider leading-snug">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="shrink-0 p-3 rounded-xl border" style={{ borderColor: '#e6007a40', backgroundColor: '#e6007a08' }}>
+                <p className="text-[10px] font-bold text-[#e6007a] mb-1.5 flex items-center gap-1.5"><span>💎</span> DOT economics</p>
+                <ul className="space-y-1 text-[11px] text-muted-foreground leading-snug">
+                  <li>· Staked DOT secures the Relay Chain — validators are slashed for misbehaviour</li>
+                  <li>· Coretime is purchased with DOT (on-demand or bulk) — replaces slot auctions</li>
+                  <li>· Governance: OpenGov lets any DOT holder propose and vote on referenda</li>
+                </ul>
+              </div>
+
+              <div className="flex-1 min-h-0 p-3 rounded-xl border" style={{ borderColor: '#8b5cf640', backgroundColor: '#8b5cf608' }}>
+                <p className="text-[10px] font-bold text-[#8b5cf6] mb-1.5">2024–2025 developments</p>
+                <ul className="space-y-1.5 text-[11px] text-muted-foreground leading-snug">
+                  <li>· <span className="font-medium text-foreground">Coretime launch</span> — slot auctions replaced by flexible block-time marketplace</li>
+                  <li>· <span className="font-medium text-foreground">Agile Coretime</span> — chains can buy seconds of block-time rather than full parachain slots</li>
+                  <li>· <span className="font-medium text-foreground">JAM Protocol</span> — next-gen Relay Chain redesign (proposed by Gavin Wood) for more general-purpose compute</li>
+                  <li>· <span className="font-medium text-foreground">Snowbridge live</span> — trustless Ethereum ↔ Polkadot bridge using on-chain light clients</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ S5-POLKADOT-ECO ═══════ */}
+        <div id="s5-polkadot-eco" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Polkadot ecosystem — apps across parachains</h2>
+            <p className="text-sm text-muted-foreground mt-1">Each parachain is sovereign — they specialise. EVM compatibility, DeFi hubs, enterprise smart contracts, trustless Bitcoin wrapping: the DOT ecosystem covers the full stack.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-5 gap-2.5">
+            {[
+              {
+                emoji: '🌕',
+                name: 'Moonbeam',
+                category: 'EVM Parachain',
+                color: '#53cbc8',
+                tag: 'Ethereum compatibility layer',
+                stats: 'Full EVM — Solidity deploys unchanged',
+                apps: [
+                  { name: 'StellaSwap',       kind: 'Leading Moonbeam DEX, stable + volatile pairs' },
+                  { name: 'Moonwell',          kind: 'Lending market, forked from Compound' },
+                  { name: 'Connected contracts', kind: 'XCM calls into EVM — Polkadot ↔ Ethereum flows' },
+                  { name: 'Entry point',       kind: 'EVM users access DOT ecosystem via Moonbeam' },
+                ],
+              },
+              {
+                emoji: '🏦',
+                name: 'Acala',
+                category: 'DeFi Hub',
+                color: '#e6007a',
+                tag: 'DEX · liquid staking · stablecoin',
+                stats: 'Polkadot\'s native DeFi anchor',
+                apps: [
+                  { name: 'aUSD stablecoin',  kind: 'CDP stablecoin backed by DOT/BTC/ETH (post-2022 relaunch)' },
+                  { name: 'LDOT',             kind: 'Liquid staking — stake DOT, keep liquidity' },
+                  { name: 'Acala DEX',        kind: 'Native AMM with XCM-native asset support' },
+                  { name: 'Case study',       kind: '2022 exploit (erroneous aUSD mint) — upgrade governance lessons' },
+                ],
+              },
+              {
+                emoji: '⭐',
+                name: 'Astar',
+                category: 'Smart Contracts',
+                color: '#1b6dc1',
+                tag: 'EVM + WASM runtimes',
+                stats: 'Japan enterprise blockchain leader',
+                apps: [
+                  { name: 'dApp staking',     kind: 'Developers stake ASTR to earn protocol rewards' },
+                  { name: 'Toyota pilot',     kind: 'Vehicle data provenance on Astar zkEVM' },
+                  { name: 'Sony x Startale',  kind: 'Sony Network Communications blockchain initiative' },
+                  { name: 'Astar zkEVM',      kind: 'Polygon CDK-based zk layer — Ethereum L2 strategy' },
+                ],
+              },
+              {
+                emoji: '💧',
+                name: 'HydraDX',
+                category: 'DEX · Omnipool',
+                color: '#00bcd4',
+                tag: 'single-pool for all assets',
+                stats: 'Unified liquidity model — no fragmentation',
+                apps: [
+                  { name: 'Omnipool',         kind: 'All assets in one pool — trade any→any in one hop' },
+                  { name: 'HDX token',        kind: 'Protocol governance + LP incentive token' },
+                  { name: 'Stableswap',       kind: 'Low-slippage curve for stablecoin pairs' },
+                  { name: 'DCA orders',       kind: 'On-chain dollar-cost averaging, native to protocol' },
+                ],
+              },
+              {
+                emoji: '₿',
+                name: 'Interlay · iBTC',
+                category: 'Bitcoin DeFi',
+                color: '#f7931a',
+                tag: 'trustless wrapped Bitcoin',
+                stats: 'Vault-backed, no multisig custodian',
+                apps: [
+                  { name: 'iBTC',             kind: '1:1 BTC-backed token, vault collateral model' },
+                  { name: 'Vault collateral', kind: 'Vaults post DOT/ETH — slashed if BTC stolen' },
+                  { name: 'No custodian',     kind: 'Different model from WBTC (BitGo) — fully on-chain' },
+                  { name: 'Cross-chain use',  kind: 'iBTC usable across Acala, HydraDX via XCM' },
+                ],
+              },
+            ].map(app => (
+              <motion.div
+                key={app.name}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-1.5 p-2.5 rounded-xl border-2 min-h-0"
+                style={{ borderColor: app.color + '55', backgroundColor: app.color + '0a' }}
+              >
+                <div className="shrink-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-base shrink-0 leading-none">{app.emoji}</span>
+                    <div className="font-black text-[12px] leading-tight" style={{ color: app.color }}>{app.name}</div>
+                  </div>
+                  <span
+                    className="inline-block text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded mt-1"
+                    style={{ backgroundColor: app.color + '20', color: app.color, border: `1px solid ${app.color}40` }}
+                  >
+                    {app.category}
+                  </span>
+                </div>
+                <div className="shrink-0">
+                  <div className="text-[10px] text-foreground font-medium leading-tight">{app.tag}</div>
+                  <div className="text-[9px] text-muted-foreground italic leading-snug mt-0.5">{app.stats}</div>
+                </div>
+                <div className="flex-1 min-h-0 flex flex-col gap-1">
+                  {app.apps.map(item => (
+                    <div key={item.name} className="rounded-md border bg-card/60 px-1.5 py-1 min-h-0" style={{ borderColor: app.color + '35' }}>
+                      <div className="text-[10px] font-bold leading-tight" style={{ color: app.color }}>{item.name}</div>
+                      <div className="text-[9px] text-muted-foreground leading-snug mt-0.5">{item.kind}</div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-3 rounded-xl border p-2.5" style={{ borderColor: '#e6007a55', backgroundColor: '#e6007a0d' }}>
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              <span className="font-bold" style={{ color: '#e6007a' }}>Also worth knowing — </span>
+              <span className="font-medium text-foreground">Bifrost</span> (liquid staking hub) · <span className="font-medium text-foreground">Centrifuge</span> (RWA tokenisation, DeFi for real assets) · <span className="font-medium text-foreground">Phala</span> (confidential compute via TEEs) · <span className="font-medium text-foreground">Unique Network</span> (NFT infrastructure) · <span className="font-medium text-foreground">Parallel Finance</span> (money markets) · <span className="font-medium text-foreground">Pendulum</span> (fiat-pegged assets, forex DeFi).
+            </p>
+          </div>
+        </div>
+
+        {/* ═══════ S5-AVALANCHE ═══════ */}
+        <div id="s5-avalanche" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Avalanche — sub-second L0 with sovereign L1s</h2>
+            <p className="text-sm text-muted-foreground mt-1">A three-chain Primary Network (X, P, C) with Snowman consensus achieving sub-second finality. Avalanche L1s (ex-Subnets) let teams deploy sovereign chains with their own validator subsets while retaining native Warp messaging.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Left — Architecture cards */}
+            <div className="flex flex-col gap-2 min-h-0">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">Architecture</p>
+              <div className="flex-1 min-h-0 grid auto-rows-fr gap-2">
+                {[
+                  { icon: '🔺', title: 'Primary Network', color: '#e84142', desc: 'Three built-in chains: X-Chain (UTXO asset transfers), P-Chain (validator coordination, L1 creation), C-Chain (EVM — where most DeFi lives). All validators must validate the Primary Network.' },
+                  { icon: '🏔️', title: 'Avalanche L1s (ex-Subnets)', color: '#f97316', desc: 'Custom chains with their own validator subsets. Renamed via ACP-13/77 in 2024 — chains no longer need to validate the Primary Network, reducing the AVAX stake requirement dramatically. Powers gaming chains, institutional deployments.' },
+                  { icon: '⚡', title: 'Snowman Consensus', color: '#f59e0b', desc: 'Probabilistic consensus where each validator samples a small random subset of peers. Converges in < 1 second with high confidence. Unlike BFT it scales well with validator count — 1,000+ validators without performance loss.' },
+                  { icon: '📡', title: 'Avalanche Warp Messaging', color: '#10b981', desc: 'Native L1↔L1 messaging. The source L1\'s validator set signs the message; the destination verifies against the P-Chain\'s record of that validator set. No third-party bridge relayer needed.' },
+                ].map(c => (
+                  <div key={c.title} className="rounded-xl border bg-card p-2.5 flex items-start gap-2.5 min-h-0" style={{ borderColor: c.color + '40' }}>
+                    <span className="text-base shrink-0 leading-none mt-0.5">{c.icon}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold leading-tight" style={{ color: c.color }}>{c.title}</p>
+                      <p className="text-[10px] text-muted-foreground leading-snug mt-0.5">{c.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — Key metrics + AVAX economics + 2024 */}
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="grid grid-cols-3 gap-2 shrink-0">
+                {[
+                  { metric: '<1 s', label: 'finality (Snowman)' },
+                  { metric: '4,500+', label: 'TPS (C-Chain peak)' },
+                  { metric: '70+', label: 'Avalanche L1s live' },
+                ].map(s => (
+                  <div key={s.label} className="px-2 py-1.5 rounded-lg border border-[#e84142]/30 bg-[#e84142]/05 text-center">
+                    <div className="text-xs font-black text-[#e84142] leading-none">{s.metric}</div>
+                    <div className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-wider leading-snug">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="shrink-0 p-3 rounded-xl border" style={{ borderColor: '#e8414240', backgroundColor: '#e8414208' }}>
+                <p className="text-[10px] font-bold text-[#e84142] mb-1.5 flex items-center gap-1.5"><span>💎</span> AVAX economics</p>
+                <ul className="space-y-1 text-[11px] text-muted-foreground leading-snug">
+                  <li>· All C-Chain gas fees are burned in AVAX — deflationary pressure with network usage</li>
+                  <li>· Validators must stake ≥ 2,000 AVAX on the Primary Network</li>
+                  <li>· Avalanche L1s pay validators in any token — AVAX no longer required (ACP-77)</li>
+                </ul>
+              </div>
+
+              <div className="flex-1 min-h-0 p-3 rounded-xl border" style={{ borderColor: '#f9731640', backgroundColor: '#f9731608' }}>
+                <p className="text-[10px] font-bold text-[#f97316] mb-1.5">2024–2025 developments</p>
+                <ul className="space-y-1.5 text-[11px] text-muted-foreground leading-snug">
+                  <li>· <span className="font-medium text-foreground">ACP-77 (Subnet → L1)</span> — chains no longer need to validate Primary Network; opens sovereign deployment at lower cost</li>
+                  <li>· <span className="font-medium text-foreground">Avalanche9000</span> — major fee reduction upgrade, making L1 deployment 99%+ cheaper</li>
+                  <li>· <span className="font-medium text-foreground">Etna upgrade</span> — dynamic fees and EIP-1559-style base fee on C-Chain</li>
+                  <li>· <span className="font-medium text-foreground">Warp + Teleporter</span> — production-ready cross-L1 messaging SDK for teams building multi-chain apps</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ S5-AVALANCHE-ECO ═══════ */}
+        <div id="s5-avalanche-eco" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Avalanche ecosystem — apps &amp; sovereign L1s</h2>
+            <p className="text-sm text-muted-foreground mt-1">The C-Chain hosts DeFi; sovereign L1s host games, institutional rails, and enterprise applications — each with its own validator set and economics, connected back via Warp.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-5 gap-2.5">
+            {[
+              {
+                emoji: '🍵',
+                name: 'Trader Joe',
+                category: 'DEX',
+                color: '#f59e0b',
+                tag: 'Liquidity Book AMM',
+                stats: 'Largest Avalanche DEX · multi-chain',
+                apps: [
+                  { name: 'Liquidity Book', kind: 'Discrete price-bin AMM — LPs choose exact ranges' },
+                  { name: 'Auto-pools',     kind: 'Managed LB positions that rebalance automatically' },
+                  { name: 'Multi-chain',    kind: 'Also live on Arbitrum, BNB Chain, Ethereum' },
+                  { name: 'JOE token',      kind: 'Governance + fee-sharing via veJOE' },
+                ],
+              },
+              {
+                emoji: '🏦',
+                name: 'BENQI',
+                category: 'Lending · LST',
+                color: '#10b981',
+                tag: 'money market + liquid staking',
+                stats: '~$200M TVL at peak · since 2021',
+                apps: [
+                  { name: 'Supply & borrow', kind: 'AVAX, USDC, BTC.b, ETH.e as collateral/debt' },
+                  { name: 'qiAVAX (sAVAX)', kind: 'Liquid staking — stake AVAX, receive yield-bearing LST' },
+                  { name: 'QI governance',   kind: 'Token controls risk parameters and new markets' },
+                  { name: 'Ignite program',  kind: 'Delegated AVAX to help validators reach minimum stake' },
+                ],
+              },
+              {
+                emoji: '🏟️',
+                name: 'Pharaoh',
+                category: 've-AMM',
+                color: '#ec4899',
+                tag: 'vote-escrow DEX · PHAR',
+                stats: 'Dominant Avax ve(3,3) DEX in 2024',
+                apps: [
+                  { name: 'veNFT model',    kind: 'Lock PHAR → veNFT → direct emissions to pools' },
+                  { name: 'Bribes market',  kind: 'Protocols bribe veNFT holders to direct liquidity' },
+                  { name: 'Concentrated',   kind: 'Uniswap v3-style CL pools alongside stable pools' },
+                  { name: 'Ra stablecoin',  kind: 'Ecosystem stablecoin integrated with Pharaoh liquidity' },
+                ],
+              },
+              {
+                emoji: '🎮',
+                name: 'Gaming L1s',
+                category: 'Sovereign L1s',
+                color: '#8b5cf6',
+                tag: 'DFK · Gunzilla · Shrapnel',
+                stats: 'First major gaming L1 use-case',
+                apps: [
+                  { name: 'DFK Chain',      kind: 'DeFi Kingdoms — first major gaming Subnet (2022)' },
+                  { name: 'Off The Grid',   kind: 'Gunzilla AAA battle royale — custom L1 for in-game economy' },
+                  { name: 'Shrapnel',       kind: 'Extraction shooter, tokenised skins / maps on L1' },
+                  { name: 'Warp bridge',    kind: 'Game assets move back to C-Chain via Avalanche Warp' },
+                ],
+              },
+              {
+                emoji: '🏢',
+                name: 'Institutional L1s',
+                category: 'Enterprise',
+                color: '#6366f1',
+                tag: 'private validator sets',
+                stats: 'JP Morgan · T. Rowe Price · Deloitte',
+                apps: [
+                  { name: 'Onyx (JPM)',     kind: 'Repo agreements + tokenised fund settlement' },
+                  { name: 'Spruce',         kind: 'Permissioned L1 for institutional asset tokenisation' },
+                  { name: 'EVM-compatible', kind: 'Leverage existing Solidity tooling with permissioned access' },
+                  { name: 'Custom gas',     kind: 'Fees paid in stablecoin or custom token, not AVAX' },
+                ],
+              },
+            ].map(app => (
+              <motion.div
+                key={app.name}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-1.5 p-2.5 rounded-xl border-2 min-h-0"
+                style={{ borderColor: app.color + '55', backgroundColor: app.color + '0a' }}
+              >
+                <div className="shrink-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-base shrink-0 leading-none">{app.emoji}</span>
+                    <div className="font-black text-[12px] leading-tight" style={{ color: app.color }}>{app.name}</div>
+                  </div>
+                  <span
+                    className="inline-block text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded mt-1"
+                    style={{ backgroundColor: app.color + '20', color: app.color, border: `1px solid ${app.color}40` }}
+                  >
+                    {app.category}
+                  </span>
+                </div>
+                <div className="shrink-0">
+                  <div className="text-[10px] text-foreground font-medium leading-tight">{app.tag}</div>
+                  <div className="text-[9px] text-muted-foreground italic leading-snug mt-0.5">{app.stats}</div>
+                </div>
+                <div className="flex-1 min-h-0 flex flex-col gap-1">
+                  {app.apps.map(item => (
+                    <div key={item.name} className="rounded-md border bg-card/60 px-1.5 py-1 min-h-0" style={{ borderColor: app.color + '35' }}>
+                      <div className="text-[10px] font-bold leading-tight" style={{ color: app.color }}>{item.name}</div>
+                      <div className="text-[9px] text-muted-foreground leading-snug mt-0.5">{item.kind}</div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-3 rounded-xl border p-2.5" style={{ borderColor: '#e8414255', backgroundColor: '#e841420d' }}>
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              <span className="font-bold" style={{ color: '#e84142' }}>Also worth knowing — </span>
+              <span className="font-medium text-foreground">Steakhut</span> (automated LB position management) · <span className="font-medium text-foreground">GoGoPool</span> (minipool liquid staking for validators) · <span className="font-medium text-foreground">Yield Yak</span> (auto-compounder) · <span className="font-medium text-foreground">Arena-Z</span> (esports L1) · <span className="font-medium text-foreground">MapleStory Universe</span> (Nexon gaming L1, 2025) · <span className="font-medium text-foreground">Core DAO bridge</span> (BTC-staked PoS via Avalanche Warp).
             </p>
           </div>
         </div>
