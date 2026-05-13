@@ -25,14 +25,15 @@ const chapters = [
   { id: 's3-defi-intro',       label: 'Intro' },
   { id: 's3-defi-amm',         label: '🧩 AMM Curve' },
   { id: 's3-defi-dex',         label: 'DEX Examples' },
-  { id: 's3-defi-stablecoins', label: 'Stablecoins' },
+  { id: 's3-defi-stablecoins', label: '🧩 Stablecoins' },
   { id: 's3-defi-borderless',  label: 'Borderless' },
   { id: 's3-defi-prosCons',    label: 'Pros & Cons' },
 
   { kind: 'group' as const, id: 'g-nft',     label: '🎮 Gaming & NFTs' },
   { id: 's3-nft-intro',        label: 'Intro' },
   { id: 's3-nft-economies',    label: 'True Ownership' },
-  { id: 's3-nft-p2e',          label: 'Play-to-Earn' },
+  { id: 's3-nft-p2e',          label: '🧩 Play-to-Earn' },
+  { id: 's3-nft-p2e-real',     label: 'Ubisoft Example' },
   { id: 's3-nft-finance',      label: 'NFT Finance' },
   { id: 's3-nft-prosCons',     label: 'Pros & Cons' },
 
@@ -47,7 +48,8 @@ const chapters = [
 
   { kind: 'group' as const, id: 'g-sc',      label: '🚚 Supply Chain' },
   { id: 's3-sc-intro',         label: 'Intro' },
-  { id: 's3-sc-provenance',    label: 'Provenance' },
+  { id: 's3-sc-provenance',    label: '🧩 Provenance' },
+  { id: 's3-sc-prov-real',     label: 'LVMH & Carrefour' },
   { id: 's3-sc-shipping',      label: 'Shipping' },
   { id: 's3-sc-prosCons',      label: 'Pros & Cons' },
 
@@ -547,6 +549,422 @@ const EXAMPLES: Record<string, { pain: string; parties: string; trigger: string;
   Gaming:        { pain: 'In-game assets can be deleted or altered by the developer at any time', parties: 'Player / Game developer / Marketplace', trigger: 'Player purchases or earns item in-game', output: 'NFT minted to player wallet — tradeable and permanent', risk: 'Game server still centralised; contract only covers ownership' },
 };
 
+// ─── Interactive Peg-Stability Simulator ────────────────────────────────────
+
+type PegType = 'fiat' | 'crypto' | 'algo';
+
+const PEG_TYPES: Record<PegType, { name: string; example: string; color: string; control: string; controlMin: number; controlMax: number; controlDefault: number; controlUnit: string; controlDesc: string }> = {
+  fiat:   { name: 'Fiat-backed',           example: 'USDC · USDT',  color: '#6366f1', control: 'Reserve audit %',     controlMin: 50, controlMax: 100, controlDefault: 100, controlUnit: '%',   controlDesc: 'How much of circulating supply is provably backed in a bank/T-bills' },
+  crypto: { name: 'Crypto-collateralized', example: 'DAI · LUSD',   color: '#8b5cf6', control: 'Collateral ratio',    controlMin: 80, controlMax: 250, controlDefault: 150, controlUnit: '%',   controlDesc: 'Value of locked ETH (or other crypto) per $1 minted. 150% = $150 ETH backs $100 DAI' },
+  algo:   { name: 'Algorithmic',           example: 'UST (defunct)', color: '#f59e0b', control: 'Native-token cushion', controlMin: 0,  controlMax: 100, controlDefault: 30,  controlUnit: '%',   controlDesc: 'Market-cap of the volatile sister token (LUNA-style) relative to the stablecoin supply' },
+};
+
+function PegSimulator() {
+  const [type, setType]     = useState<PegType>('crypto');
+  const [control, setCtl]   = useState(PEG_TYPES.crypto.controlDefault);
+  const [shock, setShock]   = useState(20); // % of supply being sold
+
+  // When the type changes, reset its control to default
+  const setTypeAndDefault = (t: PegType) => {
+    setType(t);
+    setCtl(PEG_TYPES[t].controlDefault);
+  };
+
+  // Compute peg deviation (cents off $1)
+  let dev = 0;
+  let regime: 'stable' | 'wobble' | 'depeg' | 'collapse' = 'stable';
+  if (type === 'fiat') {
+    const gap = Math.max(0, 100 - control);    // unbacked %
+    dev = (gap / 100) * (shock / 100) * 35;
+  } else if (type === 'crypto') {
+    const cushion = Math.max(0, control - 100); // over-collateralisation above $1
+    const stress  = Math.max(0, shock - cushion * 0.7);
+    dev = (stress / 100) * 25 + (control < 100 ? (100 - control) * 0.5 : 0);
+  } else {
+    // algo — exponential below cushion
+    const ratio = (shock / Math.max(1, control));
+    dev = Math.min(100, Math.pow(ratio, 1.8) * 20);
+  }
+
+  const peg = Math.max(0, 1 - dev / 100);
+  if      (dev < 1)   regime = 'stable';
+  else if (dev < 5)   regime = 'wobble';
+  else if (dev < 30)  regime = 'depeg';
+  else                regime = 'collapse';
+
+  const regimeColor = regime === 'stable'   ? '#39B54A'
+                    : regime === 'wobble'   ? '#f59e0b'
+                    : regime === 'depeg'    ? '#ED1C24'
+                    :                          '#7c2d12';
+  const regimeLabel = { stable: '✓ Stable', wobble: '⚠️ Wobble', depeg: '⚠ De-pegging', collapse: '💀 Death spiral' }[regime];
+
+  const lesson = type === 'fiat'
+    ? 'Fiat-backed stablecoins are only as trustworthy as their auditor. If reserves dip below 100%, a coordinated sell-off can break the peg — see USDC briefly de-pegging in March 2023 when SVB held $3.3B of its reserves.'
+    : type === 'crypto'
+    ? 'Crypto-collateralized stablecoins survive shocks via liquidations — but only if the collateral ratio is comfortably above 100%. Drop below that during a flash crash and the protocol can\'t liquidate fast enough.'
+    : 'Algorithmic stablecoins are vulnerable to reflexive death spirals: as the stable de-pegs, traders dump the sister token, which collapses, which removes the cushion. UST/LUNA wiped out $40B in May 2022.';
+
+  const cfg = PEG_TYPES[type];
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 mb-3">
+        <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Interactive</span>
+        <h2 className="text-2xl font-bold text-foreground mt-1">Stablecoin Peg Simulator</h2>
+        <p className="text-muted-foreground text-sm">Pick a stablecoin design and apply market stress. Watch the peg hold — or break.</p>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+        {/* Controls */}
+        <div className="flex flex-col gap-3">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Stablecoin design</div>
+          <div className="grid grid-cols-3 gap-2">
+            {(Object.keys(PEG_TYPES) as PegType[]).map(t => {
+              const tcfg = PEG_TYPES[t];
+              const active = t === type;
+              return (
+                <button key={t} onClick={() => setTypeAndDefault(t)}
+                  className="p-2.5 rounded-xl border-2 text-left transition-colors"
+                  style={{
+                    borderColor: active ? tcfg.color : 'var(--border)',
+                    backgroundColor: active ? tcfg.color + '15' : 'var(--card)',
+                  }}>
+                  <div className="font-bold text-xs" style={{ color: active ? tcfg.color : 'var(--foreground)' }}>{tcfg.name}</div>
+                  <div className="text-[10px] font-mono text-muted-foreground mt-0.5">{tcfg.example}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="p-3 bg-card border border-border rounded-xl">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-xs font-semibold text-foreground">{cfg.control}</div>
+              <div className="font-mono font-bold text-sm" style={{ color: cfg.color }}>{control}{cfg.controlUnit}</div>
+            </div>
+            <input type="range" min={cfg.controlMin} max={cfg.controlMax} step={1} value={control}
+              onChange={e => setCtl(Number(e.target.value))}
+              className="w-full" style={{ accentColor: cfg.color }} />
+            <div className="text-[10px] text-muted-foreground mt-1">{cfg.controlDesc}</div>
+          </div>
+
+          <div className="p-3 bg-card border border-border rounded-xl">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-xs font-semibold text-foreground">Market shock — % of supply sold off</div>
+              <div className="font-mono font-bold text-sm text-[#ED1C24]">{shock}%</div>
+            </div>
+            <input type="range" min={0} max={100} step={1} value={shock}
+              onChange={e => setShock(Number(e.target.value))}
+              className="w-full accent-[#ED1C24]" />
+            <div className="text-[10px] text-muted-foreground mt-1">Sudden sell pressure (a "bank run" event). 100% = entire supply hits the bid simultaneously.</div>
+          </div>
+
+          <div className="mt-auto p-3 rounded-xl border" style={{ borderColor: cfg.color + '40', backgroundColor: cfg.color + '0c' }}>
+            <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: cfg.color }}>Lesson</div>
+            <p className="text-xs text-muted-foreground leading-relaxed">{lesson}</p>
+          </div>
+        </div>
+
+        {/* Peg display */}
+        <div className="flex flex-col gap-3">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Current peg</div>
+
+          <div className="flex-1 min-h-0 p-5 rounded-2xl border-4 flex flex-col items-center justify-center gap-3" style={{ borderColor: regimeColor + '60', backgroundColor: regimeColor + '0c' }}>
+            <div className="text-xs text-muted-foreground">Target: $1.00</div>
+            <div className="font-mono font-black text-6xl lg:text-7xl" style={{ color: regimeColor }}>
+              ${peg.toFixed(peg < 0.5 ? 4 : 3)}
+            </div>
+            <div className="px-3 py-1 rounded-full text-sm font-bold" style={{ backgroundColor: regimeColor + '20', color: regimeColor }}>
+              {regimeLabel}
+            </div>
+
+            {/* Peg gauge bar */}
+            <div className="w-full mt-2">
+              <div className="h-2 bg-muted rounded-full overflow-hidden relative">
+                {/* target marker at right */}
+                <div className="absolute right-0 top-0 h-full w-0.5 bg-foreground/40" />
+                <div className="h-full transition-all duration-300" style={{ width: `${peg * 100}%`, backgroundColor: regimeColor }} />
+              </div>
+              <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                <span>$0</span><span>$1.00 ← target</span>
+              </div>
+            </div>
+
+            <div className="text-xs text-center text-muted-foreground">
+              Deviation: <span className="font-mono font-bold" style={{ color: regimeColor }}>−{dev.toFixed(2)}¢</span>
+            </div>
+          </div>
+
+          <div className="shrink-0 p-2.5 bg-muted/30 border border-border rounded-lg text-[11px] text-muted-foreground">
+            <span className="font-semibold text-foreground">Note:</span> these formulas are illustrative, not market models. Real peg dynamics involve liquidation cascades, market depth, redemption windows, and reflexive trading. The point: <span className="italic">each design has a different failure mode</span>.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Interactive Royalty Cascade Calculator ──────────────────────────────────
+
+function RoyaltyCalculator() {
+  const [salePrice, setSalePrice] = useState(10000);
+  const [creatorPct,  setCreator]   = useState(5);   // ERC-2981 default-ish
+  const [collabPct,   setCollab]    = useState(2);
+  const [marketPct,   setMarketPct] = useState(2.5); // marketplace fee
+  const [resales,     setResales]   = useState(3);
+
+  const creator   = salePrice * creatorPct  / 100;
+  const collab    = salePrice * collabPct   / 100;
+  const market    = salePrice * marketPct   / 100;
+  const seller    = salePrice - creator - collab - market;
+
+  // Royalty earned across N resales (cumulative)
+  const totalRoyalty = (creator + collab) * resales;
+
+  const slices = [
+    { label: 'Seller',       value: seller,  color: '#6366f1' },
+    { label: 'Creator',      value: creator, color: '#39B54A' },
+    { label: 'Collaborator', value: collab,  color: '#8b5cf6' },
+    { label: 'Marketplace',  value: market,  color: '#f59e0b' },
+  ];
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 mb-3">
+        <span className="px-2.5 py-0.5 rounded-full bg-[#8b5cf6]/15 border border-[#8b5cf6]/40 text-[#8b5cf6] text-xs font-bold">🧩 Interactive</span>
+        <h2 className="text-2xl font-bold text-foreground mt-1">Royalty Cascade · ERC-2981 in action</h2>
+        <p className="text-muted-foreground text-sm">A secondary sale closes. Watch the smart contract pay every party — automatically, on-chain.</p>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+
+        {/* Controls */}
+        <div className="flex flex-col gap-3">
+          <div className="p-3 bg-card border border-border rounded-xl">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-xs font-semibold text-foreground">Secondary sale price</div>
+              <div className="font-mono font-bold text-sm text-foreground">${salePrice.toLocaleString()}</div>
+            </div>
+            <input type="range" min={100} max={100000} step={100} value={salePrice}
+              onChange={e => setSalePrice(Number(e.target.value))}
+              className="w-full accent-[#6366f1]" />
+          </div>
+
+          {[
+            { label: 'Creator royalty',     val: creatorPct, set: setCreator,   color: '#39B54A', max: 15 },
+            { label: 'Collaborator share',  val: collabPct,  set: setCollab,    color: '#8b5cf6', max: 10 },
+            { label: 'Marketplace fee',     val: marketPct,  set: setMarketPct, color: '#f59e0b', max: 10 },
+          ].map(s => (
+            <div key={s.label} className="p-3 bg-card border border-border rounded-xl">
+              <div className="flex items-center justify-between mb-1">
+                <div className="text-xs font-semibold text-foreground">{s.label}</div>
+                <div className="font-mono font-bold text-sm" style={{ color: s.color }}>{s.val}%</div>
+              </div>
+              <input type="range" min={0} max={s.max} step={0.5} value={s.val}
+                onChange={e => s.set(Number(e.target.value))}
+                className="w-full" style={{ accentColor: s.color }} />
+            </div>
+          ))}
+
+          <div className="p-3 bg-card border border-border rounded-xl">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-xs font-semibold text-foreground">Future resales (this asset)</div>
+              <div className="font-mono font-bold text-sm text-[#22d3ee]">{resales}×</div>
+            </div>
+            <input type="range" min={0} max={20} step={1} value={resales}
+              onChange={e => setResales(Number(e.target.value))}
+              className="w-full accent-[#22d3ee]" />
+          </div>
+        </div>
+
+        {/* Output */}
+        <div className="flex flex-col gap-3 min-h-0">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Split for this sale</div>
+
+          {/* Stacked-bar */}
+          <div className="p-3 bg-card border border-border rounded-xl">
+            <div className="h-8 rounded-lg overflow-hidden flex">
+              {slices.map(s => s.value > 0 && (
+                <div key={s.label} className="h-full flex items-center justify-center text-[10px] font-bold text-white"
+                  style={{ width: `${(s.value / salePrice) * 100}%`, backgroundColor: s.color }}
+                  title={`${s.label}: $${s.value.toFixed(0)}`}>
+                  {(s.value / salePrice) >= 0.08 ? `${((s.value / salePrice) * 100).toFixed(0)}%` : ''}
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-1.5 mt-3">
+              {slices.map(s => (
+                <div key={s.label} className="flex items-center justify-between p-1.5 rounded text-xs" style={{ backgroundColor: s.color + '12' }}>
+                  <div className="flex items-center gap-1.5">
+                    <div className="size-3 rounded-sm" style={{ backgroundColor: s.color }} />
+                    <span className="text-foreground font-semibold">{s.label}</span>
+                  </div>
+                  <span className="font-mono font-bold" style={{ color: s.color }}>${s.value.toFixed(0)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Cumulative royalty over N resales */}
+          <div className="p-3 bg-gradient-to-br from-[#39B54A]/10 to-transparent border border-[#39B54A]/30 rounded-xl">
+            <div className="text-[10px] font-bold text-[#39B54A] uppercase tracking-widest">Cumulative royalties (creator + collaborator)</div>
+            <div className="flex items-baseline gap-2 mt-1">
+              <div className="font-mono font-black text-2xl text-[#39B54A]">${totalRoyalty.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
+              <div className="text-xs text-muted-foreground">across {resales} resale{resales !== 1 ? 's' : ''}</div>
+            </div>
+          </div>
+
+          {/* Trad vs SC */}
+          <div className="grid grid-cols-2 gap-2 mt-auto">
+            <div className="p-3 bg-card border border-[#ED1C24]/30 rounded-xl text-center">
+              <div className="text-[10px] font-bold text-[#ED1C24] uppercase tracking-widest">Traditional Web2</div>
+              <div className="font-mono font-black text-base text-[#ED1C24] mt-1">$0</div>
+              <div className="text-[10px] text-muted-foreground">creator earns nothing on resales</div>
+            </div>
+            <div className="p-3 bg-card border border-[#39B54A]/30 rounded-xl text-center">
+              <div className="text-[10px] font-bold text-[#39B54A] uppercase tracking-widest">With ERC-2981</div>
+              <div className="font-mono font-black text-base text-[#39B54A] mt-1">${totalRoyalty.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
+              <div className="text-[10px] text-muted-foreground">auto-paid by the smart contract</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ─── Interactive Provenance QR-Scan Trail ────────────────────────────────────
+
+const PROVENANCE_STEPS = [
+  { emoji: '🐔', label: 'Hatched',     who: 'Ferme Bio Sud-Ouest, FR',     ts: '2026-03-15 06:24',  detail: 'Free-range certified · breed: Label Rouge ·  cohort #B-2401', sig: '0x8a3f…91c4' },
+  { emoji: '🌾', label: 'Raised',      who: 'Ferme Bio Sud-Ouest, FR',     ts: '2026-05-02 18:00',  detail: 'Organic feed (no GMO, no antibiotics) · 81 days outdoor access',  sig: '0x8a3f…91c4' },
+  { emoji: '🚛', label: 'Transported', who: 'CoolChain Logistique',         ts: '2026-05-05 04:11', detail: 'Refrigerated truck · 3–5 °C maintained · IoT sensor logs attached', sig: '0x4d12…77ae' },
+  { emoji: '🏭', label: 'Processed',   who: 'Abattoir Toulouse SARL',       ts: '2026-05-05 09:48', detail: 'EU-certified slaughterhouse · veterinary inspection passed',        sig: '0x91bc…2f08' },
+  { emoji: '📦', label: 'Packaged',    who: 'Carrefour BIO line, Lyon',     ts: '2026-05-05 14:22', detail: 'Carrefour BIO label applied · QR tag printed · batch #BIO-2026-0508', sig: '0xc7e2…b41d' },
+  { emoji: '🚚', label: 'Distributed', who: 'Carrefour Logistics',          ts: '2026-05-06 02:30', detail: 'Cold-chain transport to retail · 1–4 °C maintained',                 sig: '0x4d12…77ae' },
+  { emoji: '🛒', label: 'Stocked',     who: 'Carrefour Lyon Part-Dieu',     ts: '2026-05-06 08:15', detail: 'Shelf-life: 5 days · price tag generated · scan-to-trace QR live',  sig: '0xa1f5…3e90' },
+];
+
+function ProvenanceQR() {
+  const [scanned, setScanned] = useState(false);
+  const [active, setActive]   = useState(0);
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 mb-3">
+        <span className="px-2.5 py-0.5 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#f59e0b] text-xs font-bold">🧩 Interactive</span>
+        <h2 className="text-2xl font-bold text-foreground mt-1">Scan a Carrefour BIO Chicken</h2>
+        <p className="text-muted-foreground text-sm">Click the QR code to retrieve the on-chain provenance. Each step is signed by the party that handled the product.</p>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-[260px_1fr] gap-5">
+
+        {/* QR + product card */}
+        <div className="flex flex-col gap-3 min-h-0">
+          <div className="shrink-0 p-4 bg-card border-2 border-border rounded-xl text-center">
+            <div className="text-xs text-muted-foreground mb-1">Carrefour BIO · Free-range chicken</div>
+            <div className="font-bold text-sm text-foreground">batch #BIO-2026-0508</div>
+          </div>
+
+          <button onClick={() => setScanned(s => !s)}
+            className="shrink-0 relative p-4 rounded-xl border-2 transition-colors group"
+            style={{
+              borderColor: scanned ? '#39B54A' : '#f59e0b',
+              backgroundColor: scanned ? '#39B54A08' : '#f59e0b08',
+            }}>
+            {/* Fake QR — checker pattern */}
+            <svg viewBox="0 0 21 21" className="w-full h-auto" style={{ imageRendering: 'pixelated' }}>
+              {Array.from({ length: 21 }).map((_, y) =>
+                Array.from({ length: 21 }).map((_, x) => {
+                  // Corner finder patterns + pseudo-random fill
+                  const isCorner = (x < 7 && y < 7) || (x > 13 && y < 7) || (x < 7 && y > 13);
+                  const cornerRing = isCorner && (
+                    x === 0 || x === 6 || x === 14 || x === 20 ||
+                    y === 0 || y === 6 || y === 14 || y === 20 ||
+                    ((x >= 2 && x <= 4 && y >= 2 && y <= 4)) ||
+                    ((x >= 16 && x <= 18 && y >= 2 && y <= 4)) ||
+                    ((x >= 2 && x <= 4 && y >= 16 && y <= 18))
+                  );
+                  if (isCorner && !cornerRing) return null;
+                  const fill = isCorner ? true : ((x * 7 + y * 13 + 3) % 5 < 2);
+                  if (!fill) return null;
+                  return <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="currentColor" />;
+                })
+              )}
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              {!scanned && (
+                <span className="px-3 py-1.5 rounded-full bg-[#f59e0b] text-white text-xs font-bold shadow-lg group-hover:scale-105 transition-transform">
+                  📷 Tap to scan
+                </span>
+              )}
+              {scanned && (
+                <span className="px-3 py-1.5 rounded-full bg-[#39B54A] text-white text-xs font-bold shadow-lg">
+                  ✓ Trail loaded
+                </span>
+              )}
+            </div>
+          </button>
+
+          {scanned && (
+            <div className="shrink-0 p-2.5 bg-[#39B54A]/10 border border-[#39B54A]/30 rounded-lg text-[11px] text-muted-foreground">
+              <span className="font-semibold text-foreground">7 hand-offs</span> recorded on a permissioned chain. The QR resolves to a content hash — the data itself is on-chain.
+            </div>
+          )}
+        </div>
+
+        {/* Trail */}
+        <div className="flex flex-col gap-2 min-h-0">
+          <div className="shrink-0 text-xs font-semibold text-muted-foreground uppercase tracking-widest">On-chain provenance trail</div>
+
+          {!scanned ? (
+            <div className="flex-1 flex items-center justify-center text-center text-sm text-muted-foreground border border-dashed border-border rounded-xl">
+              ← Scan the QR to load the trail
+            </div>
+          ) : (
+            <div className="flex-1 min-h-0 flex flex-col gap-1.5 overflow-y-auto pr-1">
+              {PROVENANCE_STEPS.map((s, i) => {
+                const isActive = i === active;
+                return (
+                  <motion.button key={i}
+                    onClick={() => setActive(i)}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="text-left p-2.5 rounded-lg border transition-colors"
+                    style={{
+                      borderColor: isActive ? '#f59e0b' : 'var(--border)',
+                      backgroundColor: isActive ? '#f59e0b12' : 'var(--card)',
+                    }}>
+                    <div className="flex items-center gap-2">
+                      <div className="text-xl shrink-0">{s.emoji}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="font-bold text-sm text-foreground">Step {i + 1} · {s.label}</div>
+                          <div className="text-[10px] font-mono text-muted-foreground">{s.ts}</div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">{s.who}</div>
+                        {isActive && (
+                          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                            className="mt-1.5 pt-1.5 border-t border-[#f59e0b]/30">
+                            <div className="text-xs text-foreground">{s.detail}</div>
+                            <div className="text-[10px] font-mono text-muted-foreground mt-0.5">signed by {s.sig}</div>
+                          </motion.div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 function DesignYourOwnExercise() {
   const [selected,  setSelected]  = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
@@ -833,56 +1251,8 @@ export function SC_Section3() {
         </div>
 
         {/* DeFi: Stablecoins */}
-        <div id="s3-defi-stablecoins" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Stablecoins & Stable-Value Storage</h2>
-            <p className="text-muted-foreground text-sm mt-1">Tokens engineered to hold a steady value — the rails that make crypto usable as money.</p>
-          </div>
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Stablecoin types</div>
-              {[
-                { name: 'Fiat-backed',  example: 'USDC, USDT', desc: 'For each token in circulation, $1 sits in a regulated bank account or T-bills. Audits prove the reserve.', color: '#6366f1' },
-                { name: 'Crypto-collateralized', example: 'DAI, LUSD', desc: 'Over-collateralized with on-chain assets (e.g. $150 ETH locked → $100 DAI minted). Liquidations defend the peg.', color: '#8b5cf6' },
-                { name: 'Algorithmic', example: 'FRAX (partial)', desc: 'Mint/burn supply algorithmically based on market demand. Rare today — TerraUSD\'s collapse killed pure-algo designs.', color: '#f59e0b' },
-              ].map(t => (
-                <div key={t.name} className="p-3 bg-card border rounded-xl" style={{ borderColor: t.color + '30' }}>
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="font-bold text-sm" style={{ color: t.color }}>{t.name}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground">{t.example}</div>
-                  </div>
-                  <div className="text-xs text-muted-foreground">{t.desc}</div>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Real-world example</div>
-              <div className="p-4 bg-gradient-to-br from-[#39B54A]/10 to-transparent border border-[#39B54A]/30 rounded-xl flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-2xl">🛒</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Shopify · USDC checkout (June 2025)</div>
-                    <div className="text-xs text-[#39B54A]">via Coinbase + Stripe + Base</div>
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-                  Shopify rolled out an early-access feature letting any Shopify Payments merchant accept USDC over the Base network — no new gateway needed. Customers pay from compatible wallets, guest checkout, or Shop Pay. The smart contract moves funds in seconds. Merchants take payout in local currency or claim USDC directly.
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { v: '0',          l: 'FX fees' },
-                    { v: 'instant',    l: 'Settlement' },
-                    { v: '$1T/mo',     l: 'Stablecoin volume' },
-                  ].map(s => (
-                    <div key={s.l} className="p-2 bg-[#39B54A]/10 rounded-lg text-center">
-                      <div className="font-mono font-black text-sm text-[#39B54A]">{s.v}</div>
-                      <div className="text-[10px] text-muted-foreground">{s.l}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+        <div id="s3-defi-stablecoins" className="h-full">
+          <PegSimulator />
         </div>
 
         {/* DeFi: Borderless transfers */}
@@ -1048,13 +1418,18 @@ export function SC_Section3() {
           </div>
         </div>
 
-        {/* NFTs: Play-to-Earn */}
-        <div id="s3-nft-p2e" className="h-full flex flex-col p-6 lg:p-10">
+        {/* NFTs: Play-to-Earn (interactive royalty calculator) */}
+        <div id="s3-nft-p2e" className="h-full">
+          <RoyaltyCalculator />
+        </div>
+
+        {/* NFTs: Ubisoft real-world */}
+        <div id="s3-nft-p2e-real" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5 flex items-start gap-4">
             <img src={imgP2eEcosystem} alt="Play-to-Earn ecosystem icons: gaming, NFTs, tokens, creatures" className="hidden lg:block h-20 object-contain shrink-0" />
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Play-to-Earn Economies</h2>
-              <p className="text-muted-foreground text-sm mt-1">Smart contracts link in-game achievements to token rewards, turning gameplay into income.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Play-to-Earn in Production</h2>
+              <p className="text-muted-foreground text-sm mt-1">Smart contracts link in-game achievements to token rewards — and route perpetual royalties back to creators on every resale.</p>
             </div>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
@@ -1347,11 +1722,16 @@ export function SC_Section3() {
           />
         </div>
 
-        {/* Supply Chain: Provenance */}
-        <div id="s3-sc-provenance" className="h-full flex flex-col p-6 lg:p-10">
+        {/* Supply Chain: Provenance (interactive QR scan) */}
+        <div id="s3-sc-provenance" className="h-full">
+          <ProvenanceQR />
+        </div>
+
+        {/* Supply Chain: LVMH + Carrefour real-world */}
+        <div id="s3-sc-prov-real" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Product Provenance</h2>
-            <p className="text-muted-foreground text-sm mt-1">A shared blockchain record where every participant appends validated data at hand-off — single source of truth.</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Provenance in Production</h2>
+            <p className="text-muted-foreground text-sm mt-1">Two flagship deployments — luxury anti-counterfeit and organic-food traceability.</p>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
             <div className="p-5 bg-gradient-to-br from-[#f59e0b]/10 to-transparent border border-[#f59e0b]/30 rounded-xl flex flex-col gap-3">
