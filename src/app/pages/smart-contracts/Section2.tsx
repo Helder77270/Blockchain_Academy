@@ -883,13 +883,18 @@ export function SC_Section2() {
                     { prop: '🗄️ Data storage', trad: 'Private databases', dapp: 'On-chain state + IPFS' },
                     { prop: '💰 Cost model', trad: 'Subscription / ads', dapp: 'Gas per transaction' },
                     { prop: '🚫 Censorship', trad: 'Platform can ban users', dapp: 'No one can block valid txs' },
-                  ].map((r, i, arr) => (
-                    <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
-                      <div className="px-2.5 flex items-center border-r border-border font-medium text-muted-foreground">{r.prop}</div>
-                      <div className="px-2.5 flex items-center justify-center border-r border-border text-muted-foreground text-center">{r.trad}</div>
-                      <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center">{r.dapp}</div>
-                    </div>
-                  ))}
+                  ].map((r, i, arr) => {
+                    const odd = i % 2 === 1;
+                    const tradBg  = odd ? 'rgba(237, 28, 36, 0.07)'  : 'rgba(237, 28, 36, 0.03)';
+                    const dappBg  = odd ? 'rgba(57, 181, 74, 0.08)'  : 'rgba(57, 181, 74, 0.03)';
+                    return (
+                      <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
+                        <div className={`px-2.5 flex items-center border-r border-border font-semibold text-foreground ${odd ? 'bg-muted/60' : 'bg-muted/30'}`}>{r.prop}</div>
+                        <div className="px-2.5 flex items-center justify-center border-r border-[#ED1C24]/15 text-muted-foreground text-center" style={{ backgroundColor: tradBg }}>{r.trad}</div>
+                        <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center" style={{ backgroundColor: dappBg }}>{r.dapp}</div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -912,13 +917,18 @@ export function SC_Section2() {
                     { prop: '🔐 Trust',        trad: 'Trust both parties + courts', smart: 'Trust the code only' },
                     { prop: '👁️ Transparency', trad: 'Private, often ambiguous', smart: 'Public, deterministic code' },
                     { prop: '🌍 Geography',    trad: 'Jurisdiction-dependent', smart: 'Borderless, always enforceable' },
-                  ].map((r, i, arr) => (
-                    <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
-                      <div className="px-2.5 flex items-center border-r border-border font-medium text-muted-foreground">{r.prop}</div>
-                      <div className="px-2.5 flex items-center justify-center border-r border-border text-muted-foreground text-center">{r.trad}</div>
-                      <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center">{r.smart}</div>
-                    </div>
-                  ))}
+                  ].map((r, i, arr) => {
+                    const odd = i % 2 === 1;
+                    const tradBg  = odd ? 'rgba(237, 28, 36, 0.07)'  : 'rgba(237, 28, 36, 0.03)';
+                    const smartBg = odd ? 'rgba(99, 102, 241, 0.08)' : 'rgba(99, 102, 241, 0.03)';
+                    return (
+                      <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
+                        <div className={`px-2.5 flex items-center border-r border-border font-semibold text-foreground ${odd ? 'bg-muted/60' : 'bg-muted/30'}`}>{r.prop}</div>
+                        <div className="px-2.5 flex items-center justify-center border-r border-[#ED1C24]/15 text-muted-foreground text-center" style={{ backgroundColor: tradBg }}>{r.trad}</div>
+                        <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center" style={{ backgroundColor: smartBg }}>{r.smart}</div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

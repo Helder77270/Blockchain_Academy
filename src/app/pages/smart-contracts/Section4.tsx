@@ -6,20 +6,38 @@ import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { Brain } from 'lucide-react';
 
+import imgDaoTimeline from '../../../assets/sc/dao-timeline.png';
+import imgAsxAsic     from '../../../assets/sc/asx-asic.jpg';
+
 const chapters = [
+  { kind: 'group' as const, id: 'g-decide',  label: '🤔 Decide' },
   { id: 's4-decision-intro',     label: 'Should You Use SC?' },
   { id: 's4-decision-flow',      label: '🧩 Decision Flow' },
   { id: 's4-decision-yes',       label: 'When SC Make Sense' },
   { id: 's4-decision-no',        label: 'When to Rethink' },
+
+  { kind: 'group' as const, id: 'g-cases',   label: '📁 Three Lessons' },
+  { id: 's4-cases-intro',        label: 'Examples Overview' },
+  { id: 's4-case-success',       label: '✅ Estonia eRes' },
+  { id: 's4-case-sc-fail',       label: '⚠️ The DAO' },
+  { id: 's4-case-org-fail',      label: '❌ ASX CHESS' },
+  { id: 's4-case-dao-quiz',      label: 'Quiz · DAO' },
+  { id: 's4-case-asx-quiz',      label: 'Quiz · ASX' },
+
+  { kind: 'group' as const, id: 'g-adopt',   label: '🛠 Adoption' },
   { id: 's4-adoption-intro',     label: 'Adoption Considerations' },
   { id: 's4-adoption-strategy',  label: 'Strategic Alignment' },
   { id: 's4-adoption-tech',      label: 'Tech Infrastructure' },
   { id: 's4-adoption-legal',     label: 'Legal & Regulatory' },
   { id: 's4-adoption-risk',      label: 'Risk Management' },
   { id: 's4-adoption-finance',   label: 'Financial Planning' },
+
+  { kind: 'group' as const, id: 'g-strat',   label: '📈 Strategy' },
   { id: 's4-opportunities',      label: 'Opportunities' },
   { id: 's4-challenges-academic',label: 'Challenges' },
   { id: 's4-strategies',         label: 'Competitive Strategy' },
+
+  { kind: 'group' as const, id: 'g-close',   label: '✅ Wrap Up' },
   { id: 's4-quiz',               label: 'Quiz' },
   { id: 's4-takeaways',          label: 'Takeaways' },
 ];
@@ -242,6 +260,226 @@ export function SC_Section4() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════ */}
+        {/* THREE LESSONS FROM THE FIELD                                */}
+        {/* ═══════════════════════════════════════════════════════════ */}
+
+        {/* Lessons intro — overview of the 3 outcomes */}
+        <div id="s4-cases-intro" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Three Lessons from the Field</h2>
+            <p className="text-muted-foreground text-sm mt-1">The decision framework on the previous slides is abstract. These three real projects make it concrete — one per outcome.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-5 content-center">
+            {[
+              {
+                emoji: '✅', verdict: 'Right tool · right org', name: 'Estonia · e-Residency',
+                color: '#39B54A', tag: 'Success',
+                desc: 'Government as the trust anchor + blockchain for record integrity. The use case fit perfectly: many users, need for tamper-proof history, hybrid of institutional trust and mathematical guarantees.',
+                lesson: 'When the framework says yes AND the organization is ready, blockchain delivers durable value at national scale.',
+              },
+              {
+                emoji: '⚠️', verdict: 'Right tool · wrong contract', name: 'The DAO',
+                color: '#f59e0b', tag: 'Smart-Contract Failure',
+                desc: 'A legitimate DAO use case (decentralised VC) but the smart contract had a known reentrancy bug. Once exploited, immutability meant nothing could pause it. Ethereum forked to recover funds.',
+                lesson: '"Code is law" cuts both ways. Without audits, kill-switches, or upgrade paths, immutability becomes liability — not feature.',
+              },
+              {
+                emoji: '❌', verdict: 'Wrong tool entirely', name: 'ASX · CHESS',
+                color: '#ED1C24', tag: 'Organisational Failure',
+                desc: 'Securities clearing is run by a single trusted intermediary (ASX itself). Blockchain solves multi-party trust gaps — but ASX was the trusted party. A database would have been faster, cheaper, simpler.',
+                lesson: 'Asking "who do we not trust?" before "how do we use blockchain?" prevents $255M mistakes. Hype is not a justification.',
+              },
+            ].map(c => (
+              <div key={c.name} className="p-5 bg-card border-2 rounded-xl flex flex-col gap-3" style={{ borderColor: c.color + '50' }}>
+                <div className="flex items-center gap-3">
+                  <div className="text-4xl">{c.emoji}</div>
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: c.color }}>{c.tag}</div>
+                    <div className="font-black text-foreground">{c.name}</div>
+                  </div>
+                </div>
+                <div className="text-[10px] font-semibold text-muted-foreground italic">{c.verdict}</div>
+                <p className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                <div className="p-2 rounded-lg text-xs" style={{ backgroundColor: c.color + '15' }}>
+                  <span className="font-bold" style={{ color: c.color }}>Lesson: </span>
+                  <span className="text-muted-foreground">{c.lesson}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-border bg-muted/30 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">Watch for the pattern:</span> the three cases differ on two axes — was this the right tool for the problem, and was the organisation ready to wield it. Both must be true for success.
+          </div>
+        </div>
+
+        {/* ═══════ CASE: ESTONIA — SUCCESS ═══════ */}
+        <div id="s4-case-success" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-1">
+            <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest mb-1">Lesson 01 · ✅ Success — right tool, right organisation</div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Estonia · e-Residency</h2>
+            <p className="text-muted-foreground text-sm mt-1">Blockchain-backed digital identity since 2014. The framework says yes — and the organisation was ready to deliver.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center mt-4">
+            <div className="p-4 bg-gradient-to-br from-[#22d3ee]/10 to-transparent border border-[#22d3ee]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#22d3ee] uppercase tracking-widest">Background</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#22d3ee]">›</span>e-Residency program launched in <span className="font-semibold text-foreground">2014</span></li>
+                <li className="flex gap-1.5"><span className="text-[#22d3ee]">›</span>Built on KSI blockchain (Guardtime) for record integrity</li>
+                <li className="flex gap-1.5"><span className="text-[#22d3ee]">›</span>National ID infrastructure → digital signatures with legal weight</li>
+                <li className="flex gap-1.5"><span className="text-[#22d3ee]">›</span>X-Road system connects state databases for citizens and residents</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-[#6366f1]/10 to-transparent border border-[#6366f1]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest">Use Cases</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Sign documents legally — any contract, anywhere</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Access EU banking remotely</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Establish an EU company without setting foot in Estonia</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Healthcare records integrity assured via on-chain anchors</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-[#39B54A]/10 to-transparent border border-[#39B54A]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest">Results</div>
+              <div className="grid grid-cols-1 gap-2">
+                <div className="p-2 bg-card border border-border rounded-lg">
+                  <div className="font-mono font-black text-base text-[#39B54A]">100,000+</div>
+                  <div className="text-[10px] text-muted-foreground">e-residents from 170+ countries</div>
+                </div>
+                <div className="p-2 bg-card border border-border rounded-lg">
+                  <div className="font-mono font-black text-base text-[#39B54A]">99%</div>
+                  <div className="text-[10px] text-muted-foreground">Public services available online</div>
+                </div>
+                <div className="p-2 bg-card border border-border rounded-lg">
+                  <div className="font-mono font-black text-base text-[#39B54A]">~1% GDP</div>
+                  <div className="text-[10px] text-muted-foreground">Saved annually via digital government</div>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground p-2 bg-[#39B54A]/10 rounded-lg mt-auto">
+                <span className="font-semibold text-foreground">Why it works:</span> government as the trust anchor + blockchain for record integrity. Hybrid of institutional trust and mathematical guarantees.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ CASE: THE DAO — SMART CONTRACT FAILURE ═══════ */}
+        <div id="s4-case-sc-fail" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-1 flex items-start gap-4">
+            <img src={imgDaoTimeline} alt="The DAO timeline: idea → launch → hack → fork" className="hidden lg:block h-24 rounded-lg object-contain shrink-0 bg-white p-1" />
+            <div>
+              <div className="text-xs font-bold text-[#f59e0b] uppercase tracking-widest mb-1">Lesson 02 · ⚠️ Smart-contract failure — right tool, wrong contract design</div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The DAO · Decentralized Autonomous Organization</h2>
+              <p className="text-muted-foreground text-sm mt-1">$150M raised, $60M drained. The use case fit blockchain. The contract didn't.</p>
+            </div>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center mt-4">
+            <div className="p-4 bg-gradient-to-br from-[#6366f1]/10 to-transparent border border-[#6366f1]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest">The Vision (2016)</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span><span className="font-semibold text-foreground">$150M raised</span> via crowdfunding — largest crowdfund of its time</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Governed entirely by smart contract — no executives, no board</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Token holders vote on investment proposals</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Promised: democratized VC, global, transparent collaboration</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-[#ED1C24]/10 to-transparent border border-[#ED1C24]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest">The Hack</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Reentrancy vulnerability in the withdraw function</li>
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Attacker drained <span className="font-semibold text-foreground">$60M</span> (40% of all funds)</li>
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Contract was immutable — couldn't be paused or patched</li>
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>"Child DAO" delay gave the community 27 days to react</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-[#f59e0b]/10 to-transparent border border-[#f59e0b]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#f59e0b] uppercase tracking-widest">The Response</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Ethereum community executed a <span className="font-semibold text-foreground">hard fork</span> to reverse the attack</li>
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Chain split into Ethereum (ETH, post-fork) and Ethereum Classic (ETC, original)</li>
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>"Code is law" — rejected when stakes were existential</li>
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Governance proved messier than the contract assumed</li>
+              </ul>
+              <div className="p-2 bg-[#f59e0b]/10 rounded-lg text-xs text-muted-foreground mt-auto">
+                <span className="font-semibold text-foreground">Lessons:</span> immutability is a double-edged sword. Audit obsessively. Have a kill-switch, multisig, or upgrade pattern for safety-critical contracts.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ CASE: ASX — ORGANISATIONAL FAILURE ═══════ */}
+        <div id="s4-case-org-fail" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-1 flex items-start gap-4">
+            <img src={imgAsxAsic} alt="ASIC vs ASX with a gavel" className="hidden lg:block h-24 rounded-lg object-cover shrink-0" />
+            <div>
+              <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest mb-1">Lesson 03 · ❌ Organisational failure — wrong tool entirely</div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">ASX · CHESS Replacement Project</h2>
+              <p className="text-muted-foreground text-sm mt-1">$255M+ AUD spent, six years of work — abandoned in 2022. The framework would have flagged this on day one.</p>
+            </div>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center mt-4">
+            <div className="p-4 bg-gradient-to-br from-[#6366f1]/10 to-transparent border border-[#6366f1]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest">Background</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>ASX (Australian Securities Exchange) launched the project in <span className="font-semibold text-foreground">2017</span></li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Goal: replace 25-year-old CHESS clearing system with blockchain</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Partner: Digital Asset Holdings</li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Initial budget: <span className="font-semibold text-foreground">$250M AUD (~€142M)</span></li>
+                <li className="flex gap-1.5"><span className="text-[#6366f1]">›</span>Original target completion: 2023</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-[#ED1C24]/10 to-transparent border border-[#ED1C24]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest">What Happened</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Cancelled in <span className="font-semibold text-foreground">November 2022</span> after 6 years of work</li>
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Costs exceeded <span className="font-semibold text-foreground">$255M AUD</span></li>
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>System failed to meet performance and functional requirements</li>
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Fell behind faster, cheaper traditional database alternatives</li>
+                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Major reputational hit to ASX and the entire enterprise blockchain narrative</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-[#f59e0b]/10 to-transparent border border-[#f59e0b]/30 rounded-xl flex flex-col gap-2">
+              <div className="text-xs font-bold text-[#f59e0b] uppercase tracking-widest">Why It Failed</div>
+              <ul className="text-xs text-muted-foreground space-y-1.5">
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Complexity dramatically underestimated — production-grade DLT is hard</li>
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>A traditional database would have been faster and cheaper</li>
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Stakeholder misalignment between ASX, brokers, and tech vendor</li>
+                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>"Blockchain for blockchain's sake" — the underlying need didn't actually require DLT</li>
+              </ul>
+              <div className="p-2 bg-[#f59e0b]/10 rounded-lg text-xs text-muted-foreground mt-auto">
+                <span className="font-semibold text-foreground">The lesson:</span> just because you CAN use blockchain doesn't mean you SHOULD. The discipline of asking "is a database better?" matters more than the technology hype.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ QUIZ — DAO ═══════ */}
+        <div id="s4-case-dao-quiz" className="h-full">
+          <QuizSlide
+            question="The DAO hack of 2016 drained $60M via a reentrancy bug. The Ethereum community executed a hard fork to reverse the attack — splitting the chain into ETH and ETC. What is the most important LESSON for smart contract designers?"
+            options={[
+              { text: '"Code is law" is a flawed principle — when stakes are high enough, social consensus overrides immutability.', correct: true },
+              { text: 'Reentrancy attacks are impossible to prevent — every contract is fundamentally vulnerable.', correct: false },
+              { text: 'The Ethereum Foundation should be allowed to reverse all major exploits to protect users.', correct: false },
+              { text: 'Decentralized organizations are technically impossible and should not be attempted.', correct: false },
+            ]}
+            explanation="The DAO hack exposed a tension that still defines blockchain governance: pure immutability vs human values. The Ethereum community chose to fork because letting an attacker keep $60M was unacceptable — but doing so undermined the 'code is law' ideal that blockchain claims. The lesson for builders: 1) audit obsessively before deploying, especially safety-critical contracts; 2) consider upgrade patterns or kill-switches for value-holding contracts; 3) understand that 'immutability' is a feature with limits — extreme failures will be socially renegotiated. Reentrancy is preventable (Checks-Effects-Interactions, ReentrancyGuard); the DAO bug was a known anti-pattern, just deployed at scale."
+          />
+        </div>
+
+        {/* ═══════ QUIZ — ASX ═══════ */}
+        <div id="s4-case-asx-quiz" className="h-full">
+          <QuizSlide
+            question="The Australian Securities Exchange (ASX) spent $255M+ AUD over 6 years trying to replace its CHESS clearing system with blockchain — and cancelled the project in 2022. What is the most likely root cause of this failure?"
+            options={[
+              { text: 'Blockchain technology is fundamentally incapable of handling securities clearing.', correct: false },
+              { text: 'The chosen vendor (Digital Asset Holdings) was technically incompetent.', correct: false },
+              { text: 'The use case did not actually require blockchain — a traditional database would have been simpler, faster, and cheaper.', correct: true },
+              { text: 'Australian regulators forced the project to be abandoned for political reasons.', correct: false },
+            ]}
+            explanation="The ASX CHESS replacement is the canonical case of 'blockchain for blockchain\\'s sake.' CHESS is operated by a single trusted entity (ASX) with a small known set of participants (brokers). Blockchain shines when you have multiple distrusting parties needing a single source of truth without a trusted intermediary — but ASX IS the trusted intermediary, by mandate. A modern database with proper audit logs would have delivered better performance, faster development, and lower cost. The lesson: before choosing blockchain, ask 'who do we not trust?' If the answer is 'no one — we are the trusted party,' a database is almost always better. Hype is not a justification."
+          />
         </div>
 
         {/* ═══════ ADOPTION INTRO — 5 PILLARS ═══════ */}
@@ -559,6 +797,7 @@ export function SC_Section4() {
               'Not every problem needs blockchain — start by asking "who do we not trust?" If the answer is "no one," use a database',
               '7 signals favoring smart contracts: multi-party, automation value, transparency, intermediary cost, disintermediation, immutability-as-feature, portable ownership',
               '8 red flags: single trusted party, centralized is faster/cheaper, flexibility critical, off-chain data dominates, privacy paramount, hostile regulation, low user tech literacy, no clear ROI',
+              'Three field lessons — ✅ Estonia (right tool + right org), ⚠️ The DAO (right tool, wrong contract design), ❌ ASX CHESS (wrong tool entirely)',
               '5-pillar adoption framework: Strategic Alignment · Technical Infrastructure · Legal & Regulatory · Risk Management · Financial Planning',
               'Strategic: clear use case, success metrics, exec buy-in, staff training — without these, the project will stall',
               'Legal: engage counsel BEFORE writing code. Securities classification, jurisdictional reach, GDPR all matter from day one',
