@@ -7,6 +7,8 @@ import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { FileCode2, Check, X } from 'lucide-react';
 
+import imgSzaboVending from '../../../assets/sc/szabo-vending-machine.png';
+
 const chapters = [
   { id: 's1-what',     label: 'What is a Smart Contract?' },
   { id: 's1-szabo',    label: 'Nick Szabo\'s Vending Machine' },
@@ -258,43 +260,29 @@ export function SC_Section1() {
             </div>
 
             {/* Right: Vending machine diagram */}
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">The vending machine model</div>
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest shrink-0">The vending machine model</div>
 
-              <div className="flex-1 flex flex-col items-center justify-center gap-0">
-                {/* Steps */}
+              <div className="shrink-0 flex items-center justify-center bg-white rounded-xl border border-border p-3">
+                <img src={imgSzaboVending} alt="Smart contract metaphor: a vending machine. Insert conditions → automated result. No middleman." className="max-h-64 w-auto object-contain" />
+              </div>
+
+              <div className="shrink-0 flex flex-wrap gap-2">
                 {[
-                  { step: '1', actor: '👤 Customer', action: 'Inserts coins + selects item', color: '#6366f1', arrow: true },
-                  { step: '2', actor: '🤖 Machine (Contract)', action: 'Checks: enough coins? Item available?', color: '#8b5cf6', arrow: true },
-                  { step: '3a', actor: '✅ Condition Met', action: 'Dispenses item · Returns change', color: '#39B54A', arrow: false },
-                  { step: '3b', actor: '❌ Condition Not Met', action: 'Returns coins · No item dispensed', color: '#ED1C24', arrow: false },
-                ].map((s, i) => (
-                  <div key={s.step} className="w-full flex flex-col items-center">
-                    <div
-                      className="w-full max-w-sm p-3 rounded-xl border-2 text-center"
-                      style={{ borderColor: s.color + '50', backgroundColor: s.color + '10' }}
-                    >
-                      <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: s.color }}>Step {s.step}</div>
-                      <div className="font-bold text-sm text-foreground">{s.actor}</div>
-                      <div className="text-xs text-muted-foreground mt-0.5">{s.action}</div>
-                    </div>
-                    {s.arrow && (
-                      <div className="text-muted-foreground text-lg my-0.5">↓</div>
-                    )}
-                    {i === 1 && (
-                      <div className="flex gap-6 mt-0.5">
-                        <div className="text-xs text-[#39B54A] font-bold">YES →</div>
-                        <div className="text-xs text-[#ED1C24] font-bold">NO →</div>
-                      </div>
-                    )}
+                  { label: 'Customer inserts',  detail: 'Coins + selection',                       color: '#6366f1' },
+                  { label: 'Contract checks',   detail: 'Enough coins? Item in stock?',           color: '#8b5cf6' },
+                  { label: 'Condition met',     detail: 'Dispenses item · returns change',         color: '#39B54A' },
+                  { label: 'Condition not met', detail: 'Returns coins · no item',                 color: '#ED1C24' },
+                ].map(s => (
+                  <div key={s.label} className="flex-1 min-w-[140px] px-2 py-1.5 rounded-lg border text-xs" style={{ borderColor: s.color + '40', backgroundColor: s.color + '0c' }}>
+                    <span className="font-bold" style={{ color: s.color }}>{s.label}: </span>
+                    <span className="text-muted-foreground">{s.detail}</span>
                   </div>
                 ))}
+              </div>
 
-                <div className="mt-4 p-3 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-xl w-full max-w-sm text-center">
-                  <div className="text-xs text-muted-foreground">
-                    <span className="font-semibold text-foreground">Key insight:</span> the machine doesn't care who you are. No trust, no negotiation, no middleman. The code <em>is</em> the contract.
-                  </div>
-                </div>
+              <div className="shrink-0 p-2.5 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-lg text-xs text-muted-foreground text-center">
+                <span className="font-semibold text-foreground">Key insight:</span> the machine doesn't care who you are. No trust, no negotiation, no middleman. The code <em>is</em> the contract.
               </div>
             </div>
 

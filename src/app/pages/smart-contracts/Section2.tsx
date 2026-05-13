@@ -7,6 +7,7 @@ import { SectionNav } from '../../components/navigation/SectionNav';
 import { Cog, Check, X } from 'lucide-react';
 
 import imgDisintermediation from '../../../assets/sc/disintermediation.png';
+import imgDappStack         from '../../../assets/sc/dapp-stack.png';
 
 const chapters = [
   { id: 's2-workflow',      label: 'Workflow' },
@@ -804,51 +805,13 @@ export function SC_Section2() {
               ))}
             </div>
 
-            {/* Right: full stack diagram */}
-            <div className="flex flex-col gap-2">
+            {/* Right: dApp stack diagram */}
+            <div className="flex flex-col gap-3">
               <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Full dApp stack</div>
-
-              {/* User */}
-              <div className="flex justify-center py-2">
-                <div className="px-6 py-2 bg-muted border border-border rounded-full text-sm font-bold text-foreground">👤 User</div>
+              <div className="shrink-0 flex items-center justify-center p-4 bg-white rounded-xl border border-border">
+                <img src={imgDappStack} alt="dApp stack: User → Browser → Web Server (Front-end) → Smart Contracts → Ethereum Virtual Machine → Ethereum Blockchain" className="max-h-80 w-auto object-contain" />
               </div>
-              <div className="flex justify-center text-muted-foreground text-sm">↕ interacts via</div>
-
-              {/* Frontend layer */}
-              <div className="p-3 border-2 border-[#f59e0b]/50 bg-[#f59e0b]/08 rounded-xl">
-                <div className="text-xs font-bold text-[#f59e0b] uppercase tracking-widest mb-2">🖥️ Frontend Layer</div>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {['React / Next.js', 'MetaMask Wallet', 'RPC (Infura)'].map(c => (
-                    <div key={c} className="text-center text-[10px] py-1 px-1.5 bg-[#f59e0b]/12 border border-[#f59e0b]/25 rounded text-muted-foreground">{c}</div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-center text-muted-foreground text-sm">↕ calls</div>
-
-              {/* Blockchain layer */}
-              <div className="p-3 border-2 border-[#6366f1]/50 bg-[#6366f1]/08 rounded-xl">
-                <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest mb-2">🔗 Blockchain Layer</div>
-                <div className="grid grid-cols-2 gap-1.5 mb-1.5">
-                  {['Smart Contract', 'Virtual Machine (EVM)', 'Blockchain Nodes', 'Consensus (PoS)'].map(c => (
-                    <div key={c} className="text-center text-[10px] py-1 px-1.5 bg-[#6366f1]/12 border border-[#6366f1]/25 rounded text-muted-foreground">{c}</div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-center text-muted-foreground text-sm">↕ stores / reads</div>
-
-              {/* Off-chain layer */}
-              <div className="p-3 border-2 border-[#39B54A]/50 bg-[#39B54A]/08 rounded-xl">
-                <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest mb-2">🗄️ Off-Chain Layer</div>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {['IPFS / Arweave', 'The Graph', 'Oracles (Chainlink)'].map(c => (
-                    <div key={c} className="text-center text-[10px] py-1 px-1.5 bg-[#39B54A]/12 border border-[#39B54A]/25 rounded text-muted-foreground">{c}</div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-auto p-2.5 bg-[#6366f1]/10 border border-[#6366f1]/25 rounded-lg text-xs text-muted-foreground">
+              <div className="shrink-0 p-2.5 bg-[#6366f1]/10 border border-[#6366f1]/25 rounded-lg text-xs text-muted-foreground">
                 <span className="font-semibold text-foreground">Key insight:</span> only the blockchain layer is decentralized. Most dApps still rely on centralized hosting (Vercel, AWS) for their frontend — a nuance that's often overlooked.
               </div>
             </div>

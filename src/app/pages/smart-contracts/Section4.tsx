@@ -6,12 +6,14 @@ import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { Brain } from 'lucide-react';
 
-import imgDaoTimeline from '../../../assets/sc/dao-timeline.png';
-import imgAsxAsic     from '../../../assets/sc/asx-asic.jpg';
+import imgDaoTimeline   from '../../../assets/sc/dao-timeline.png';
+import imgAsxAsic       from '../../../assets/sc/asx-asic.jpg';
+import imgDecisionChart from '../../../assets/sc/decision-flowchart.png';
 
 const chapters = [
   { kind: 'group' as const, id: 'g-decide',  label: '🤔 Decide' },
   { id: 's4-decision-intro',     label: 'Should You Use SC?' },
+  { id: 's4-decision-chart',     label: 'Decision Tree' },
   { id: 's4-decision-flow',      label: '🧩 Decision Flow' },
   { id: 's4-decision-yes',       label: 'When SC Make Sense' },
   { id: 's4-decision-no',        label: 'When to Rethink' },
@@ -196,8 +198,47 @@ export function SC_Section4() {
                 </div>
               </div>
               <p className="text-muted-foreground text-sm italic">
-                Build a decision framework. Develop critical thinking. The next slide is interactive — try it.
+                Build a decision framework. Develop critical thinking. Next: the canonical decision tree — then our interactive version.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ DECISION TREE — CANONICAL CHART ═══════ */}
+        <div id="s4-decision-chart" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The Decision Tree</h2>
+            <p className="text-muted-foreground text-sm mt-1">Walk down the questions. Each branch eliminates a category — only one path lands on a smart contract.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-[2fr_1fr] gap-5">
+            {/* Chart */}
+            <div className="flex items-center justify-center bg-white rounded-xl border border-border p-3 min-h-0">
+              <img
+                src={imgDecisionChart}
+                alt="Decision tree starting at 'Do you need a shared database?'. NO → Traditional Database. YES → 'Do multiple parties need write access?' NO → Traditional Database. YES → 'Do the parties fully trust each other?' YES → Traditional Database with Access Controls. NO → 'Is there a trusted third party everyone accepts?' YES → Third-Party Managed Database. NO → 'Do you need complex business logic?' NO → Simple Blockchain (Bitcoin-like). YES → Smart Contract Platform."
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+            {/* Walkthrough */}
+            <div className="flex flex-col gap-2 overflow-y-auto">
+              <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest">How to read it</div>
+              {[
+                { q: 'Need a shared database?',                 verdict: 'NO → Traditional DB',                   color: '#ED1C24' },
+                { q: 'Multiple parties need write access?',     verdict: 'NO → Traditional DB',                   color: '#ED1C24' },
+                { q: 'Parties fully trust each other?',         verdict: 'YES → DB with Access Controls',         color: '#f59e0b' },
+                { q: 'A trusted third party everyone accepts?', verdict: 'YES → Third-Party Managed DB',          color: '#f59e0b' },
+                { q: 'Need complex business logic?',            verdict: 'NO → Simple Blockchain (Bitcoin-like)', color: '#22d3ee' },
+                { q: 'All of the above?',                       verdict: '✅ Smart Contract Platform',            color: '#39B54A' },
+              ].map((step, i) => (
+                <div key={i} className="p-2 bg-card border border-border rounded-lg" style={{ borderColor: step.color + '40' }}>
+                  <div className="text-[10px] text-muted-foreground">Q{i + 1}</div>
+                  <div className="font-semibold text-xs text-foreground">{step.q}</div>
+                  <div className="text-[10px] font-bold mt-0.5" style={{ color: step.color }}>{step.verdict}</div>
+                </div>
+              ))}
+              <div className="mt-auto p-2 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-lg text-[11px] text-muted-foreground">
+                <span className="font-semibold text-foreground">The point:</span> most paths end at a database. Smart contracts are the answer only when every other option falls short.
+              </div>
             </div>
           </div>
         </div>
