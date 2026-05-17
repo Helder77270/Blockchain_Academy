@@ -32,7 +32,7 @@ const courses: Course[] = [
     gradient: 'from-[#39B54A] to-[#22d3ee]',
     accentColor: '#39B54A',
     path: '/blockchain-platforms',
-    available: true,
+    available: false,
   },
   {
     number: '03',
@@ -42,7 +42,7 @@ const courses: Course[] = [
     gradient: 'from-[#6366f1] to-[#8b5cf6]',
     accentColor: '#6366f1',
     path: '/smart-contracts',
-    available: true,
+    available: false,
   },
   {
     number: '04',
@@ -52,7 +52,7 @@ const courses: Course[] = [
     gradient: 'from-[#f97316] to-[#eab308]',
     accentColor: '#f97316',
     path: '/project-management',
-    available: true,
+    available: false,
   },
 ];
 
@@ -129,35 +129,44 @@ export function CourseSelection() {
               ) : (
                 <div
                   key={course.number}
-                  className="relative bg-card/50 border border-border rounded-2xl p-6 flex flex-col opacity-60 select-none"
+                  className="group relative bg-card border border-border rounded-2xl p-6 flex flex-col select-none cursor-not-allowed"
+                  style={{ '--accent': course.accentColor } as React.CSSProperties}
+                  aria-disabled="true"
                 >
-                  {/* Lock badge */}
-                  <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted border border-border">
-                    <Lock className="size-3 text-muted-foreground" />
-                    <span className="text-[10px] font-semibold text-muted-foreground">Coming Soon</span>
-                  </div>
-
-                  <div className={`size-12 rounded-xl bg-gradient-to-br ${course.gradient} flex items-center justify-center mb-4 opacity-50`}>
+                  {/* Number badge */}
+                  <div className={`size-12 rounded-xl bg-gradient-to-br ${course.gradient} flex items-center justify-center mb-4 shadow-lg`}>
                     <span className="text-white font-black text-lg">{course.number}</span>
                   </div>
 
                   <h2 className="text-xl font-bold text-foreground mb-2">{course.title}</h2>
                   <p className="text-sm text-muted-foreground mb-5 flex-1">{course.description}</p>
 
+                  {/* Topics */}
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {course.topics.map(t => (
                       <span
                         key={t}
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded-full border border-border text-muted-foreground"
+                        className="text-[10px] font-semibold px-2 py-0.5 rounded-full border"
+                        style={{ color: course.accentColor, borderColor: course.accentColor + '40', backgroundColor: course.accentColor + '10' }}
                       >
                         {t}
                       </span>
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground font-semibold">
-                    <Lock className="size-4" />
-                    Not yet available
+                  <div className="flex items-center gap-2 font-bold text-sm" style={{ color: course.accentColor }}>
+                    Start Course
+                    <ArrowRight className="size-4" />
+                  </div>
+
+                  {/* Transparent lock overlay — appears on hover */}
+                  <div className="absolute inset-0 rounded-2xl bg-background/40 backdrop-blur-[2px] flex flex-col items-center justify-center gap-3 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="size-14 rounded-full bg-background/80 border border-border flex items-center justify-center shadow-lg">
+                      <Lock className="size-6 text-foreground" />
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-background/80 border border-border text-xs font-semibold text-foreground">
+                      Coming Soon
+                    </span>
                   </div>
                 </div>
               )
