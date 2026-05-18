@@ -20,10 +20,10 @@ const section2Chapters = [
   { id: 's2-keys', label: 'Keys & Seed Phrase' },
   { id: 's2-keys-demo', label: '🧩 Build a Wallet' },
   { id: 's2-security', label: 'Security Model' },
+  { id: 's2-merkle', label: '🧩 Merkle Tree' },
+  { id: 's2-immutability', label: '🧩 Immutability' },
   { id: 's2-mining', label: 'Mining' },
   { id: 's2-mining-demo', label: '🧩 Find a Nonce' },
-  { id: 's2-immutability', label: '🧩 Immutability' },
-  { id: 's2-merkle', label: '🧩 Merkle Tree' },
   { id: 's2-programmability', label: 'Programmability' },
   { id: 's2-quiz', label: 'Quizzes' },
   { id: 's2-takeaways', label: 'Takeaways' },
@@ -1250,32 +1250,106 @@ export function Section2() {
             title="The Double-Spending Problem"
             description="Digital money can be copied like any file. Before Bitcoin, only a bank could guarantee you hadn't already spent the same coin twice."
             visual={
-              <div className="space-y-4 w-full">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
-                    <h4 className="font-bold text-[#ED1C24] mb-2">📋 The Attack</h4>
-                    <p className="text-sm text-muted-foreground">Alice has 1 BTC. She broadcasts two transactions simultaneously — one paying Bob, one paying herself. Without a referee, both look valid. Who gets the coin?</p>
+              <div className="space-y-3 w-full">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-gradient-to-br from-[#ED1C24]/20 to-transparent rounded-xl border border-[#ED1C24]/30">
+                    <h4 className="font-bold text-[#ED1C24] mb-1 text-sm">📋 The Attack</h4>
+                    <p className="text-xs text-muted-foreground">Alice has 1 BTC. She broadcasts two transactions simultaneously — one paying Bob, one paying herself. Without a referee, both look valid. Who gets the coin?</p>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
-                    <h4 className="font-bold text-[#f59e0b] mb-2">🏦 The Old Fix — Trust a Bank</h4>
-                    <p className="text-sm text-muted-foreground">Banks keep a central ledger. When you pay, they debit your account instantly. No double-spend possible — but you must trust them 100% with your money.</p>
+                  <div className="p-3 bg-gradient-to-br from-[#f59e0b]/20 to-transparent rounded-xl border border-[#f59e0b]/30">
+                    <h4 className="font-bold text-[#f59e0b] mb-1 text-sm">🏦 The Old Fix — Trust a Bank</h4>
+                    <p className="text-xs text-muted-foreground">Banks keep a central ledger. When you pay, they debit your account instantly. No double-spend possible — but you must trust them 100% with your money.</p>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-[#39B54A]/20 to-transparent rounded-xl border border-[#39B54A]/30">
-                    <h4 className="font-bold text-[#39B54A] mb-2">🔗 Bitcoin's Fix — UTXO + Chain</h4>
-                    <p className="text-sm text-muted-foreground">Every coin is a specific Unspent Transaction Output. Spending it destroys it and creates new outputs. A UTXO can only be consumed once — miners reject any transaction referencing an already-spent output.</p>
-                  </div>
-                  <div className="p-4 bg-gradient-to-br from-[#6366f1]/20 to-transparent rounded-xl border border-[#6366f1]/30">
-                    <h4 className="font-bold text-[#6366f1] mb-2">⛏️ Confirmed = Final</h4>
-                    <p className="text-sm text-muted-foreground">Once a transaction is included in a block and buried under more blocks, rewriting it would require outpacing the entire network's hash power. After 6 confirmations, it's economically irreversible.</p>
+                </div>
+
+                {/* UTXO vs Account — side-by-side split */}
+                <div className="p-3 bg-gradient-to-br from-[#39B54A]/15 via-[#39B54A]/5 to-transparent rounded-xl border border-[#39B54A]/30">
+                  <h4 className="font-bold text-[#39B54A] mb-2 text-sm">🔗 Bitcoin's Fix — the UTXO Model</h4>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Bitcoin doesn't store balances. It stores <span className="font-bold text-foreground">discrete unspent outputs</span> — like physical coins. Spending one destroys it and mints new ones. <span className="italic">A coin can only be consumed once.</span>
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Account model side */}
+                    <div className="bg-card/60 rounded-lg border border-border p-2.5">
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <span className="text-base">💳</span>
+                        <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Account Model · banks, Ethereum</span>
+                      </div>
+
+                      {/* Alice balance */}
+                      <div className="text-[10px] text-muted-foreground mb-1">Alice's wallet</div>
+                      <div className="rounded-md border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-2 py-1.5 flex items-center justify-between mb-2">
+                        <span className="text-[10px] text-muted-foreground">balance</span>
+                        <span className="font-mono font-bold text-sm text-[#f59e0b]">1.00 BTC</span>
+                      </div>
+
+                      <div className="text-center text-[10px] text-muted-foreground mb-1">↓ pay Bob 0.4 BTC</div>
+
+                      <div className="rounded-md border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-2 py-1.5 flex items-center justify-between">
+                        <span className="text-[10px] text-muted-foreground">new balance</span>
+                        <span className="font-mono font-bold text-sm text-[#f59e0b]">0.60 BTC</span>
+                      </div>
+
+                      <div className="mt-2 text-[10px] text-muted-foreground italic">
+                        One number is mutated. To prevent double-spend, <span className="font-bold text-foreground not-italic">someone</span> must serialise every write.
+                      </div>
+                    </div>
+
+                    {/* UTXO model side */}
+                    <div className="bg-card/60 rounded-lg border border-[#39B54A]/40 p-2.5">
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <span className="text-base">🪙</span>
+                        <span className="text-[11px] font-bold text-[#39B54A] uppercase tracking-wide">UTXO Model · Bitcoin</span>
+                      </div>
+
+                      <div className="text-[10px] text-muted-foreground mb-1">Alice's wallet — 3 unspent outputs</div>
+                      <div className="flex gap-1 mb-2">
+                        <div className="flex-1 rounded-md border border-[#39B54A]/50 bg-[#39B54A]/10 px-1.5 py-1 text-center">
+                          <div className="text-[9px] text-muted-foreground">UTXO</div>
+                          <div className="font-mono font-bold text-xs text-[#39B54A]">0.5</div>
+                        </div>
+                        <div className="flex-1 rounded-md border border-[#39B54A]/50 bg-[#39B54A]/10 px-1.5 py-1 text-center">
+                          <div className="text-[9px] text-muted-foreground">UTXO</div>
+                          <div className="font-mono font-bold text-xs text-[#39B54A]">0.3</div>
+                        </div>
+                        <div className="flex-1 rounded-md border border-[#39B54A]/50 bg-[#39B54A]/10 px-1.5 py-1 text-center">
+                          <div className="text-[9px] text-muted-foreground">UTXO</div>
+                          <div className="font-mono font-bold text-xs text-[#39B54A]">0.2</div>
+                        </div>
+                      </div>
+
+                      <div className="text-center text-[10px] text-muted-foreground mb-1">↓ pay Bob 0.4 BTC · consume <span className="font-mono">0.5</span></div>
+
+                      <div className="flex gap-1">
+                        <div className="flex-1 rounded-md border border-[#ED1C24]/50 bg-[#ED1C24]/10 px-1.5 py-1 text-center relative">
+                          <div className="text-[9px] text-muted-foreground line-through">UTXO</div>
+                          <div className="font-mono font-bold text-xs text-[#ED1C24] line-through">0.5</div>
+                          <div className="absolute -top-1 -right-1 text-[9px] bg-[#ED1C24] text-white rounded-full px-1">✕</div>
+                        </div>
+                        <div className="flex-1 rounded-md border border-[#6366f1]/50 bg-[#6366f1]/10 px-1.5 py-1 text-center">
+                          <div className="text-[9px] text-muted-foreground">→ Bob</div>
+                          <div className="font-mono font-bold text-xs text-[#6366f1]">0.4</div>
+                        </div>
+                        <div className="flex-1 rounded-md border border-[#39B54A]/50 bg-[#39B54A]/10 px-1.5 py-1 text-center">
+                          <div className="text-[9px] text-muted-foreground">change</div>
+                          <div className="font-mono font-bold text-xs text-[#39B54A]">0.1</div>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 text-[10px] text-muted-foreground italic">
+                        The spent UTXO is <span className="font-bold text-foreground not-italic">gone</span>. Try to reuse it and every node rejects the tx — no referee needed.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             }
             keyPoints={[
-              "Digital cash without a bank was impossible before Bitcoin — copies are free",
-              "UTXO are destroyed when spent — there is no 'balance', only unspent outputs",
-              "Miners validate that every input UTXO exists and hasn't been spent yet",
-              "The blockchain is a globally shared, ordered log that makes double-spending publicly visible"
+              "Account model = mutable balance · UTXO model = immutable list of unspent coins",
+              "Spending a UTXO destroys it — the same output cannot be referenced twice",
+              "Every node independently validates that input UTXOs still exist before accepting a tx",
+              "Once buried under more blocks, a confirmed transaction is economically irreversible"
             ]}
           />
         </div>
@@ -1523,7 +1597,17 @@ export function Section2() {
           />
         </div>
 
-        {/* ═══════ 8. MINING — CONCEPT ═══════ */}
+        {/* ═══════ 8a. MERKLE TREE — INTERACTIVE ═══════ */}
+        <div id="s2-merkle" className="h-full">
+          <MerkleTreeDemo />
+        </div>
+
+        {/* ═══════ 8b. IMMUTABILITY — INTERACTIVE TAMPER CHAIN ═══════ */}
+        <div id="s2-immutability" className="h-full">
+          <ImmutableChainDemo />
+        </div>
+
+        {/* ═══════ 8c. MINING — CONCEPT ═══════ */}
         <div id="s2-mining" className="h-full">
           <ConceptSlide
             title="Mining — A Global Guessing Game"
@@ -1564,19 +1648,9 @@ export function Section2() {
           />
         </div>
 
-        {/* ═══════ 8b. MINING — INTERACTIVE ═══════ */}
+        {/* ═══════ 8d. MINING — INTERACTIVE ═══════ */}
         <div id="s2-mining-demo" className="h-full">
           <MiningDemo />
-        </div>
-
-        {/* ═══════ 8c. IMMUTABILITY — INTERACTIVE TAMPER CHAIN ═══════ */}
-        <div id="s2-immutability" className="h-full">
-          <ImmutableChainDemo />
-        </div>
-
-        {/* ═══════ 8d. MERKLE TREE — INTERACTIVE ═══════ */}
-        <div id="s2-merkle" className="h-full">
-          <MerkleTreeDemo />
         </div>
 
         {/* ═══════ 9. BITCOIN'S PROGRAMMABILITY LIMITS ═══════ */}
