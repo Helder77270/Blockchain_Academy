@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { TitleSlide } from '../components/templates/TitleSlide';
 import { ConceptSlide } from '../components/templates/ConceptSlide';
 import { ComparisonSlide } from '../components/templates/ComparisonSlide';
@@ -7,7 +8,7 @@ import { TakeawaySlide } from '../components/templates/TakeawaySlide';
 import { CalloutBox } from '../components/shared/CalloutBox';
 import { DefinitionBox } from '../components/shared/DefinitionBox';
 import { BlockchainChain } from '../components/blockchain/BlockchainChain';
-import { Bitcoin } from 'lucide-react';
+import { Bitcoin, Eye, EyeOff } from 'lucide-react';
 import { SectionNav } from '../components/navigation/SectionNav';
 
 const section2Chapters = [
@@ -19,11 +20,266 @@ const section2Chapters = [
   { id: 's2-supply', label: 'Supply Model' },
   { id: 's2-stats', label: 'Network Statistics' },
   { id: 's2-nodes', label: 'Node Distribution' },
+  { id: 's2-keys', label: 'Keys & Seed Phrase' },
+  { id: 's2-keys-demo', label: '🧩 Build a Wallet' },
   { id: 's2-security', label: 'Security Model' },
   { id: 's2-programmability', label: 'Programmability' },
   { id: 's2-quiz', label: 'Quizzes' },
   { id: 's2-takeaways', label: 'Takeaways' },
 ];
+
+// ─── Interactive: Build a Wallet ────────────────────────────────────────────
+
+// Small curated subset of the BIP39 wordlist — enough variety for a believable
+// demo without bundling the full 2048-word file.
+const BIP39_WORDS = [
+  'abandon', 'ability', 'about', 'absorb', 'absurd', 'abuse', 'access', 'accident',
+  'accuse', 'acoustic', 'acquire', 'across', 'action', 'actor', 'actual', 'adapt',
+  'address', 'advance', 'affair', 'afford', 'afraid', 'again', 'agent', 'agree',
+  'ahead', 'aim', 'air', 'album', 'alert', 'alien', 'alley', 'allow',
+  'almost', 'alone', 'alpha', 'already', 'also', 'alter', 'always', 'amateur',
+  'amazing', 'amber', 'amused', 'analyst', 'anchor', 'angle', 'angry', 'animal',
+  'announce', 'answer', 'apology', 'appear', 'apple', 'arch', 'arctic', 'area',
+  'armor', 'army', 'around', 'arrest', 'arrow', 'art', 'artist', 'aspect',
+  'asset', 'assist', 'attack', 'aunt', 'author', 'auto', 'avocado', 'awake',
+  'aware', 'awesome', 'awful', 'awkward', 'baby', 'badge', 'balance', 'ball',
+];
+
+async function sha256Hex(input: string): Promise<string> {
+  if (typeof crypto === 'undefined' || !crypto.subtle) {
+    // Fallback for older environments — produce a stable-looking pseudo-hash.
+    let h = '';
+    for (let i = 0; i < 32; i++) h += ((input.charCodeAt(i % input.length) * 17 + i) & 0xff).toString(16).padStart(2, '0');
+    return h;
+  }
+  const buf  = new TextEncoder().encode(input);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function pickWords(n: number): string[] {
+  const picked: string[] = [];
+  const pool = [...BIP39_WORDS];
+  // Use crypto-strong randomness where available
+  const rand = (max: number) => {
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      const arr = new Uint32Array(1);
+      crypto.getRandomValues(arr);
+      return arr[0] % max;
+    }
+    return Math.floor(Math.random() * max);
+  };
+  for (let i = 0; i < n; i++) {
+    const idx = rand(pool.length);
+    picked.push(pool[idx]);
+    pool.splice(idx, 1);
+  }
+  return picked;
+}
+
+interface Wallet { seed: string[]; priv: string; pub: string; address: string }
+
+function shortHex(hex: string, head = 6, tail = 4) {
+  if (hex.length <= head + tail + 3) return hex;
+  return `${hex.slice(0, head)}…${hex.slice(-tail)}`;
+}
+
+function BuildWalletDemo() {
+  const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [revealed, setRevealed] = useState<number>(0); // 0..4 — how many layers shown
+  const [showPriv, setShowPriv] = useState(false);
+  const [showSeed, setShowSeed] = useState(false);
+  const [signing, setSigning] = useState<'idle' | 'busy' | 'done'>('idle');
+
+  const generate = async () => {
+    setRevealed(0);
+    setShowPriv(false);
+    setShowSeed(false);
+    setSigning('idle');
+    const seed = pickWords(12);
+    const priv = await sha256Hex('seed:' + seed.join(' '));
+    const pub  = '02' + (await sha256Hex('pub:'  + priv)).slice(0, 64); // 66 chars, compressed-style
+    const addrHash = await sha256Hex('addr:' + pub);
+    const address = 'bc1q' + addrHash.slice(0, 38);
+    setWallet({ seed, priv, pub, address });
+
+    // Reveal each layer with a small delay so the derivation feels like a flow.
+    for (let i = 1; i <= 4; i++) {
+      await new Promise(r => setTimeout(r, 350));
+      setRevealed(i);
+    }
+  };
+
+  const reset = () => {
+    setWallet(null);
+    setRevealed(0);
+    setShowPriv(false);
+    setShowSeed(false);
+    setSigning('idle');
+  };
+
+  const sign = async () => {
+    if (!wallet) return;
+    setSigning('busy');
+    await new Promise(r => setTimeout(r, 700));
+    setSigning('done');
+  };
+
+  const LAYERS = wallet ? [
+    {
+      i: 1, label: 'Seed Phrase',  color: '#8b5cf6',
+      sub: '12 words · human-friendly backup of everything below. Lose this, lose the wallet.',
+      hideable: { is: !showSeed, toggle: () => setShowSeed(v => !v) },
+      body: showSeed
+        ? <div className="grid grid-cols-4 gap-1.5">
+            {wallet.seed.map((w, i) => (
+              <div key={i} className="px-2 py-1.5 bg-[#8b5cf6]/12 border border-[#8b5cf6]/30 rounded text-xs">
+                <span className="text-[9px] text-muted-foreground font-mono mr-1">{i + 1}.</span>
+                <span className="font-mono text-foreground">{w}</span>
+              </div>
+            ))}
+          </div>
+        : <div className="font-mono text-xs text-muted-foreground tracking-widest py-2">• • • • • • • • • • • •</div>,
+    },
+    {
+      i: 2, label: 'Private Key', color: '#ED1C24',
+      sub: 'Derived from the seed. Holding this is what proves ownership. Never share — never type it anywhere online.',
+      hideable: { is: !showPriv, toggle: () => setShowPriv(v => !v) },
+      body: showPriv
+        ? <div className="font-mono text-[11px] break-all text-foreground bg-[#ED1C24]/08 px-2.5 py-2 rounded border border-[#ED1C24]/25">{wallet.priv}</div>
+        : <div className="font-mono text-xs text-muted-foreground bg-muted/40 px-2.5 py-2 rounded border border-border">{wallet.priv.slice(0, 4)}{'•'.repeat(56)}{wallet.priv.slice(-4)}</div>,
+    },
+    {
+      i: 3, label: 'Public Key',  color: '#6366f1',
+      sub: 'A one-way derivation of the private key. Safe to share — others use it to verify your signatures.',
+      body: <div className="font-mono text-[11px] break-all text-foreground bg-[#6366f1]/08 px-2.5 py-2 rounded border border-[#6366f1]/25">{wallet.pub}</div>,
+    },
+    {
+      i: 4, label: 'Address',     color: '#39B54A',
+      sub: 'A short hash of the public key — this is what you paste when someone sends you sats.',
+      body: <div className="font-mono text-[12px] break-all text-foreground bg-[#39B54A]/10 px-2.5 py-2 rounded border border-[#39B54A]/30 font-bold">{wallet.address}</div>,
+    },
+  ] : [];
+
+  return (
+    <div className="h-full flex flex-col p-5 lg:p-8">
+      {/* Header */}
+      <div className="shrink-0 flex items-start justify-between gap-4 mb-3">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#f59e0b] text-xs font-bold">🧩 Interactive</span>
+          <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">Build a Wallet</h2>
+          <p className="text-sm text-muted-foreground mt-1">Generate a wallet end-to-end. Watch each layer fall out of the one above — and what's safe to share vs. what isn't.</p>
+        </div>
+        <div className="shrink-0 flex flex-col gap-2 items-end">
+          <button
+            onClick={generate}
+            className="px-4 py-2 rounded-lg bg-[#f59e0b] text-white text-sm font-bold hover:bg-[#f59e0b]/90 transition-colors"
+          >
+            {wallet ? '🔄 Generate new' : '🎲 Generate a wallet'}
+          </button>
+          {wallet && (
+            <button onClick={reset} className="text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline">
+              ↺ clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-5 min-h-0">
+        {/* Left — derivation chain */}
+        <div className="flex flex-col gap-2 min-h-0 overflow-y-auto pr-1">
+          {!wallet ? (
+            <div className="flex-1 flex items-center justify-center text-center text-sm text-muted-foreground border border-dashed border-border rounded-xl p-8">
+              Click <span className="font-bold text-foreground">Generate a wallet</span> to watch a seed phrase turn into a private key, public key, and address.
+            </div>
+          ) : LAYERS.map(layer => {
+            const shown = revealed >= layer.i;
+            return (
+              <div
+                key={layer.i}
+                className="bg-card border rounded-xl p-3 transition-all"
+                style={{
+                  borderColor: shown ? layer.color + '60' : 'var(--border)',
+                  opacity: shown ? 1 : 0.25,
+                }}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="size-6 rounded-md flex items-center justify-center text-white text-[10px] font-black"
+                        style={{ backgroundColor: layer.color }}>{layer.i}</span>
+                  <span className="font-bold text-sm" style={{ color: layer.color }}>{layer.label}</span>
+                  {layer.hideable && (
+                    <button onClick={layer.hideable.toggle}
+                      className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold text-muted-foreground hover:text-foreground hover:bg-muted">
+                      {layer.hideable.is ? <Eye className="size-3" /> : <EyeOff className="size-3" />}
+                      {layer.hideable.is ? 'show' : 'hide'}
+                    </button>
+                  )}
+                </div>
+                <div className="text-[11px] text-muted-foreground mb-2 leading-snug">{layer.sub}</div>
+                {shown && layer.body}
+                {layer.i < 4 && shown && (
+                  <div className="flex justify-center mt-1 text-[10px] text-muted-foreground">
+                    <span className="font-mono">↓ one-way hash ↓</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Sign a transaction CTA */}
+          {wallet && revealed >= 4 && (
+            <div className="p-3 bg-gradient-to-br from-[#f59e0b]/10 to-transparent border border-[#f59e0b]/40 rounded-xl">
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <div className="font-bold text-sm text-foreground">Try signing a transaction</div>
+                <button onClick={sign} disabled={signing === 'busy'}
+                  className="px-3 py-1 rounded-md bg-[#f59e0b] text-white text-xs font-bold hover:bg-[#f59e0b]/90 disabled:opacity-50 transition-colors">
+                  {signing === 'idle' ? '✍️ Sign' : signing === 'busy' ? 'Signing…' : '✓ Signed'}
+                </button>
+              </div>
+              {signing === 'done' && (
+                <div className="text-[11px] text-muted-foreground">
+                  The private key produced a signature anyone with your <span className="font-semibold text-foreground">public key</span> can verify — without ever seeing the private key itself. That's what makes Bitcoin transactions trust-free.
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Right — Safe/danger rules + analogy */}
+        <div className="flex flex-col gap-3 min-h-0 overflow-y-auto">
+          <div className="p-4 bg-card border-2 border-[#39B54A]/40 rounded-xl">
+            <div className="text-xs font-bold text-[#39B54A] uppercase tracking-widest mb-2">✅ Safe to share</div>
+            <ul className="text-sm text-foreground space-y-1.5">
+              <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">›</span><span><strong>Address</strong> — paste it anywhere, give it on a business card.</span></li>
+              <li className="flex gap-2"><span className="text-[#39B54A] shrink-0">›</span><span><strong>Public key</strong> — used to verify signatures, can't be used to spend.</span></li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-card border-2 border-[#ED1C24]/40 rounded-xl">
+            <div className="text-xs font-bold text-[#ED1C24] uppercase tracking-widest mb-2">🚫 Never share</div>
+            <ul className="text-sm text-foreground space-y-1.5">
+              <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">›</span><span><strong>Private key</strong> — anyone who has it can spend everything at this address.</span></li>
+              <li className="flex gap-2"><span className="text-[#ED1C24] shrink-0">›</span><span><strong>Seed phrase</strong> — regenerates the private key (and every key derived from it).</span></li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-muted/40 border border-border rounded-xl flex-1">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">🏦 Mental model</div>
+            <div className="text-sm text-muted-foreground leading-snug space-y-2">
+              <p><strong className="text-foreground">Address</strong> ≈ your bank account number — share to receive.</p>
+              <p><strong className="text-foreground">Private key</strong> ≈ your debit-card PIN — proves ownership.</p>
+              <p><strong className="text-foreground">Seed phrase</strong> ≈ the master backup — recreates the entire wallet from scratch on any device.</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-lg text-[11px] text-muted-foreground">
+            <strong className="text-foreground">Note:</strong> this demo uses SHA-256 to <em>illustrate</em> one-way derivation. Real Bitcoin uses ECDSA on the secp256k1 curve plus RIPEMD-160 + base58. Don't use any value here in production.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Section2() {
   return (
@@ -438,6 +694,44 @@ export function Section2() {
             </div>
 
           </div>
+        </div>
+
+        {/* ═══════ KEYS & SEED PHRASE — CONCEPT ═══════ */}
+        <div id="s2-keys" className="h-full">
+          <ConceptSlide
+            title="Keys & Seed Phrase"
+            description="Owning bitcoin doesn't mean holding a coin — it means holding the cryptographic key that controls an address on the network. Three things matter."
+            visual={
+              <div className="space-y-3 w-full">
+                <DefinitionBox
+                  term="🔑 Private Key"
+                  definition="A massive random number, usually shown as 64 hex characters. Whoever knows it can sign transactions from the address — i.e. spend the coins. Never share, never type online."
+                />
+                <DefinitionBox
+                  term="🔓 Public Key"
+                  definition="Mathematically derived from the private key (one-way — you can't go back). Used by everyone to verify signatures. Safe to share."
+                />
+                <DefinitionBox
+                  term="📝 Seed Phrase (BIP-39)"
+                  definition="12 or 24 ordinary English words encoding the seed for your private keys. Human-friendly backup — write it on paper, store it offline. Regenerates the entire wallet on any device."
+                />
+                <CalloutBox type="warning" title="Lose the seed, lose the coins">
+                  There is no password reset, no customer support, no recovery. The seed phrase IS the wallet. Treat it like the only key to a vault — because that's what it is.
+                </CalloutBox>
+              </div>
+            }
+            keyPoints={[
+              "Your wallet doesn't 'hold' bitcoin — it holds the keys that control addresses on the blockchain",
+              "Each layer derives from the one above via a one-way function: seed → private → public → address",
+              "Knowing the public key tells you nothing about the private key — that's what makes the system work",
+              "The seed phrase is the single point of failure in a self-custodied wallet — back it up, don't digitise it",
+            ]}
+          />
+        </div>
+
+        {/* ═══════ KEYS — INTERACTIVE DEMO ═══════ */}
+        <div id="s2-keys-demo" className="h-full">
+          <BuildWalletDemo />
         </div>
 
         {/* ═══════ 7. SECURITY MODEL ═══════ */}
