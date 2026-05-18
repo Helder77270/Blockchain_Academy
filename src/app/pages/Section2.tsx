@@ -322,7 +322,7 @@ function pseudoHash(nonce: number, blockData: string): string {
 
 function MiningDemo() {
   const BLOCK_DATA = 'block#902451 | prev:00000000…a3f8 | tx:8 | reward:3.125 BTC';
-  const [difficulty, setDifficulty] = useState(3); // leading hex zeros required
+  const [difficulty, setDifficulty] = useState(4); // leading hex zeros required
   const [mining, setMining]   = useState(false);
   const [nonce, setNonce]     = useState(0);
   const [hash, setHash]       = useState(pseudoHash(0, BLOCK_DATA));
@@ -505,7 +505,7 @@ function MiningDemo() {
             <input
               type="range"
               min={1}
-              max={6}
+              max={8}
               step={1}
               value={difficulty}
               onChange={ev => { if (!mining) setDifficulty(Number(ev.target.value)); }}
@@ -514,7 +514,7 @@ function MiningDemo() {
               aria-label="Difficulty"
             />
             <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5 font-mono">
-              <span>1 (easy)</span><span>6 (hard)</span>
+              <span>1 (easy)</span><span>8 (very hard)</span>
             </div>
             <div className="text-[10px] text-muted-foreground mt-1.5">
               Each extra zero makes finding a valid hash ~16× harder. Expected tries: <strong className="text-foreground font-mono">{expectedTries.toLocaleString()}</strong>.
