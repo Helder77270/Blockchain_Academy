@@ -32,7 +32,7 @@ const courses: Course[] = [
     gradient: 'from-[#39B54A] to-[#22d3ee]',
     accentColor: '#39B54A',
     path: '/blockchain-platforms',
-    available: false,
+    available: true,
   },
   {
     number: '03',
