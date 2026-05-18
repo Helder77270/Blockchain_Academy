@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react';
 import { TitleSlide } from '../components/templates/TitleSlide';
 import { ConceptSlide } from '../components/templates/ConceptSlide';
 import { ComparisonSlide } from '../components/templates/ComparisonSlide';
-import { DiagramSlide } from '../components/templates/DiagramSlide';
 import { QuizSlide } from '../components/templates/QuizSlide';
 import { TakeawaySlide } from '../components/templates/TakeawaySlide';
 import { CalloutBox } from '../components/shared/CalloutBox';
 import { DefinitionBox } from '../components/shared/DefinitionBox';
-import { BlockchainChain } from '../components/blockchain/BlockchainChain';
 import { Bitcoin, Eye, EyeOff } from 'lucide-react';
 import { SectionNav } from '../components/navigation/SectionNav';
 
@@ -16,7 +14,6 @@ const section2Chapters = [
   { id: 's2-what', label: 'What is Bitcoin?' },
   { id: 's2-byzantine', label: 'Byzantine Problem' },
   { id: 's2-doublespend', label: 'Double-Spending' },
-  { id: 's2-immutability', label: 'Immutability' },
   { id: 's2-supply', label: '🧩 Supply Model' },
   { id: 's2-stats', label: 'Network Statistics' },
   { id: 's2-nodes', label: 'Node Distribution' },
@@ -25,6 +22,8 @@ const section2Chapters = [
   { id: 's2-security', label: 'Security Model' },
   { id: 's2-mining', label: 'Mining' },
   { id: 's2-mining-demo', label: '🧩 Find a Nonce' },
+  { id: 's2-immutability', label: '🧩 Immutability' },
+  { id: 's2-merkle', label: '🧩 Merkle Tree' },
   { id: 's2-programmability', label: 'Programmability' },
   { id: 's2-quiz', label: 'Quizzes' },
   { id: 's2-takeaways', label: 'Takeaways' },
@@ -546,6 +545,320 @@ function MiningDemo() {
   );
 }
 
+// ─── Interactive: Tamper-detection chain ──────────────────────────────────
+
+interface ChainBlock {
+  num: number;
+  data: string;
+  originalData: string;
+  /** Frozen at init — the prev_hash field literally written into this block's header. */
+  prevHashStored: string;
+}
+
+function hashShort(input: string): string {
+  return pseudoHash(0, input).slice(0, 12);
+}
+
+const INITIAL_BLOCKS: { num: number; data: string }[] = [
+  { num: 902450, data: 'Alice → Bob: 0.5 BTC' },
+  { num: 902451, data: 'Bob → Carol: 0.25 BTC' },
+  { num: 902452, data: 'Carol → Dave: 0.10 BTC' },
+  { num: 902453, data: 'Dave → Erin: 0.05 BTC' },
+];
+
+function buildChain(initial: typeof INITIAL_BLOCKS): ChainBlock[] {
+  const chain: ChainBlock[] = [];
+  let prev = '0000000000…GENESIS';
+  for (const b of initial) {
+    chain.push({ num: b.num, data: b.data, originalData: b.data, prevHashStored: prev });
+    // The block's hash that lives in the ledger (frozen at "time of mining")
+    prev = hashShort(`${b.num}|${prev}|${b.data}`);
+  }
+  return chain;
+}
+
+function ImmutableChainDemo() {
+  const [chain, setChain] = useState<ChainBlock[]>(() => buildChain(INITIAL_BLOCKS));
+
+  const updateData = (i: number, newData: string) => {
+    setChain(prev => prev.map((b, idx) => idx === i ? { ...b, data: newData } : b));
+  };
+
+  const resetAll = () => setChain(buildChain(INITIAL_BLOCKS));
+
+  // Compute each block's CURRENT hash from its stored prev + (possibly tampered) data.
+  const currentHashes = chain.map(b => hashShort(`${b.num}|${b.prevHashStored}|${b.data}`));
+
+  // A block is "broken" if its stored prev-hash field no longer matches the
+  // previous block's CURRENT hash (because that block was tampered with).
+  const isBroken = chain.map((b, i) => i === 0 ? false : b.prevHashStored !== currentHashes[i - 1]);
+  const isTampered = chain.map(b => b.data !== b.originalData);
+
+  const anyChange = isTampered.some(Boolean) || isBroken.some(Boolean);
+
+  return (
+    <div className="h-full flex flex-col p-5 lg:p-8">
+      <div className="shrink-0 mb-3 flex items-start justify-between gap-4">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#f59e0b] text-xs font-bold">🧩 Interactive</span>
+          <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">Immutability Through Block Linking</h2>
+          <p className="text-sm text-muted-foreground max-w-3xl">Each block's hash depends on the previous block's hash. <strong className="text-foreground">Edit any transaction below</strong> and watch the cascade — every downstream block goes red because its stored prev-hash no longer matches.</p>
+        </div>
+        {anyChange && (
+          <button onClick={resetAll}
+            className="px-3 py-2 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors shrink-0">
+            ↺ Reset chain
+          </button>
+        )}
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-4 gap-3 items-stretch">
+        {chain.map((b, i) => {
+          const broken = isBroken[i];
+          const tampered = isTampered[i];
+          const status = broken ? 'broken' : tampered ? 'tampered' : 'valid';
+          const ringColor = status === 'valid' ? '#39B54A' : '#ED1C24';
+
+          return (
+            <div key={i} className="flex items-stretch gap-2 min-w-0">
+              <div
+                className="flex-1 min-w-0 rounded-xl border-2 p-3 flex flex-col gap-2 transition-colors"
+                style={{
+                  borderColor: ringColor + (status === 'valid' ? '60' : 'CC'),
+                  backgroundColor: status === 'valid' ? ringColor + '08' : ringColor + '12',
+                }}
+              >
+                <div className="flex items-center justify-between text-xs">
+                  <div className="font-bold text-foreground">Block #{b.num}</div>
+                  <div
+                    className="px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-widest"
+                    style={{ color: ringColor, backgroundColor: ringColor + '20' }}
+                  >
+                    {status === 'valid' ? '✓ valid' : status === 'tampered' ? '⚠ edited' : '✗ broken'}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Prev hash</div>
+                  <div className="font-mono text-[11px] text-foreground truncate" title={b.prevHashStored}>
+                    {b.prevHashStored}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Transaction</div>
+                  <input
+                    type="text"
+                    value={b.data}
+                    onChange={e => updateData(i, e.target.value)}
+                    className="w-full px-2 py-1 rounded bg-card border text-xs font-mono text-foreground focus:outline-none focus:ring-1 transition-colors"
+                    style={{
+                      borderColor: tampered ? '#ED1C24' : 'var(--border)',
+                    }}
+                  />
+                </div>
+
+                <div className="mt-auto">
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">This block's hash</div>
+                  <div className="font-mono text-[11px] font-bold" style={{ color: tampered ? '#ED1C24' : '#39B54A' }}>
+                    {currentHashes[i]}
+                    {tampered && <span className="text-muted-foreground font-normal text-[10px]"> (recomputed)</span>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Link arrow to next block */}
+              {i < chain.length - 1 && (
+                <div className="hidden lg:flex flex-col items-center justify-center shrink-0 w-3">
+                  <div className="text-xs font-bold" style={{ color: isBroken[i + 1] ? '#ED1C24' : '#39B54A' }}>
+                    {isBroken[i + 1] ? '✗' : '→'}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Explanation footer */}
+      <div className="shrink-0 mt-3 grid grid-cols-3 gap-2 text-[11px]">
+        <div className="p-2 bg-card border border-border rounded-lg">
+          <div className="font-bold text-foreground mb-0.5">Tamper one block</div>
+          <div className="text-muted-foreground">Its hash is recomputed live from its new contents — the original hash on the next block's <em>prev-hash</em> line is now stale.</div>
+        </div>
+        <div className="p-2 bg-card border border-border rounded-lg">
+          <div className="font-bold text-foreground mb-0.5">The cascade</div>
+          <div className="text-muted-foreground">Every downstream block goes red because its frozen prev-hash no longer matches the live upstream hash.</div>
+        </div>
+        <div className="p-2 bg-card border border-border rounded-lg">
+          <div className="font-bold text-foreground mb-0.5">Why this is hard to fake</div>
+          <div className="text-muted-foreground">To restore the chain you'd have to re-mine <em>every</em> downstream block faster than the entire honest network — that's what the previous slide showed.</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Interactive: Merkle Tree ──────────────────────────────────────────────
+
+interface MerkleNode {
+  hash: string;
+  changed: boolean;
+}
+
+const MERKLE_TXS_INITIAL = [
+  'Alice → Bob · 0.50 BTC',
+  'Carol → Dave · 0.25 BTC',
+  'Erin → Frank · 1.20 BTC',
+  'Grace → Heidi · 0.08 BTC',
+  'Ivan → Judy · 0.30 BTC',
+  'Karl → Liam · 0.10 BTC',
+  'Mia → Noah · 0.04 BTC',
+  'Olga → Pat · 0.02 BTC',
+];
+
+function buildMerkle(txs: string[]): { levels: string[][]; originalLevels: string[][] } {
+  const levels: string[][] = [];
+  let cur = txs.map(t => hashShort('tx:' + t));
+  levels.push(cur);
+  while (cur.length > 1) {
+    const next: string[] = [];
+    for (let i = 0; i < cur.length; i += 2) {
+      const a = cur[i];
+      const b = cur[i + 1] ?? a; // duplicate last if odd
+      next.push(hashShort(a + '|' + b));
+    }
+    levels.push(next);
+    cur = next;
+  }
+  return { levels, originalLevels: levels.map(l => [...l]) };
+}
+
+function MerkleTreeDemo() {
+  const [txs, setTxs]   = useState<string[]>(MERKLE_TXS_INITIAL);
+  // Recompute every render — at 8 leaves with a fast pseudo-hash, it's cheap.
+  const original = buildMerkle(MERKLE_TXS_INITIAL);
+  const current  = buildMerkle(txs);
+
+  // Mark which nodes differ from the original tree
+  const changedLevels: MerkleNode[][] = current.levels.map((lvl, li) =>
+    lvl.map((h, i) => ({ hash: h, changed: h !== original.levels[li]?.[i] }))
+  );
+
+  const root = changedLevels[changedLevels.length - 1]?.[0];
+  const tampered = changedLevels[0].some(n => n.changed);
+
+  const updateTx = (i: number, v: string) => {
+    setTxs(prev => prev.map((t, idx) => idx === i ? v : t));
+  };
+  const reset = () => setTxs(MERKLE_TXS_INITIAL);
+
+  return (
+    <div className="h-full flex flex-col p-5 lg:p-8">
+      <div className="shrink-0 mb-3 flex items-start justify-between gap-4">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Interactive</span>
+          <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">Merkle Tree — How a Block Commits to its Transactions</h2>
+          <p className="text-sm text-muted-foreground max-w-3xl">
+            A block doesn't store transactions in its header — it stores their <strong className="text-foreground">Merkle root</strong>: a single hash that summarises all transactions in the block. Tamper with any transaction below and watch the path from leaf to root recolour.
+          </p>
+        </div>
+        {tampered && (
+          <button onClick={reset}
+            className="px-3 py-2 rounded-lg bg-muted text-xs font-semibold text-muted-foreground hover:bg-muted/80 transition-colors shrink-0">
+            ↺ Reset
+          </button>
+        )}
+      </div>
+
+      <div className="flex-1 min-h-0 flex flex-col gap-3 overflow-y-auto">
+        {/* Root */}
+        <div className="flex justify-center">
+          <div
+            className="px-4 py-2 rounded-lg border-2 text-center transition-colors"
+            style={{
+              borderColor: root?.changed ? '#ED1C24' : '#39B54A',
+              backgroundColor: (root?.changed ? '#ED1C24' : '#39B54A') + '12',
+            }}
+          >
+            <div className="text-[10px] font-bold uppercase tracking-widest"
+                 style={{ color: root?.changed ? '#ED1C24' : '#39B54A' }}>
+              {root?.changed ? '⚠ Merkle root changed' : '✓ Merkle root'}
+            </div>
+            <div className="font-mono font-black text-sm text-foreground mt-0.5">{root?.hash ?? '—'}</div>
+          </div>
+        </div>
+
+        {/* Inner levels (top-down, excluding root and leaves) */}
+        {changedLevels.slice(1, -1).reverse().map((lvl, lvlIdx) => (
+          <div key={`lvl-${lvlIdx}`}
+               className="grid gap-2"
+               style={{ gridTemplateColumns: `repeat(${lvl.length}, minmax(0, 1fr))` }}>
+            {lvl.map((n, i) => (
+              <div
+                key={i}
+                className="px-2 py-1.5 rounded-md border text-center transition-colors"
+                style={{
+                  borderColor: n.changed ? '#ED1C24' : '#6366f140',
+                  backgroundColor: n.changed ? '#ED1C2410' : '#6366f108',
+                }}
+              >
+                <div className="text-[9px] font-bold uppercase tracking-widest"
+                     style={{ color: n.changed ? '#ED1C24' : '#6366f1' }}>
+                  hash
+                </div>
+                <div className="font-mono text-[10px] font-bold text-foreground truncate">{n.hash}</div>
+              </div>
+            ))}
+          </div>
+        ))}
+
+        {/* Leaves (transactions) */}
+        <div className="grid gap-2"
+             style={{ gridTemplateColumns: `repeat(${changedLevels[0].length}, minmax(0, 1fr))` }}>
+          {changedLevels[0].map((leaf, i) => (
+            <div
+              key={i}
+              className="rounded-lg border p-2 flex flex-col gap-1 transition-colors"
+              style={{
+                borderColor: leaf.changed ? '#ED1C24' : '#22d3ee40',
+                backgroundColor: leaf.changed ? '#ED1C2410' : '#22d3ee08',
+              }}
+            >
+              <div className="text-[9px] font-bold uppercase tracking-widest"
+                   style={{ color: leaf.changed ? '#ED1C24' : '#22d3ee' }}>tx {i + 1}</div>
+              <input
+                type="text"
+                value={txs[i]}
+                onChange={e => updateTx(i, e.target.value)}
+                className="w-full px-1.5 py-0.5 rounded bg-card border text-[10px] font-mono text-foreground focus:outline-none focus:ring-1 transition-colors"
+                style={{ borderColor: leaf.changed ? '#ED1C24' : 'var(--border)' }}
+              />
+              <div className="font-mono text-[9px] text-muted-foreground truncate">{leaf.hash}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Explanation footer */}
+      <div className="shrink-0 mt-3 grid grid-cols-3 gap-2 text-[11px]">
+        <div className="p-2 bg-card border border-border rounded-lg">
+          <div className="font-bold text-foreground mb-0.5">Hash up in pairs</div>
+          <div className="text-muted-foreground">Each pair of hashes is concatenated and hashed together — repeat until one root remains.</div>
+        </div>
+        <div className="p-2 bg-card border border-border rounded-lg">
+          <div className="font-bold text-foreground mb-0.5">One byte changes everything</div>
+          <div className="text-muted-foreground">Tampering with any single transaction changes its leaf hash, which changes every node on the path up to the root.</div>
+        </div>
+        <div className="p-2 bg-card border border-border rounded-lg">
+          <div className="font-bold text-foreground mb-0.5">Efficient proofs</div>
+          <div className="text-muted-foreground">A light client can verify a tx is in a block using only log₂(N) hashes — they don't need the whole block. This is what enables SPV / mobile wallets.</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Interactive: Build a Wallet ────────────────────────────────────────────
 
 // Small curated subset of the BIP39 wordlist — enough variety for a believable
@@ -959,58 +1272,6 @@ export function Section2() {
           />
         </div>
 
-        {/* ═══════ 3. IMMUTABILITY & BLOCK LINKING ═══════ */}
-        <div id="s2-immutability" className="h-full">
-          <DiagramSlide
-            title="Immutability Through Block Linking"
-            diagram={
-              <BlockchainChain
-                blocks={[
-                  {
-                    blockNumber: 840000,
-                    hash: "0x00000...a3f7",
-                    previousHash: "0x00000...9c12",
-                    timestamp: "Apr 20, 2024",
-                    data: "Halving Block",
-                    highlighted: false
-                  },
-                  {
-                    blockNumber: 840001,
-                    hash: "0x00000...b8e2",
-                    previousHash: "0x00000...a3f7",
-                    timestamp: "Apr 20, 2024",
-                    data: "3.125 BTC reward",
-                    highlighted: false
-                  },
-                  {
-                    blockNumber: 840002,
-                    hash: "0x00000...c4d9",
-                    previousHash: "0x00000...b8e2",
-                    timestamp: "Apr 20, 2024",
-                    data: "142 transactions",
-                    highlighted: true
-                  }
-                ]}
-              />
-            }
-            caption="Each block's hash depends on the previous block's hash — altering any block would cascade through every subsequent block"
-            annotations={[
-              {
-                label: "Cryptographic Linking",
-                description: "Each block header includes the hash of the previous block, creating an unbreakable chain of commitments"
-              },
-              {
-                label: "Why It Matters",
-                description: "To alter a past transaction, an attacker would need to recalculate every block after it faster than the entire network — practically impossible"
-              },
-              {
-                label: "Finality Grows Over Time",
-                description: "The deeper a block is buried, the more computational work protects it. 6 confirmations (~60 min) is considered practically irreversible"
-              }
-            ]}
-          />
-        </div>
-
         {/* ═══════ 4. SUPPLY MODEL — INTERACTIVE ═══════ */}
         <div id="s2-supply" className="h-full">
           <BitcoinSupplyInteractive />
@@ -1298,6 +1559,16 @@ export function Section2() {
         {/* ═══════ 8b. MINING — INTERACTIVE ═══════ */}
         <div id="s2-mining-demo" className="h-full">
           <MiningDemo />
+        </div>
+
+        {/* ═══════ 8c. IMMUTABILITY — INTERACTIVE TAMPER CHAIN ═══════ */}
+        <div id="s2-immutability" className="h-full">
+          <ImmutableChainDemo />
+        </div>
+
+        {/* ═══════ 8d. MERKLE TREE — INTERACTIVE ═══════ */}
+        <div id="s2-merkle" className="h-full">
+          <MerkleTreeDemo />
         </div>
 
         {/* ═══════ 9. BITCOIN'S PROGRAMMABILITY LIMITS ═══════ */}
