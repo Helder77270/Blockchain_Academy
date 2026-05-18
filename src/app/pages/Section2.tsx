@@ -723,10 +723,6 @@ const MERKLE_TXS_INITIAL = [
   'Carol → Dave · 0.25 BTC',
   'Erin → Frank · 1.20 BTC',
   'Grace → Heidi · 0.08 BTC',
-  'Ivan → Judy · 0.30 BTC',
-  'Karl → Liam · 0.10 BTC',
-  'Mia → Noah · 0.04 BTC',
-  'Olga → Pat · 0.02 BTC',
 ];
 
 function buildMerkle(txs: string[]): { levels: string[][]; originalLevels: string[][] } {
@@ -826,27 +822,27 @@ function MerkleTreeDemo() {
         ))}
 
         {/* Leaves (transactions) */}
-        <div className="grid gap-2"
+        <div className="grid gap-3"
              style={{ gridTemplateColumns: `repeat(${changedLevels[0].length}, minmax(0, 1fr))` }}>
           {changedLevels[0].map((leaf, i) => (
             <div
               key={i}
-              className="rounded-lg border p-2 flex flex-col gap-1 transition-colors"
+              className="rounded-lg border p-3 flex flex-col gap-1.5 transition-colors"
               style={{
                 borderColor: leaf.changed ? '#ED1C24' : '#22d3ee40',
                 backgroundColor: leaf.changed ? '#ED1C2410' : '#22d3ee08',
               }}
             >
-              <div className="text-[9px] font-bold uppercase tracking-widest"
+              <div className="text-[10px] font-bold uppercase tracking-widest"
                    style={{ color: leaf.changed ? '#ED1C24' : '#22d3ee' }}>tx {i + 1}</div>
               <input
                 type="text"
                 value={txs[i]}
                 onChange={e => updateTx(i, e.target.value)}
-                className="w-full px-1.5 py-0.5 rounded bg-card border text-[10px] font-mono text-foreground focus:outline-none focus:ring-1 transition-colors"
+                className="w-full px-2 py-1 rounded bg-card border text-xs font-mono text-foreground focus:outline-none focus:ring-1 transition-colors"
                 style={{ borderColor: leaf.changed ? '#ED1C24' : 'var(--border)' }}
               />
-              <div className="font-mono text-[9px] text-muted-foreground truncate">{leaf.hash}</div>
+              <div className="font-mono text-[10px] text-muted-foreground truncate" title={leaf.hash}>{leaf.hash}</div>
             </div>
           ))}
         </div>
