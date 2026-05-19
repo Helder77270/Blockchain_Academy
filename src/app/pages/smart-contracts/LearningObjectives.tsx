@@ -49,9 +49,9 @@ const objectives = [
 export function SC_LearningObjectives() {
   return (
     <div id="section-scroll" className="size-full overflow-y-auto snap-y snap-mandatory">
-      <div>
+      <div className="slide-flow">
         {/* Title */}
-        <div className="h-screen snap-start flex flex-col">
+        <div className="h-full">
           <TitleSlide
             sectionNumber="BEFORE WE BEGIN"
             title="Learning Objectives"
@@ -60,30 +60,32 @@ export function SC_LearningObjectives() {
           />
         </div>
 
-        {/* Objectives Grid */}
-        <div className="h-screen snap-start flex items-center justify-center p-12">
-          <div className="max-w-5xl w-full">
-            <h2 className="text-4xl font-bold text-foreground mb-3 text-center">By the End of This Course</h2>
-            <p className="text-lg text-muted-foreground mb-10 text-center max-w-2xl mx-auto">
+        {/* Objectives */}
+        <div className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 text-center mb-4 lg:mb-6">
+            <h2 className="text-2xl lg:text-4xl font-bold text-foreground">By the End of This Course</h2>
+            <p className="text-sm lg:text-base text-muted-foreground mt-2 max-w-2xl mx-auto">
               You will be able to understand, evaluate, and design business applications using smart contract technology — its mechanics, its use cases, and its limits.
             </p>
+          </div>
 
-            <div className="space-y-4">
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 max-w-5xl mx-auto">
               {objectives.map((obj, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-5 p-5 bg-card rounded-xl border border-border hover:shadow-lg transition-shadow"
+                  className="flex items-start gap-3 p-4 bg-card rounded-xl border border-border"
                   style={{ borderLeftWidth: 4, borderLeftColor: obj.color }}
                 >
                   <div
-                    className="size-12 rounded-lg flex items-center justify-center shrink-0"
+                    className="size-10 rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: `${obj.color}20` }}
                   >
                     {obj.icon}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-foreground text-lg mb-1">{obj.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{obj.description}</p>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-foreground text-sm lg:text-base mb-0.5">{obj.title}</h3>
+                    <p className="text-xs lg:text-[13px] text-muted-foreground leading-relaxed">{obj.description}</p>
                   </div>
                 </div>
               ))}

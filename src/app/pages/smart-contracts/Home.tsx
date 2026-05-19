@@ -105,7 +105,7 @@ export function SmartContractsHome() {
           </div>
 
           <Link
-            to={`${BASE}/section-1`}
+            to={`${BASE}/learning-objectives`}
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-lg font-bold hover:shadow-lg hover:shadow-[#6366f1]/30 transition-all"
           >
             Start Learning
