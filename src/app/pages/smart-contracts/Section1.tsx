@@ -204,7 +204,7 @@ function BitcoinEthereumWarmup() {
             <motion.div
               key={i}
               layout
-              className="relative rounded-xl border-2 overflow-hidden flex flex-col"
+              className="relative rounded-xl border-2 overflow-hidden flex flex-col min-h-[9.5rem] lg:min-h-[11rem]"
               style={{
                 borderColor: !open ? 'var(--border)' : right ? '#39B54A' : '#ED1C24',
                 backgroundColor: !open ? 'var(--card)' : right ? '#39B54A10' : '#ED1C2410',

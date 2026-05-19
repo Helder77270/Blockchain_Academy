@@ -10,22 +10,22 @@ import imgDisintermediation from '../../../assets/sc/disintermediation.png';
 import imgDappStack         from '../../../assets/sc/dapp-stack.png';
 
 const chapters = [
-  { id: 's2-workflow',      label: 'Workflow' },
-  { id: 's2-components',   label: 'Core Components' },
-  { id: 's2-execution',    label: 'Execution Environment' },
   { id: 's2-web3',         label: 'The Web3 Landscape' },
   { id: 's2-dapp',         label: 'dApp & Smart Contracts' },
+  { id: 's2-ex-stack',     label: '🧩 Exercise: Stack' },
   { id: 's2-vs',           label: 'Web2 vs Web3 Apps' },
   { id: 's2-vs-2',         label: 'Trad vs Smart Contracts' },
   { id: 's2-standards',    label: 'Token Standards' },
+  { id: 's2-components',   label: 'Core Components' },
+  { id: 's2-workflow',      label: 'Workflow' },
   { id: 's2-solidity',     label: 'Reading Solidity' },
+  { id: 's2-execution',    label: 'Execution Environment' },
   { id: 's2-capabilities', label: 'New Capabilities' },
   { id: 's2-why',          label: 'Why Build with SC?' },
   { id: 's2-gas',          label: 'Gas & Tx Economics' },
+  { id: 's2-ex-gas',       label: '🧩 Exercise: Gas' },
   { id: 's2-reshape',      label: 'Reshape Business' },
   { id: 's2-quiz',         label: 'Quizzes' },
-  { id: 's2-ex-gas',       label: '🧩 Exercise: Gas' },
-  { id: 's2-ex-stack',     label: '🧩 Exercise: Stack' },
   { id: 's2-takeaways',    label: 'Takeaways' },
   { id: 's2-summary',      label: 'Summary' },
 ];
@@ -194,21 +194,22 @@ const LAYERS = [
 ];
 
 const STACK_ITEMS = [
-  { id: 'metamask',  label: 'MetaMask',       emoji: '🦊', layer: 'frontend',   hint: 'Browser wallet — runs in the frontend' },
-  { id: 'react',     label: 'React / Next.js', emoji: '⚛️', layer: 'frontend',   hint: 'UI framework — always frontend' },
-  { id: 'infura',    label: 'Infura RPC',      emoji: '🔌', layer: 'blockchain', hint: 'RPC endpoint — a gateway node that exposes the blockchain to applications' },
-  { id: 'solidity',  label: 'Solidity Contract', emoji: '📜', layer: 'blockchain', hint: 'Smart contract code — lives on-chain' },
-  { id: 'evm',       label: 'EVM',             emoji: '⚙️', layer: 'blockchain', hint: 'Execution environment — part of every node' },
-  { id: 'pos',       label: 'PoS Validators',  emoji: '🏦', layer: 'blockchain', hint: 'Consensus mechanism — on-chain' },
-  { id: 'ipfs',      label: 'IPFS',            emoji: '📦', layer: 'offchain',   hint: 'Decentralised file storage — off-chain' },
-  { id: 'thegraph',  label: 'The Graph',       emoji: '📊', layer: 'offchain',   hint: 'Blockchain indexer — off-chain' },
-  { id: 'chainlink', label: 'Chainlink Oracle', emoji: '🌉', layer: 'offchain',   hint: 'Oracle — brings external data to the chain' },
+  { id: 'metamask',  label: 'MetaMask',        emoji: '🦊', layer: 'frontend',   info: 'A browser-extension wallet that stores your keys and signs transactions for the user. It runs entirely in the frontend and never custodies funds on a server.' },
+  { id: 'react',     label: 'React / Next.js', emoji: '⚛️', layer: 'frontend',   info: 'The UI framework that renders the dApp interface in the browser. It holds no on-chain logic — it just calls contracts through a wallet or RPC.' },
+  { id: 'infura',    label: 'Infura RPC',      emoji: '🔌', layer: 'blockchain', info: 'A hosted RPC gateway that lets apps read state and broadcast transactions without running their own node. It exposes the blockchain over a normal HTTPS endpoint.' },
+  { id: 'solidity',  label: 'Solidity Contract', emoji: '📜', layer: 'blockchain', info: "The smart-contract source code that defines the dApp's on-chain rules and state. Once compiled and deployed, it lives on-chain and runs on every node." },
+  { id: 'evm',       label: 'EVM',             emoji: '⚙️', layer: 'blockchain', info: 'The Ethereum Virtual Machine executes contract bytecode deterministically. It is the runtime baked into every node, so all of them reach the same result.' },
+  { id: 'pos',       label: 'PoS Validators',  emoji: '🏦', layer: 'blockchain', info: 'Validators stake ETH to propose and attest blocks under Proof of Stake. They are the on-chain consensus layer that orders and finalises transactions.' },
+  { id: 'ipfs',      label: 'IPFS',            emoji: '📦', layer: 'offchain',   info: 'A peer-to-peer network for storing large files like images and metadata off-chain. Contracts keep only a content hash, so on-chain storage stays cheap.' },
+  { id: 'thegraph',  label: 'The Graph',       emoji: '📊', layer: 'offchain',   info: 'An indexing protocol that turns raw on-chain events into fast, queryable APIs. It runs off-chain so frontends read data without scanning the whole chain.' },
+  { id: 'chainlink', label: 'Chainlink Oracle', emoji: '🌉', layer: 'offchain',   info: "An oracle network that delivers external data such as prices and randomness onto the chain. It bridges off-chain information into contracts that otherwise can't reach it." },
 ];
 
 function DAppStackExercise() {
   const [placements, setPlacements] = useState<Record<string, string>>({});
   const [revealed,   setRevealed]   = useState(false);
   const [selected,   setSelected]   = useState<string | null>(null);
+  const [hover,      setHover]      = useState<string | null>(null);
 
   const placed   = Object.keys(placements);
   const unplaced = STACK_ITEMS.filter(i => !placed.includes(i.id));
@@ -230,9 +231,12 @@ function DAppStackExercise() {
     setPlacements(prev => { const n = { ...prev }; delete n[itemId]; return n; });
   };
 
-  const reset = () => { setPlacements({}); setRevealed(false); setSelected(null); };
+  const reset = () => { setPlacements({}); setRevealed(false); setSelected(null); setHover(null); };
 
   const score = Object.entries(placements).filter(([id, layer]) => STACK_ITEMS.find(i => i.id === id)?.layer === layer).length;
+
+  // While placing, the clicked component's info shows; after Check answers, the hovered chip's info shows.
+  const infoItem = STACK_ITEMS.find(i => i.id === (revealed ? hover : (selected ?? hover))) ?? null;
 
   return (
     <div className="h-full flex flex-col p-6 lg:p-8">
@@ -254,6 +258,22 @@ function DAppStackExercise() {
         </div>
       </div>
 
+      {/* Info tip — click a component (or hover a placed one after checking) */}
+      <div className="shrink-0 mb-3 rounded-xl border border-border bg-card px-4 py-2.5 min-h-[3.25rem] flex items-center">
+        {infoItem ? (
+          <p className="text-xs leading-snug">
+            <span className="font-bold text-[#6366f1]">{infoItem.emoji} {infoItem.label} — </span>
+            <span className="text-muted-foreground">{infoItem.info}</span>
+          </p>
+        ) : (
+          <p className="text-xs text-muted-foreground italic">
+            {revealed
+              ? 'Hover any placed component to see what it is.'
+              : 'Click (or hover) a component to read what it does, then click a layer to place it.'}
+          </p>
+        )}
+      </div>
+
       <div className="flex-1 min-h-0 flex gap-4">
 
         {/* Unplaced items */}
@@ -264,6 +284,9 @@ function DAppStackExercise() {
               <motion.button
                 key={item.id}
                 onClick={() => handleItemClick(item.id)}
+                onMouseEnter={() => setHover(item.id)}
+                onMouseLeave={() => setHover(null)}
+                title={item.info}
                 whileHover={{ x: 3 }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center gap-2 px-2.5 py-2 rounded-lg border-2 text-left transition-colors"
@@ -312,13 +335,15 @@ function DAppStackExercise() {
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.8 }}
                           onClick={e => { e.stopPropagation(); handleRemove(item.id); }}
+                          onMouseEnter={() => setHover(item.id)}
+                          onMouseLeave={() => setHover(null)}
                           className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold cursor-pointer"
                           style={{
                             borderColor: !revealed ? layer.color + '50' : correct ? '#39B54A' : '#ED1C24',
                             backgroundColor: !revealed ? layer.color + '12' : correct ? '#39B54A12' : '#ED1C2412',
                             color: !revealed ? 'var(--foreground)' : correct ? '#39B54A' : '#ED1C24',
                           }}
-                          title={revealed ? item.hint : 'Click to unplace'}
+                          title={revealed ? item.info : 'Click to unplace'}
                         >
                           <span>{item.emoji}</span> {item.label}
                           {revealed && (correct ? <Check className="size-3" strokeWidth={3} /> : <X className="size-3" strokeWidth={3} />)}
@@ -357,259 +382,6 @@ export function SC_Section2() {
           />
         </div>
 
-        {/* ═══════ WORKFLOW ═══════ */}
-        <div id="s2-workflow" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-6">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">How Smart Contracts Work</h2>
-            <p className="text-muted-foreground text-sm mt-1">Five steps from deployment to notification — all on-chain, all automatic.</p>
-          </div>
-
-          <div className="flex-1 min-h-0 flex items-center justify-center">
-            <div className="w-full max-w-4xl">
-              {/* Steps row */}
-              <div className="flex items-stretch gap-0 mb-6">
-                {[
-                  { step: '01', label: 'Deploy',   emoji: '📤', color: '#6366f1', desc: 'Contract code is compiled and uploaded to the blockchain. It gets a permanent address — immutable from this point on.' },
-                  { step: '02', label: 'Trigger',  emoji: '⚡', color: '#8b5cf6', desc: 'A user or system sends a transaction to the contract address, calling a function with the required inputs.' },
-                  { step: '03', label: 'Execute',  emoji: '⚙️', color: '#39B54A', desc: 'The EVM (or equivalent VM) runs the contract code on every node in the network simultaneously.' },
-                  { step: '04', label: 'Update',   emoji: '🔗', color: '#f59e0b', desc: 'State changes are recorded on the blockchain — permanent, transparent, and agreed upon by consensus.' },
-                  { step: '05', label: 'Emit',     emoji: '📡', color: '#ED1C24', desc: 'Events are emitted and logged on-chain, notifying off-chain systems (front-ends, indexers, oracles).' },
-                ].map((s, i) => (
-                  <div key={s.step} className="flex items-stretch flex-1">
-                    <div
-                      className="flex-1 p-4 rounded-xl border-2 flex flex-col gap-2"
-                      style={{ borderColor: s.color + '50', backgroundColor: s.color + '0d' }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{s.emoji}</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: s.color }}>{s.step}</span>
-                      </div>
-                      <div className="font-black text-base text-foreground">{s.label}</div>
-                      <p className="text-xs text-muted-foreground leading-relaxed flex-1">{s.desc}</p>
-                    </div>
-                    {i < 4 && (
-                      <div className="flex items-center px-1 text-muted-foreground text-lg shrink-0">→</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Code illustration */}
-              <div className="p-4 bg-card border border-border rounded-xl font-mono text-xs">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex gap-1.5">
-                    <div className="size-2.5 rounded-full bg-[#ED1C24]" />
-                    <div className="size-2.5 rounded-full bg-[#f59e0b]" />
-                    <div className="size-2.5 rounded-full bg-[#39B54A]" />
-                  </div>
-                  <span className="text-muted-foreground text-[10px]">SimpleEscrow.sol</span>
-                </div>
-                <div className="space-y-0.5 text-[11px]">
-                  <div><span className="text-[#8b5cf6]">contract</span> <span className="text-[#6366f1]">SimpleEscrow</span> {'{'}</div>
-                  <div className="pl-4"><span className="text-[#f59e0b]">address</span> <span className="text-muted-foreground">public</span> buyer, seller;</div>
-                  <div className="pl-4"><span className="text-[#f59e0b]">uint</span> <span className="text-muted-foreground">public</span> amount;</div>
-                  <div className="pl-4 text-muted-foreground">{'// ← State variables'}</div>
-                  <div className="mt-1 pl-4"><span className="text-[#39B54A]">event</span> <span className="text-[#6366f1]">Released</span>(address to, uint value); <span className="text-muted-foreground">{'// ← Emit'}</span></div>
-                  <div className="mt-1 pl-4"><span className="text-[#8b5cf6]">function</span> <span className="text-[#6366f1]">release</span>() <span className="text-muted-foreground">external</span> {'{'}</div>
-                  <div className="pl-8 text-muted-foreground">{'// ← Execute: only buyer can release'}</div>
-                  <div className="pl-8"><span className="text-[#ED1C24]">require</span>(msg.sender == buyer);</div>
-                  <div className="pl-8">seller.transfer(amount); <span className="text-muted-foreground">{'// ← Update state'}</span></div>
-                  <div className="pl-8"><span className="text-[#ED1C24]">emit</span> Released(seller, amount);</div>
-                  <div className="pl-4">{'}'}</div>
-                  <div>{'}'}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ═══════ ANATOMY ═══════ */}
-        <div id="s2-components" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-6">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Anatomy of a Smart Contract</h2>
-            <p className="text-muted-foreground text-sm mt-1">Every smart contract is made of five building blocks — understanding them is understanding the language of Web3.</p>
-          </div>
-
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
-
-            {/* Left: component cards */}
-            <div className="flex flex-col gap-3">
-              {[
-                { color: '#6366f1', emoji: '📋', title: 'Code',               desc: 'The business logic and conditional statements. Written in Solidity (Ethereum), Rust (Solana), or Vyper. Once deployed, the code is immutable.' },
-                { color: '#8b5cf6', emoji: '💾', title: 'State',              desc: 'Stored data that the contract maintains and modifies over time. Examples: token balances, ownership records, vote counts. Persisted on-chain.' },
-                { color: '#39B54A', emoji: '⚙️', title: 'Functions',          desc: 'Specific operations callable by external parties or other contracts. Can be read-only (free) or state-changing (costs gas).' },
-                { color: '#f59e0b', emoji: '📡', title: 'Events',             desc: 'Logs that record important contract activities. Emitted when key actions occur — cheaply stored and readable by off-chain systems.' },
-                { color: '#ED1C24', emoji: '🌐', title: 'Blockchain Platform', desc: 'The execution environment. Ethereum, Polygon, Solana, BNB Chain… Each has different performance, cost, and tooling trade-offs.' },
-              ].map(c => (
-                <div key={c.title} className="flex items-start gap-3 p-3 bg-card border border-border rounded-xl flex-1" style={{ borderColor: c.color + '30' }}>
-                  <div className="size-8 rounded-lg flex items-center justify-center shrink-0 text-base" style={{ backgroundColor: c.color + '20' }}>{c.emoji}</div>
-                  <div>
-                    <div className="font-bold text-sm mb-0.5" style={{ color: c.color }}>{c.title}</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed">{c.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Right: annotated code */}
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Annotated contract</div>
-              <div className="flex-1 p-4 bg-card border border-border rounded-xl font-mono text-[11px] leading-relaxed">
-                <div className="space-y-1">
-                  <div className="text-muted-foreground">{'// SPDX-License-Identifier: MIT'}</div>
-                  <div><span className="text-[#8b5cf6]">pragma solidity</span> ^0.8.0;</div>
-                  <div className="mt-2"><span className="text-[#8b5cf6]">contract</span> <span className="text-[#6366f1]">Voting</span> {'{'}</div>
-
-                  <div className="mt-2 pl-4 flex items-start gap-2">
-                    <div className="flex-1">
-                      <div className="text-muted-foreground">{'// ─── State ───────────────────────'}</div>
-                      <div><span className="text-[#8b5cf6]">mapping</span>(<span className="text-[#f59e0b]">address</span> =&gt; <span className="text-[#f59e0b]">bool</span>) <span className="text-muted-foreground">public</span> hasVoted;</div>
-                      <div><span className="text-[#f59e0b]">uint</span> <span className="text-muted-foreground">public</span> yesCount;</div>
-                    </div>
-                    <div className="shrink-0 text-[10px] px-2 py-0.5 rounded bg-[#8b5cf6]/20 text-[#8b5cf6] font-bold whitespace-nowrap self-start">💾 State</div>
-                  </div>
-
-                  <div className="mt-2 pl-4 flex items-start gap-2">
-                    <div className="flex-1">
-                      <div className="text-muted-foreground">{'// ─── Event ───────────────────────'}</div>
-                      <div><span className="text-[#39B54A]">event</span> <span className="text-[#6366f1]">Voted</span>(<span className="text-[#f59e0b]">address</span> voter, <span className="text-[#f59e0b]">bool</span> vote);</div>
-                    </div>
-                    <div className="shrink-0 text-[10px] px-2 py-0.5 rounded bg-[#f59e0b]/20 text-[#f59e0b] font-bold whitespace-nowrap self-start">📡 Event</div>
-                  </div>
-
-                  <div className="mt-2 pl-4 flex items-start gap-2">
-                    <div className="flex-1">
-                      <div className="text-muted-foreground">{'// ─── Function ────────────────────'}</div>
-                      <div><span className="text-[#8b5cf6]">function</span> <span className="text-[#6366f1]">vote</span>(<span className="text-[#f59e0b]">bool</span> inFavor) <span className="text-muted-foreground">external</span> {'{'}</div>
-                      <div className="pl-4"><span className="text-[#ED1C24]">require</span>(!hasVoted[msg.sender]);</div>
-                      <div className="pl-4">hasVoted[msg.sender] = <span className="text-[#39B54A]">true</span>;</div>
-                      <div className="pl-4"><span className="text-[#8b5cf6]">if</span> (inFavor) yesCount++;</div>
-                      <div className="pl-4"><span className="text-[#ED1C24]">emit</span> Voted(msg.sender, inFavor);</div>
-                      <div>{'}'}</div>
-                    </div>
-                    <div className="shrink-0 text-[10px] px-2 py-0.5 rounded bg-[#39B54A]/20 text-[#39B54A] font-bold whitespace-nowrap self-start">⚙️ Function</div>
-                  </div>
-
-                  <div>{'}'}</div>
-                </div>
-              </div>
-
-              <div className="p-3 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-xl text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Platform matters:</span> this Solidity contract deploys to Ethereum, Polygon, Arbitrum, Base, and any EVM-compatible chain with zero code changes.
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* ═══════ EXECUTION ENVIRONMENT ═══════ */}
-        <div id="s2-execution" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-6">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Execution Environment</h2>
-            <p className="text-muted-foreground text-sm mt-1">Why smart contracts run the same way, everywhere, every time.</p>
-          </div>
-
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
-
-            {/* Left: four properties */}
-            <div className="flex flex-col gap-3">
-              {[
-                {
-                  color: '#6366f1', emoji: '🖥️', title: 'Virtual Machines',
-                  subtitle: 'Isolated execution environments',
-                  desc: 'The EVM (Ethereum), SVM (Solana), WASM (Polkadot, Near)… Each VM is a sandboxed environment that cannot access the host machine\'s filesystem, network, or memory. Code runs in isolation — securely and predictably.',
-                  examples: ['EVM — Ethereum, Polygon, Arbitrum', 'SVM — Solana', 'MoveVM — Aptos, Sui', 'WASM — Polkadot, Near'],
-                },
-                {
-                  color: '#39B54A', emoji: '🌐', title: 'Distributed Execution',
-                  subtitle: 'Same code runs on thousands of nodes',
-                  desc: 'When a transaction triggers a smart contract, every full node in the network runs the same code independently. There is no single server — execution is replicated across the globe.',
-                  examples: ['Ethereum: ~7,000 full nodes', 'Redundancy eliminates single points of failure', 'No one can selectively block execution'],
-                },
-                {
-                  color: '#f59e0b', emoji: '📐', title: 'Deterministic Results',
-                  subtitle: 'Identical inputs always produce identical outputs',
-                  desc: 'Smart contracts cannot use randomness, real-time clocks, or external data without special tools. This constraint is what makes distributed consensus possible — every node must agree on the result.',
-                  examples: ['No Math.random()', 'No Date.now()', 'External data requires oracles (Chainlink)', 'Randomness requires commit-reveal or VRF'],
-                },
-                {
-                  color: '#ED1C24', emoji: '🤝', title: 'Consensus Requirement',
-                  subtitle: 'Majority agreement required for state changes',
-                  desc: 'After execution, nodes compare results. Only if a supermajority agrees on the output does the state change get written to the blockchain. A single malicious node cannot affect the outcome.',
-                  examples: ['PoS: validators attest to execution results', 'Invalid transactions are rejected network-wide', 'Double-spend or invalid state = rejected'],
-                },
-              ].map(p => (
-                <div key={p.title} className="flex-1 p-4 bg-card border border-border rounded-xl flex gap-3" style={{ borderColor: p.color + '30' }}>
-                  <div className="size-10 rounded-xl flex items-center justify-center text-xl shrink-0" style={{ backgroundColor: p.color + '15' }}>{p.emoji}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-black text-sm text-foreground">{p.title}</div>
-                    <div className="text-xs font-semibold mb-1" style={{ color: p.color }}>{p.subtitle}</div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{p.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Right: EVM landscape diagram */}
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">EVM-compatible ecosystem</div>
-
-              <div className="flex-1 flex flex-col gap-2 p-4 bg-card border border-border rounded-xl">
-                {/* Core EVM */}
-                <div className="text-center p-3 rounded-xl bg-gradient-to-br from-[#6366f1]/20 to-[#8b5cf6]/10 border-2 border-[#6366f1]/50">
-                  <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest mb-1">Ethereum Virtual Machine (EVM)</div>
-                  <div className="text-xs text-muted-foreground">The original standard — runs Solidity & Vyper bytecode</div>
-                </div>
-
-                <div className="text-center text-muted-foreground text-sm">↓ compatible with ↓</div>
-
-                {/* L1 EVM chains */}
-                <div>
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">EVM-compatible L1 chains</div>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {['BNB Chain', 'Avalanche C-Chain', 'Fantom', 'Cronos', 'Celo', 'Gnosis'].map(c => (
-                      <div key={c} className="text-center py-1.5 px-2 bg-[#6366f1]/08 border border-[#6366f1]/20 rounded-lg text-[11px] text-muted-foreground">{c}</div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* L2 */}
-                <div>
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Ethereum L2s (EVM-compatible)</div>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {['Arbitrum', 'Optimism', 'Base', 'Polygon', 'zkSync', 'Scroll'].map(c => (
-                      <div key={c} className="text-center py-1.5 px-2 bg-[#39B54A]/08 border border-[#39B54A]/20 rounded-lg text-[11px] text-muted-foreground">{c}</div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Non-EVM */}
-                <div>
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Non-EVM VMs</div>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {[
-                      { name: 'SVM', chain: 'Solana', color: '#9945FF' },
-                      { name: 'MoveVM', chain: 'Aptos / Sui', color: '#00D4AA' },
-                      { name: 'CosmWasm', chain: 'Cosmos chains', color: '#6366f1' },
-                      { name: 'Ink! / WASM', chain: 'Polkadot', color: '#E6007A' },
-                    ].map(v => (
-                      <div key={v.name} className="py-1.5 px-2 bg-muted border border-border rounded-lg flex items-center gap-1.5">
-                        <div className="size-2 rounded-full shrink-0" style={{ backgroundColor: v.color }} />
-                        <span className="text-[11px] font-bold text-foreground">{v.name}</span>
-                        <span className="text-[10px] text-muted-foreground ml-auto">{v.chain}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-auto p-2 bg-[#6366f1]/08 border border-[#6366f1]/20 rounded-lg text-xs text-muted-foreground text-center">
-                  <span className="font-semibold text-foreground">Deploy once, run anywhere:</span> EVM-compatible chains share the same bytecode standard — one Solidity contract works across 30+ chains.
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
         {/* ═══════ WEB3 LANDSCAPE ═══════ */}
         <div id="s2-web3" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
@@ -743,7 +515,11 @@ export function SC_Section2() {
           </div>
         </div>
 
-        {/* ═══════ WEB3 VS TRADITIONAL ═══════ */}
+        {/* ═══════ EXERCISE: dAPP STACK ═══════ */}
+        <div id="s2-ex-stack" className="h-full">
+          <DAppStackExercise />
+        </div>
+
         {/* ═══════ WEB2 vs WEB3 — APP INFRASTRUCTURE ═══════ */}
         <div id="s2-vs" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
@@ -953,6 +729,151 @@ export function SC_Section2() {
           </div>
         </div>
 
+        {/* ═══════ ANATOMY ═══════ */}
+        <div id="s2-components" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Anatomy of a Smart Contract</h2>
+            <p className="text-muted-foreground text-sm mt-1">Every smart contract is made of five building blocks — understanding them is understanding the language of Web3.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
+
+            {/* Left: component cards */}
+            <div className="flex flex-col gap-3">
+              {[
+                { color: '#6366f1', emoji: '📋', title: 'Code',               desc: 'The business logic and conditional statements. Written in Solidity (Ethereum), Rust (Solana), or Vyper. Once deployed, the code is immutable.' },
+                { color: '#8b5cf6', emoji: '💾', title: 'State',              desc: 'Stored data that the contract maintains and modifies over time. Examples: token balances, ownership records, vote counts. Persisted on-chain.' },
+                { color: '#39B54A', emoji: '⚙️', title: 'Functions',          desc: 'Specific operations callable by external parties or other contracts. Can be read-only (free) or state-changing (costs gas).' },
+                { color: '#f59e0b', emoji: '📡', title: 'Events',             desc: 'Logs that record important contract activities. Emitted when key actions occur — cheaply stored and readable by off-chain systems.' },
+                { color: '#ED1C24', emoji: '🌐', title: 'Blockchain Platform', desc: 'The execution environment. Ethereum, Polygon, Solana, BNB Chain… Each has different performance, cost, and tooling trade-offs.' },
+              ].map(c => (
+                <div key={c.title} className="flex items-start gap-3 p-3 bg-card border border-border rounded-xl flex-1" style={{ borderColor: c.color + '30' }}>
+                  <div className="size-8 rounded-lg flex items-center justify-center shrink-0 text-base" style={{ backgroundColor: c.color + '20' }}>{c.emoji}</div>
+                  <div>
+                    <div className="font-bold text-sm mb-0.5" style={{ color: c.color }}>{c.title}</div>
+                    <div className="text-xs text-muted-foreground leading-relaxed">{c.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right: annotated code */}
+            <div className="flex flex-col gap-3">
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Annotated contract</div>
+              <div className="flex-1 p-4 bg-card border border-border rounded-xl font-mono text-[11px] leading-relaxed">
+                <div className="space-y-1">
+                  <div className="text-muted-foreground">{'// SPDX-License-Identifier: MIT'}</div>
+                  <div><span className="text-[#8b5cf6]">pragma solidity</span> ^0.8.0;</div>
+                  <div className="mt-2"><span className="text-[#8b5cf6]">contract</span> <span className="text-[#6366f1]">Voting</span> {'{'}</div>
+
+                  <div className="mt-2 pl-4 flex items-start gap-2">
+                    <div className="flex-1">
+                      <div className="text-muted-foreground">{'// ─── State ───────────────────────'}</div>
+                      <div><span className="text-[#8b5cf6]">mapping</span>(<span className="text-[#f59e0b]">address</span> =&gt; <span className="text-[#f59e0b]">bool</span>) <span className="text-muted-foreground">public</span> hasVoted;</div>
+                      <div><span className="text-[#f59e0b]">uint</span> <span className="text-muted-foreground">public</span> yesCount;</div>
+                    </div>
+                    <div className="shrink-0 text-[10px] px-2 py-0.5 rounded bg-[#8b5cf6]/20 text-[#8b5cf6] font-bold whitespace-nowrap self-start">💾 State</div>
+                  </div>
+
+                  <div className="mt-2 pl-4 flex items-start gap-2">
+                    <div className="flex-1">
+                      <div className="text-muted-foreground">{'// ─── Event ───────────────────────'}</div>
+                      <div><span className="text-[#39B54A]">event</span> <span className="text-[#6366f1]">Voted</span>(<span className="text-[#f59e0b]">address</span> voter, <span className="text-[#f59e0b]">bool</span> vote);</div>
+                    </div>
+                    <div className="shrink-0 text-[10px] px-2 py-0.5 rounded bg-[#f59e0b]/20 text-[#f59e0b] font-bold whitespace-nowrap self-start">📡 Event</div>
+                  </div>
+
+                  <div className="mt-2 pl-4 flex items-start gap-2">
+                    <div className="flex-1">
+                      <div className="text-muted-foreground">{'// ─── Function ────────────────────'}</div>
+                      <div><span className="text-[#8b5cf6]">function</span> <span className="text-[#6366f1]">vote</span>(<span className="text-[#f59e0b]">bool</span> inFavor) <span className="text-muted-foreground">external</span> {'{'}</div>
+                      <div className="pl-4"><span className="text-[#ED1C24]">require</span>(!hasVoted[msg.sender]);</div>
+                      <div className="pl-4">hasVoted[msg.sender] = <span className="text-[#39B54A]">true</span>;</div>
+                      <div className="pl-4"><span className="text-[#8b5cf6]">if</span> (inFavor) yesCount++;</div>
+                      <div className="pl-4"><span className="text-[#ED1C24]">emit</span> Voted(msg.sender, inFavor);</div>
+                      <div>{'}'}</div>
+                    </div>
+                    <div className="shrink-0 text-[10px] px-2 py-0.5 rounded bg-[#39B54A]/20 text-[#39B54A] font-bold whitespace-nowrap self-start">⚙️ Function</div>
+                  </div>
+
+                  <div>{'}'}</div>
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#6366f1]/10 border border-[#6366f1]/30 rounded-xl text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">Platform matters:</span> this Solidity contract deploys to Ethereum, Polygon, Arbitrum, Base, and any EVM-compatible chain with zero code changes.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ═══════ WORKFLOW ═══════ */}
+        <div id="s2-workflow" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">How Smart Contracts Work</h2>
+            <p className="text-muted-foreground text-sm mt-1">Five steps from deployment to notification — all on-chain, all automatic.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 flex items-center justify-center">
+            <div className="w-full max-w-4xl">
+              {/* Steps row */}
+              <div className="flex items-stretch gap-0 mb-6">
+                {[
+                  { step: '01', label: 'Deploy',   emoji: '📤', color: '#6366f1', desc: 'Contract code is compiled and uploaded to the blockchain. It gets a permanent address — immutable from this point on.' },
+                  { step: '02', label: 'Trigger',  emoji: '⚡', color: '#8b5cf6', desc: 'A user or system sends a transaction to the contract address, calling a function with the required inputs.' },
+                  { step: '03', label: 'Execute',  emoji: '⚙️', color: '#39B54A', desc: 'The EVM (or equivalent VM) runs the contract code on every node in the network simultaneously.' },
+                  { step: '04', label: 'Update',   emoji: '🔗', color: '#f59e0b', desc: 'State changes are recorded on the blockchain — permanent, transparent, and agreed upon by consensus.' },
+                  { step: '05', label: 'Emit',     emoji: '📡', color: '#ED1C24', desc: 'Events are emitted and logged on-chain, notifying off-chain systems (front-ends, indexers, oracles).' },
+                ].map((s, i) => (
+                  <div key={s.step} className="flex items-stretch flex-1">
+                    <div
+                      className="flex-1 p-4 rounded-xl border-2 flex flex-col gap-2"
+                      style={{ borderColor: s.color + '50', backgroundColor: s.color + '0d' }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">{s.emoji}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: s.color }}>{s.step}</span>
+                      </div>
+                      <div className="font-black text-base text-foreground">{s.label}</div>
+                      <p className="text-xs text-muted-foreground leading-relaxed flex-1">{s.desc}</p>
+                    </div>
+                    {i < 4 && (
+                      <div className="flex items-center px-1 text-muted-foreground text-lg shrink-0">→</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Code illustration */}
+              <div className="p-4 bg-card border border-border rounded-xl font-mono text-xs">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex gap-1.5">
+                    <div className="size-2.5 rounded-full bg-[#ED1C24]" />
+                    <div className="size-2.5 rounded-full bg-[#f59e0b]" />
+                    <div className="size-2.5 rounded-full bg-[#39B54A]" />
+                  </div>
+                  <span className="text-muted-foreground text-[10px]">SimpleEscrow.sol</span>
+                </div>
+                <div className="space-y-0.5 text-[11px]">
+                  <div><span className="text-[#8b5cf6]">contract</span> <span className="text-[#6366f1]">SimpleEscrow</span> {'{'}</div>
+                  <div className="pl-4"><span className="text-[#f59e0b]">address</span> <span className="text-muted-foreground">public</span> buyer, seller;</div>
+                  <div className="pl-4"><span className="text-[#f59e0b]">uint</span> <span className="text-muted-foreground">public</span> amount;</div>
+                  <div className="pl-4 text-muted-foreground">{'// ← State variables'}</div>
+                  <div className="mt-1 pl-4"><span className="text-[#39B54A]">event</span> <span className="text-[#6366f1]">Released</span>(address to, uint value); <span className="text-muted-foreground">{'// ← Emit'}</span></div>
+                  <div className="mt-1 pl-4"><span className="text-[#8b5cf6]">function</span> <span className="text-[#6366f1]">release</span>() <span className="text-muted-foreground">external</span> {'{'}</div>
+                  <div className="pl-8 text-muted-foreground">{'// ← Execute: only buyer can release'}</div>
+                  <div className="pl-8"><span className="text-[#ED1C24]">require</span>(msg.sender == buyer);</div>
+                  <div className="pl-8">seller.transfer(amount); <span className="text-muted-foreground">{'// ← Update state'}</span></div>
+                  <div className="pl-8"><span className="text-[#ED1C24]">emit</span> Released(seller, amount);</div>
+                  <div className="pl-4">{'}'}</div>
+                  <div>{'}'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* ═══════ READING SOLIDITY ═══════ */}
         <div id="s2-solidity" className="h-full flex flex-col p-5 lg:p-8">
           <div className="shrink-0 mb-4">
@@ -1026,6 +947,115 @@ export function SC_Section2() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* ═══════ EXECUTION ENVIRONMENT ═══════ */}
+        <div id="s2-execution" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Execution Environment</h2>
+            <p className="text-muted-foreground text-sm mt-1">Why smart contracts run the same way, everywhere, every time.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
+
+            {/* Left: four properties */}
+            <div className="flex flex-col gap-3">
+              {[
+                {
+                  color: '#6366f1', emoji: '🖥️', title: 'Virtual Machines',
+                  subtitle: 'Isolated execution environments',
+                  desc: 'The EVM (Ethereum), SVM (Solana), WASM (Polkadot, Near)… Each VM is a sandboxed environment that cannot access the host machine\'s filesystem, network, or memory. Code runs in isolation — securely and predictably.',
+                  examples: ['EVM — Ethereum, Polygon, Arbitrum', 'SVM — Solana', 'MoveVM — Aptos, Sui', 'WASM — Polkadot, Near'],
+                },
+                {
+                  color: '#39B54A', emoji: '🌐', title: 'Distributed Execution',
+                  subtitle: 'Same code runs on thousands of nodes',
+                  desc: 'When a transaction triggers a smart contract, every full node in the network runs the same code independently. There is no single server — execution is replicated across the globe.',
+                  examples: ['Ethereum: ~7,000 full nodes', 'Redundancy eliminates single points of failure', 'No one can selectively block execution'],
+                },
+                {
+                  color: '#f59e0b', emoji: '📐', title: 'Deterministic Results',
+                  subtitle: 'Identical inputs always produce identical outputs',
+                  desc: 'Smart contracts cannot use randomness, real-time clocks, or external data without special tools. This constraint is what makes distributed consensus possible — every node must agree on the result.',
+                  examples: ['No Math.random()', 'No Date.now()', 'External data requires oracles (Chainlink)', 'Randomness requires commit-reveal or VRF'],
+                },
+                {
+                  color: '#ED1C24', emoji: '🤝', title: 'Consensus Requirement',
+                  subtitle: 'Majority agreement required for state changes',
+                  desc: 'After execution, nodes compare results. Only if a supermajority agrees on the output does the state change get written to the blockchain. A single malicious node cannot affect the outcome.',
+                  examples: ['PoS: validators attest to execution results', 'Invalid transactions are rejected network-wide', 'Double-spend or invalid state = rejected'],
+                },
+              ].map(p => (
+                <div key={p.title} className="flex-1 p-4 bg-card border border-border rounded-xl flex gap-3" style={{ borderColor: p.color + '30' }}>
+                  <div className="size-10 rounded-xl flex items-center justify-center text-xl shrink-0" style={{ backgroundColor: p.color + '15' }}>{p.emoji}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-black text-sm text-foreground">{p.title}</div>
+                    <div className="text-xs font-semibold mb-1" style={{ color: p.color }}>{p.subtitle}</div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{p.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right: EVM landscape diagram */}
+            <div className="flex flex-col gap-3">
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">EVM-compatible ecosystem</div>
+
+              <div className="flex-1 flex flex-col gap-2 p-4 bg-card border border-border rounded-xl">
+                {/* Core EVM */}
+                <div className="text-center p-3 rounded-xl bg-gradient-to-br from-[#6366f1]/20 to-[#8b5cf6]/10 border-2 border-[#6366f1]/50">
+                  <div className="text-xs font-bold text-[#6366f1] uppercase tracking-widest mb-1">Ethereum Virtual Machine (EVM)</div>
+                  <div className="text-xs text-muted-foreground">The original standard — runs Solidity & Vyper bytecode</div>
+                </div>
+
+                <div className="text-center text-muted-foreground text-sm">↓ compatible with ↓</div>
+
+                {/* L1 EVM chains */}
+                <div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">EVM-compatible L1 chains</div>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {['BNB Chain', 'Avalanche C-Chain', 'Fantom', 'Cronos', 'Celo', 'Gnosis'].map(c => (
+                      <div key={c} className="text-center py-1.5 px-2 bg-[#6366f1]/08 border border-[#6366f1]/20 rounded-lg text-[11px] text-muted-foreground">{c}</div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* L2 */}
+                <div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Ethereum L2s (EVM-compatible)</div>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {['Arbitrum', 'Optimism', 'Base', 'Polygon', 'zkSync', 'Scroll'].map(c => (
+                      <div key={c} className="text-center py-1.5 px-2 bg-[#39B54A]/08 border border-[#39B54A]/20 rounded-lg text-[11px] text-muted-foreground">{c}</div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Non-EVM */}
+                <div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Non-EVM VMs</div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {[
+                      { name: 'SVM', chain: 'Solana', color: '#9945FF' },
+                      { name: 'MoveVM', chain: 'Aptos / Sui', color: '#00D4AA' },
+                      { name: 'CosmWasm', chain: 'Cosmos chains', color: '#6366f1' },
+                      { name: 'Ink! / WASM', chain: 'Polkadot', color: '#E6007A' },
+                    ].map(v => (
+                      <div key={v.name} className="py-1.5 px-2 bg-muted border border-border rounded-lg flex items-center gap-1.5">
+                        <div className="size-2 rounded-full shrink-0" style={{ backgroundColor: v.color }} />
+                        <span className="text-[11px] font-bold text-foreground">{v.name}</span>
+                        <span className="text-[10px] text-muted-foreground ml-auto">{v.chain}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-auto p-2 bg-[#6366f1]/08 border border-[#6366f1]/20 rounded-lg text-xs text-muted-foreground text-center">
+                  <span className="font-semibold text-foreground">Deploy once, run anywhere:</span> EVM-compatible chains share the same bytecode standard — one Solidity contract works across 30+ chains.
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1227,6 +1257,11 @@ export function SC_Section2() {
           </div>
         </div>
 
+        {/* ═══════ EXERCISE: GAS RANKING ═══════ */}
+        <div id="s2-ex-gas" className="h-full">
+          <GasRankingExercise />
+        </div>
+
         {/* ═══════ RESHAPE BUSINESS ═══════ */}
         <div id="s2-reshape" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5 flex items-start gap-4">
@@ -1261,7 +1296,6 @@ export function SC_Section2() {
           </div>
         </div>
 
-        {/* ═══════ QUIZZES ═══════ */}
         {/* Quiz 1: Workflow */}
         <div id="s2-quiz" className="h-full">
           <QuizSlide
@@ -1274,72 +1308,6 @@ export function SC_Section2() {
             ]}
             explanation="Smart contracts are passive — they sit on the blockchain and do nothing until triggered. A transaction sent to the contract address kicks off execution on the EVM. The contract then runs, updates state, and emits events — all within that single transaction."
           />
-        </div>
-
-        {/* Quiz 2: Execution environment */}
-        <div className="h-full">
-          <QuizSlide
-            question="Why must smart contract execution be deterministic?"
-            options={[
-              { text: "So the developer can predict gas costs in advance", correct: false },
-              { text: "To keep execution fast on validator hardware", correct: false },
-              { text: "Because every node runs the same code — different results would break consensus", correct: true },
-              { text: "Because Solidity doesn't support randomness as a language feature", correct: false },
-            ]}
-            explanation="Thousands of nodes around the world execute every smart contract independently. If the same inputs could produce different outputs, nodes would disagree on the blockchain state and consensus would fail. Determinism is not a convenience — it's a fundamental requirement for a distributed system."
-          />
-        </div>
-
-        {/* Quiz 3: Web3 vs Traditional */}
-        <div className="h-full">
-          <QuizSlide
-            question="Compared to a traditional legal contract, what is a unique advantage of a smart contract?"
-            options={[
-              { text: "It is legally binding in all jurisdictions without any additional steps", correct: false },
-              { text: "It executes automatically when conditions are met — no court or intermediary required", correct: true },
-              { text: "It can be amended by either party at any time after deployment", correct: false },
-              { text: "It stores unlimited off-chain data for free", correct: false },
-            ]}
-            explanation="The core value proposition of smart contracts is automatic, trustless enforcement. A traditional contract requires human action and a legal system to enforce it — this takes days and costs money. A smart contract self-executes the moment conditions are satisfied, with no intermediary and no geographic limitation."
-          />
-        </div>
-
-        {/* Quiz 4: New capabilities */}
-        <div className="h-full">
-          <QuizSlide
-            question="What does 'atomic transaction' mean in the context of smart contracts?"
-            options={[
-              { text: "Transactions are processed using atomic-level cryptography for security", correct: false },
-              { text: "Only one transaction can run on the blockchain at any given time", correct: false },
-              { text: "A multi-step operation either completes entirely or reverts entirely — no partial states", correct: true },
-              { text: "Transactions are automatically split into smaller units to save gas", correct: false },
-            ]}
-            explanation="Atomicity means 'all or nothing'. In a smart contract, if any step of a complex operation fails, the entire transaction reverts as if it never happened. This eliminates the risk of partial execution — a problem common in traditional multi-system workflows where one step can succeed while another fails."
-          />
-        </div>
-
-        {/* Quiz 5: Gas economics */}
-        <div className="h-full">
-          <QuizSlide
-            question="If a smart contract transaction runs out of gas mid-execution, what happens?"
-            options={[
-              { text: "The transaction pauses and resumes when the user pays more gas", correct: false },
-              { text: "The completed steps are kept but the remaining steps are skipped", correct: false },
-              { text: "The transaction reverts completely, but the gas already consumed is not refunded", correct: true },
-              { text: "The network automatically increases the gas limit to complete it", correct: false },
-            ]}
-            explanation="Gas-out causes a full revert — all state changes are undone as if the transaction never happened. However, the gas already used for computation is burned and not returned to the sender. This is why setting an appropriate gas limit matters: too low and you waste fees on a failed transaction."
-          />
-        </div>
-
-        {/* ═══════ EXERCISE: GAS RANKING ═══════ */}
-        <div id="s2-ex-gas" className="h-full">
-          <GasRankingExercise />
-        </div>
-
-        {/* ═══════ EXERCISE: dAPP STACK ═══════ */}
-        <div id="s2-ex-stack" className="h-full">
-          <DAppStackExercise />
         </div>
 
         <div id="s2-takeaways" className="h-full">
