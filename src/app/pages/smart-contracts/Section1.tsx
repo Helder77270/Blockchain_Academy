@@ -195,7 +195,7 @@ function BitcoinEthereumWarmup() {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 grid-rows-2 gap-3">
+      <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 gap-3 content-center auto-rows-min">
         {BTC_ETH.map((q, i) => {
           const picked = picks[i];
           const open = !!picked;
