@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router';
 import { CourseNav } from './components/navigation/CourseNav';
+import { ScrollProgressBar } from './components/navigation/ScrollProgressBar';
 import { SlideNavButtons } from './components/navigation/SlideNavButtons';
 
 const BASE = '/blockchain-platforms';
@@ -27,6 +28,7 @@ export function BlockchainPlatformsRoot() {
   return (
     <div className="h-full w-full flex flex-col">
       <CourseNav base={BASE} sections={sections} accentColor="#39B54A" />
+      <ScrollProgressBar accentColor="#39B54A" />
       <main className="flex-1 overflow-hidden">
         <Outlet />
       </main>

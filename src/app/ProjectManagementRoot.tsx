@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router';
 import { CourseNav } from './components/navigation/CourseNav';
+import { ScrollProgressBar } from './components/navigation/ScrollProgressBar';
 import { SlideNavButtons } from './components/navigation/SlideNavButtons';
 
 const BASE = '/project-management';
@@ -26,6 +27,7 @@ export function ProjectManagementRoot() {
   return (
     <div className="h-full w-full flex flex-col">
       <CourseNav base={BASE} sections={sections} accentColor="#f97316" />
+      <ScrollProgressBar accentColor="#f97316" />
       <main className="flex-1 overflow-hidden">
         <Outlet />
       </main>
