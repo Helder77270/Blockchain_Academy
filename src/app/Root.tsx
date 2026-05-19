@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router';
 import { CourseNav } from './components/navigation/CourseNav';
+import { ScrollProgressBar } from './components/navigation/ScrollProgressBar';
 import { SlideNavButtons } from './components/navigation/SlideNavButtons';
 
 const BASE = '/blockchain-fundamentals';
@@ -25,6 +26,7 @@ export function Root() {
   return (
     <div className="h-full w-full flex flex-col">
       <CourseNav />
+      <ScrollProgressBar accentColor="#ED1C24" />
       <main className="flex-1 overflow-hidden">
         <Outlet />
       </main>
