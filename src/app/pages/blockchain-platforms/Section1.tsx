@@ -16,6 +16,7 @@ const chapters = [
   { id: 's1-apps', label: 'Apps' },
   { id: 's1-lightning', label: 'Lightning Network' },
   { id: 's1-quiz', label: 'Quiz' },
+  { id: 's1-tx-lifecycle', label: 'Tx Lifecycle' },
   { id: 's1-takeaways', label: 'Takeaways' },
   { id: 's1-summary', label: 'Summary' },
 ];
@@ -1483,6 +1484,137 @@ export function BP_Section1() {
             ]}
             explanation="Bitcoin's difficulty adjustment is automatic, trustless, and runs every 2,016 blocks (~2 weeks). Each node compares the actual time elapsed against the expected 14 days × 24 h × 6 blocks/h = 20,160 minutes and scales the target accordingly: faster blocks → harder target. Halvings happen every 210,000 blocks but are unrelated to hash-rate changes. There is no miner voting on difficulty and no minimum time between blocks — the target alone constrains them probabilistically."
           />
+        </div>
+
+        {/* ═══════ TRANSACTION LIFECYCLE ═══════ */}
+        <div id="s1-tx-lifecycle" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-[#f59e0b]">Putting it all together</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">The Life of a Bitcoin Transaction</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Every step a payment takes — from your wallet to economically irreversible.
+            </p>
+          </div>
+
+          {/* Zone labels */}
+          <div className="shrink-0 hidden lg:grid grid-cols-7 gap-2 mb-2">
+            <div className="col-span-1 text-[10px] font-black uppercase tracking-widest text-[#f59e0b] text-center">Wallet</div>
+            <div className="col-span-3 text-[10px] font-black uppercase tracking-widest text-[#6366f1] text-center">Network (P2P)</div>
+            <div className="col-span-1 text-[10px] font-black uppercase tracking-widest text-[#8b5cf6] text-center">Mining</div>
+            <div className="col-span-2 text-[10px] font-black uppercase tracking-widest text-[#39B54A] text-center">Blockchain</div>
+          </div>
+
+          {/* Pipeline */}
+          <div className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2.5">
+            {[
+              {
+                n: 1, emoji: '👛', zone: '#f59e0b',
+                title: 'Construct & Sign',
+                what: 'Wallet picks UTXOs as inputs, sets outputs (recipient + change), and signs each input with your private key (ECDSA).',
+                note: 'Still 100% local — nothing on-chain yet.',
+              },
+              {
+                n: 2, emoji: '📡', zone: '#6366f1',
+                title: 'Broadcast',
+                what: 'The signed raw transaction is pushed to the ~8 full-node peers your wallet is connected to.',
+                note: 'txid = double-SHA256 of the tx bytes.',
+              },
+              {
+                n: 3, emoji: '🔁', zone: '#6366f1',
+                title: 'Relay & Validate',
+                what: 'Each node checks signatures, that inputs exist & are unspent, no double-spend, and fee sanity — then gossips it onward.',
+                note: 'Reaches ~50k nodes in under a second.',
+              },
+              {
+                n: 4, emoji: '⏳', zone: '#6366f1',
+                title: 'Mempool',
+                what: 'Valid but unconfirmed. The tx waits in every node’s mempool, ranked by fee rate (sat/vByte).',
+                note: 'Higher fee → picked sooner.',
+              },
+              {
+                n: 5, emoji: '⛏️', zone: '#8b5cf6',
+                title: 'Mining',
+                what: 'A miner selects the highest-fee txs, builds a candidate block (Merkle root), and grinds the nonce until blockHash < target.',
+                note: 'Proof of Work · ~10 min on average.',
+              },
+              {
+                n: 6, emoji: '🧱', zone: '#39B54A',
+                title: 'Block Propagated',
+                what: 'The winner broadcasts the block. Every node re-verifies the PoW and all txs, then appends it.',
+                note: 'Your tx now has 1 confirmation.',
+              },
+              {
+                n: 7, emoji: '✅', zone: '#39B54A',
+                title: 'Confirmations → Final',
+                what: 'Each new block stacked on top buries it deeper. Rewriting it means out-hashing the whole network.',
+                note: '~6 confirmations (~60 min) ≈ irreversible.',
+              },
+            ].map((s, i) => (
+              <motion.div
+                key={s.n}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08, duration: 0.35, ease: 'easeOut' }}
+                className="relative flex flex-col rounded-xl border bg-card p-3 min-h-0"
+                style={{ borderColor: s.zone + '55' }}
+              >
+                {/* connector arrow (lg only, between cards) */}
+                {i < 6 && (
+                  <div
+                    className="hidden lg:flex absolute top-1/2 -right-[11px] -translate-y-1/2 z-10 size-4 items-center justify-center rounded-full text-white text-[10px] font-black"
+                    style={{ backgroundColor: s.zone }}
+                  >
+                    ›
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 shrink-0 mb-1.5">
+                  <span
+                    className="size-6 rounded-md flex items-center justify-center text-white text-[11px] font-black shrink-0"
+                    style={{ backgroundColor: s.zone }}
+                  >
+                    {s.n}
+                  </span>
+                  <span className="text-lg leading-none">{s.emoji}</span>
+                </div>
+
+                <div className="font-bold text-[13px] text-foreground leading-tight mb-1">{s.title}</div>
+                <div className="text-[11px] text-muted-foreground leading-snug flex-1">{s.what}</div>
+                <div
+                  className="mt-2 text-[10px] font-medium leading-snug rounded-md px-2 py-1"
+                  style={{ backgroundColor: s.zone + '14', color: s.zone }}
+                >
+                  {s.note}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Timing strip + caveat */}
+          <div className="shrink-0 mt-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="lg:col-span-2 rounded-xl border border-border bg-card px-4 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]"
+            >
+              <span className="font-black uppercase tracking-widest text-muted-foreground">⏱️ Typical timing</span>
+              <span className="text-muted-foreground">Sign &amp; broadcast: <span className="font-bold text-foreground">&lt; 1 s</span></span>
+              <span className="text-muted-foreground">Mempool wait: <span className="font-bold text-foreground">seconds → hours</span> (fee-driven)</span>
+              <span className="text-muted-foreground">1 block: <span className="font-bold text-foreground">~10 min</span></span>
+              <span className="text-muted-foreground">6 confirmations: <span className="font-bold text-foreground">~1 hour ≈ settled</span></span>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="rounded-xl px-4 py-2.5 text-[11px] leading-snug"
+              style={{ backgroundColor: '#f59e0b12', border: '1px solid #f59e0b40', color: 'var(--muted-foreground)' }}
+            >
+              <span className="font-bold text-[#f59e0b]">Stuck tx? </span>
+              A fee that's too low can leave it in the mempool for hours — or get evicted. <span className="font-semibold text-foreground">RBF</span> or <span className="font-semibold text-foreground">CPFP</span> can bump it.
+            </motion.div>
+          </div>
         </div>
 
         {/* ═══════ TAKEAWAYS ═══════ */}
