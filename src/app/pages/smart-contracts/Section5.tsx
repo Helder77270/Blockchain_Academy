@@ -371,44 +371,54 @@ export function SC_Section5() {
           <OracleAttackExercise />
         </div>
 
-        {/* ═══════ SECURITY RISKS DEEP-DIVE ═══════ */}
+        {/* ═══════ SECURITY RISKS ═══════ */}
         <div id="s5-risks-security" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Security Risks</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contract vulnerabilities are public, permanent, and exploited within hours of deployment if missed.</p>
+            <p className="text-muted-foreground text-sm mt-1">Bugs are public, permanent, and exploited within hours. The most expensive ones are the simplest.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center">
+          <div className="flex-1 min-h-0 grid grid-cols-3 grid-rows-2 gap-4">
             {[
               { title: 'Reentrancy', emoji: '🔁', color: '#ED1C24',
-                desc: 'A function calls an external contract before updating its own state. The external contract calls back into the original — repeating the original action with stale state. The DAO (2016): $60M.',
-                fix: 'Checks-Effects-Interactions pattern; OpenZeppelin ReentrancyGuard.' },
+                what: 'Calls out before updating its own state — attacker calls back in and drains it.',
+                fix: 'Checks-Effects-Interactions · ReentrancyGuard', stat: 'The DAO (2016): $60M' },
               { title: 'Flash Loan Attacks', emoji: '⚡', color: '#f59e0b',
-                desc: 'Borrow $100M with no collateral, manipulate an on-chain price oracle, exploit a dependent protocol, repay the loan — all atomic in one transaction. Harvest Finance (2020): $34M.',
-                fix: 'Time-weighted average prices (TWAP); decentralised oracles; multi-source pricing.' },
+                what: 'Borrow millions uncollateralised, bend a price oracle, exploit, repay — one atomic tx.',
+                fix: 'TWAP prices · decentralised, multi-source oracles', stat: 'Harvest (2020): $34M' },
               { title: 'Access Control', emoji: '🔑', color: '#8b5cf6',
-                desc: 'Critical functions (mint, withdraw, upgrade) lack proper modifiers. Parity multisig (2017): $30M frozen because anyone could call the kill function and self-destruct the library.',
-                fix: 'Role-based access control (OpenZeppelin AccessControl); thorough testing; audit by experts.' },
-              { title: 'Integer Over/Underflow', emoji: '🧮', color: '#6366f1',
-                desc: 'In Solidity <0.8, arithmetic wraps silently: balance - withdraw can underflow to MAX_UINT, granting attacker huge balance. Mitigated by default in Solidity 0.8+.',
-                fix: 'Use Solidity ≥0.8 for built-in checks, or SafeMath library in older code.' },
+                what: 'Critical functions (mint, withdraw, upgrade) miss the right modifier.',
+                fix: 'Role-based access (OZ AccessControl) · audits', stat: 'Parity (2017): $30M frozen' },
+              { title: 'Over/Underflow', emoji: '🧮', color: '#6366f1',
+                what: 'Pre-0.8 Solidity wraps silently — balance − x underflows to a huge number.',
+                fix: 'Solidity ≥0.8 (checked) or SafeMath', stat: 'Fixed by default since 0.8' },
               { title: 'Logic Bugs', emoji: '🐛', color: '#39B54A',
-                desc: 'Code does what it says, but what it says is wrong. Off-by-one errors, incorrect price calculations, mis-named function arguments. Often missed by automated tools — only caught by careful audit.',
-                fix: 'Multiple independent audits; formal verification for critical contracts; bug bounties.' },
+                what: 'Code runs as written, but the logic is wrong — off-by-one, bad sign, wrong arg.',
+                fix: 'Independent audits · formal verification', stat: 'Tools miss these — humans catch them' },
               { title: 'Cumulative Loss', emoji: '💸', color: '#ED1C24',
-                desc: '$6B+ stolen from smart contracts since 2016 across thousands of incidents. The most expensive bugs are the simplest ones — a missing modifier, a wrong sign in an inequality, a copy-paste error.',
-                fix: 'Treat audits as non-optional. Smart Contract Security audits are a discipline — not a checkbox.' },
+                what: 'Thousands of incidents — usually a missing modifier or a copy-paste slip.',
+                fix: 'Audits are a discipline, not a checkbox', stat: '$6B+ lost since 2016' },
             ].map(r => (
-              <div key={r.title} className="p-4 bg-card border rounded-xl flex flex-col gap-2" style={{ borderColor: r.color + '30' }}>
-                <div className="flex items-center gap-2">
-                  <div className="size-9 rounded-lg flex items-center justify-center text-xl" style={{ backgroundColor: r.color + '15' }}>{r.emoji}</div>
-                  <div className="font-bold text-sm text-foreground">{r.title}</div>
+              <motion.div
+                key={r.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.25 }}
+                className="flex flex-col gap-2.5 rounded-xl border-2 p-4 justify-center"
+                style={{ borderColor: r.color + '50', backgroundColor: r.color + '08' }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="size-9 rounded-lg flex items-center justify-center text-lg shrink-0" style={{ backgroundColor: r.color + '18' }}>{r.emoji}</div>
+                  <div className="font-black text-base text-foreground leading-tight">{r.title}</div>
                 </div>
-                <div className="text-xs text-muted-foreground leading-snug flex-1">{r.desc}</div>
-                <div className="text-xs p-2 rounded-lg" style={{ backgroundColor: r.color + '08' }}>
-                  <span className="font-semibold" style={{ color: r.color }}>Fix:</span> <span className="text-muted-foreground">{r.fix}</span>
+                <p className="text-sm text-foreground leading-snug flex-1">{r.what}</p>
+                <div className="rounded-lg p-2 border-l-2" style={{ borderColor: r.color, backgroundColor: r.color + '12' }}>
+                  <span className="text-[11px] font-bold" style={{ color: r.color }}>Fix: </span>
+                  <span className="text-[11px] text-muted-foreground">{r.fix}</span>
                 </div>
-              </div>
+                <p className="text-xs text-muted-foreground italic">{r.stat}</p>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -417,48 +427,53 @@ export function SC_Section5() {
         <div id="s5-risks-cost" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Cost Risks</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts are not plug-and-play — significant upfront investment is required and ongoing costs must be planned for.</p>
+            <p className="text-muted-foreground text-sm mt-1">Smart contracts are not plug-and-play — budget for the upfront and the ongoing.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
+          <div className="flex-1 min-h-0 grid grid-cols-2 grid-rows-2 gap-4">
             {[
-              { title: 'Immutability & Redeployment', color: '#ED1C24',
-                points: [
-                  'Contracts cannot be modified once deployed.',
-                  'Fixing bugs requires terminating the broken contract and redeploying — costly and risky.',
-                  'Demands thorough testing and secure design upfront — ship-and-iterate doesn\'t apply here.',
-                  'Migration of users and state from v1 to v2 is its own engineering project.',
-                ] },
-              { title: 'Development & Maintenance', color: '#f59e0b',
-                points: [
-                  'Solidity (and other on-chain languages) are complex and rapidly evolving.',
-                  'Bugs are introduced unintentionally — even by experienced developers.',
-                  'Maintainability is hard precisely because immutability blocks normal patching workflows.',
-                  'Specialised hires (auditors, security engineers) command premium rates.',
-                ] },
-              { title: 'Gas & Execution', color: '#8b5cf6',
-                points: [
-                  'Execution costs vary with network congestion — fees can spike 10–100× during high demand.',
-                  'Inefficient code = higher gas fees forever for every user.',
-                  'Optimisation discipline: limit storage writes, reduce external calls, use compact data structures.',
-                  'High fees can undermine the economic viability of micro-transactions and small payments.',
-                ] },
-              { title: 'Security vs Performance', color: '#6366f1',
-                points: [
-                  'Defensive checks (require statements, access modifiers) all consume gas.',
-                  'Developers must balance security (more checks) against efficiency (fewer checks) and cost.',
-                  'Audit costs scale with code complexity — a $50K audit for 500 lines is normal.',
-                  'Bug bounty programs add ongoing operational cost but reduce catastrophic risk.',
-                ] },
-            ].map(b => (
-              <div key={b.title} className="p-5 bg-card border rounded-xl flex flex-col gap-3" style={{ borderColor: b.color + '30' }}>
-                <div className="font-black text-sm" style={{ color: b.color }}>{b.title}</div>
-                <ul className="space-y-2 text-xs text-muted-foreground flex-1">
-                  {b.points.map(p => (
-                    <li key={p} className="flex gap-2"><span style={{ color: b.color }} className="shrink-0 mt-0.5">›</span>{p}</li>
-                  ))}
-                </ul>
-              </div>
+              { emoji: '🧱', color: '#ED1C24', title: 'Immutability & Redeployment',
+                what: "You can't patch — you redeploy",
+                why: 'A fix means deploying a new contract and migrating users + state. Ship-and-iterate does not apply.',
+                fix: 'Heavy testing and secure design before launch; plan a v1→v2 migration path.' },
+              { emoji: '🛠️', color: '#f59e0b', title: 'Development & Maintenance',
+                what: 'Scarce, expensive expertise',
+                why: 'Solidity is complex and fast-moving; even strong devs ship bugs, and immutability blocks normal patching.',
+                fix: 'Budget premium rates for auditors and security engineers as a line item, not an afterthought.' },
+              { emoji: '⛽', color: '#8b5cf6', title: 'Gas & Execution',
+                what: 'Fees vary and compound',
+                why: 'Costs spike 10–100× under congestion, and inefficient code taxes every future user forever.',
+                fix: 'Optimise storage writes and external calls; reconsider micro-payment economics.' },
+              { emoji: '⚖️', color: '#6366f1', title: 'Security vs Performance',
+                what: 'Every safety check costs gas',
+                why: 'Defensive checks trade off against efficiency, and audit cost scales with code complexity.',
+                fix: 'A ~$50K audit per ~500 lines is normal; bug bounties add cost but cut catastrophic risk.' },
+            ].map(c => (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 rounded-xl border-2 p-5 justify-center"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '08' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-11 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: c.color + '18' }}>{c.emoji}</div>
+                  <div>
+                    <div className="font-black text-base text-foreground leading-tight">{c.title}</div>
+                    <div className="text-sm font-semibold mt-0.5" style={{ color: c.color }}>{c.what}</div>
+                  </div>
+                </div>
+                <div className="rounded-lg bg-card border p-3" style={{ borderColor: c.color + '25' }}>
+                  <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Why</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.why}</p>
+                </div>
+                <div className="rounded-lg p-3 border-l-2" style={{ borderColor: c.color, backgroundColor: c.color + '12' }}>
+                  <span className="text-xs font-black uppercase tracking-widest" style={{ color: c.color }}>Manage it</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.fix}</p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -467,50 +482,44 @@ export function SC_Section5() {
         <div id="s5-risks-regulatory" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Regulatory Risks</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts blur the boundary between code and law — and law has not yet caught up.</p>
+            <p className="text-muted-foreground text-sm mt-1">Smart contracts blur code and law — and the law has not caught up.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center">
-
-            <div className="p-5 bg-card border border-[#ED1C24]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <div className="size-10 rounded-xl bg-[#ED1C24]/15 flex items-center justify-center text-xl">⚖️</div>
-                <div className="font-black text-sm text-foreground">Legal Adjudication</div>
-              </div>
-              <ul className="text-xs text-muted-foreground space-y-2 flex-1">
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Smart contracts often lack traditional legal form (signatures, mutual assent, considered terms).</li>
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>May not fulfil legal standards for a valid contract in many jurisdictions.</li>
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Court enforcement is uncertain — especially in regulated sectors like finance, insurance, healthcare.</li>
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>"Code is law" is rejected by courts when stakes are high — see The DAO and the Ethereum hard fork.</li>
-              </ul>
-            </div>
-
-            <div className="p-5 bg-card border border-[#8b5cf6]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <div className="size-10 rounded-xl bg-[#8b5cf6]/15 flex items-center justify-center text-xl">🔍</div>
-                <div className="font-black text-sm text-foreground">Privacy vs Transparency</div>
-              </div>
-              <ul className="text-xs text-muted-foreground space-y-2 flex-1">
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>Public blockchains expose every transaction to all nodes — by design.</li>
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>This conflicts directly with GDPR ("right to be forgotten"), HIPAA, and sector-specific confidentiality laws.</li>
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>Even hashed data can leak personal information through metadata, timing, or linkability.</li>
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>Mitigation: zero-knowledge proofs, permissioned chains, on-chain hashes + off-chain encrypted data.</li>
-              </ul>
-            </div>
-
-            <div className="p-5 bg-card border border-[#f59e0b]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <div className="size-10 rounded-xl bg-[#f59e0b]/15 flex items-center justify-center text-xl">🏃</div>
-                <div className="font-black text-sm text-foreground">Tech Outpacing Law</div>
-              </div>
-              <ul className="text-xs text-muted-foreground space-y-2 flex-1">
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Legal frameworks evolve in years; smart contract use cases evolve in months.</li>
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>By the time regulations are written, the industry has moved to a different paradigm.</li>
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Cross-jurisdictional conflicts: a contract legal in Singapore may be illegal in the US.</li>
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>EU's MiCA (2024) is a notable exception — first comprehensive crypto regulation.</li>
-              </ul>
-            </div>
-
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+            {[
+              { emoji: '⚖️', color: '#ED1C24', title: 'Legal Adjudication',
+                what: 'May not count as a valid contract',
+                body: 'Often no signatures or mutual assent, so court enforcement is uncertain — and "code is law" gets overruled when stakes are high (The DAO fork).',
+                tag: 'Pair on-chain logic with a legal wrapper' },
+              { emoji: '🔍', color: '#8b5cf6', title: 'Privacy vs Transparency',
+                what: 'Public by design clashes with GDPR',
+                body: 'Every tx is visible to all nodes — colliding with the right to be forgotten and HIPAA. Even hashes leak via metadata and linkability.',
+                tag: 'ZK proofs · permissioned chains · off-chain encryption' },
+              { emoji: '🏃', color: '#f59e0b', title: 'Tech Outpaces Law',
+                what: 'Rules lag the technology by years',
+                body: 'Use cases shift in months while frameworks take years; a contract legal in Singapore may be illegal in the US.',
+                tag: "EU's MiCA (2024) is the first comprehensive exception" },
+            ].map(c => (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 rounded-xl border-2 p-5 justify-center"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '08' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-11 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: c.color + '18' }}>{c.emoji}</div>
+                  <div>
+                    <div className="font-black text-base text-foreground leading-tight">{c.title}</div>
+                    <div className="text-sm font-semibold mt-0.5" style={{ color: c.color }}>{c.what}</div>
+                  </div>
+                </div>
+                <p className="text-sm text-foreground leading-relaxed flex-1">{c.body}</p>
+                <p className="text-xs italic text-muted-foreground border-l-2 pl-2" style={{ borderColor: c.color }}>{c.tag}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
 
