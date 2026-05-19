@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
-import { TimelineSlide } from '../../components/templates/TimelineSlide';
 import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { FileCode2, Check, X } from 'lucide-react';
@@ -467,52 +466,44 @@ export function SC_Section1() {
         </div>
 
         {/* ═══════ 3. HISTORICAL EVOLUTION ═══════ */}
-        <div id="s1-history" className="h-full">
-          <TimelineSlide
-            title="Historical Evolution of Smart Contracts"
-            events={[
-              {
-                year: '1994',
-                title: 'Szabo coins "smart contract"',
-                description: 'Nick Szabo defines a smart contract as promises enforced by code, using the vending machine analogy. The idea exists 15 years before any chain can run it.',
-              },
-              {
-                year: '2009',
-                title: 'Bitcoin — the first on-chain contracts',
-                description: 'Bitcoin Script can express conditional spending: multisig, timelocks, HTLCs. Deliberately non-Turing-complete, so contract logic stays narrow and payment-focused.',
-              },
-              {
-                year: '2015',
-                title: 'Ethereum + Solidity — general-purpose contracts',
-                description: 'The Turing-complete EVM ships. For the first time, developers can deploy arbitrary contract logic to a shared, trustless computer.',
-              },
-              {
-                year: '2016',
-                title: 'The DAO — the first contract crisis',
-                description: 'A reentrancy bug drains $60M from a single contract. Ethereum hard-forks (ETH / ETC) to recover funds. Smart-contract security becomes a discipline.',
-              },
-              {
-                year: '2017',
-                title: 'ERC-20 — token contracts standardised',
-                description: 'A shared token interface lets any contract issue fungible tokens that every wallet and exchange understands. The ICO boom follows.',
-              },
-              {
-                year: '2018',
-                title: 'ERC-721 — NFT contracts standardised',
-                description: 'A standard for unique, owned tokens. Contracts can now represent one-of-a-kind assets and enforce royalties on every transfer.',
-              },
-              {
-                year: '2020',
-                title: 'DeFi Summer — composable contracts',
-                description: 'Uniswap, Aave and Compound show contracts calling contracts — "money legos." Lending, trading and yield run entirely in code, no intermediary.',
-              },
-              {
-                year: 'Today',
-                title: 'Audited, multi-chain, high-stakes',
-                description: 'Contracts hold $100B+ across Ethereum, L2s and other chains. Auditing is mandatory practice — $6B+ has been lost to contract exploits since 2016.',
-              },
-            ]}
-          />
+        <div id="s1-history" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-[#6366f1]">Section 01</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">Historical Evolution of Smart Contracts</h2>
+            <p className="text-sm text-muted-foreground mt-1">From an idea with no computer to run it, to $100B+ in live contracts.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 gap-3 content-center">
+            {[
+              { year: '1994', tag: 'The idea',     color: '#8b5cf6', title: 'Szabo coins "smart contract"', desc: 'Promises enforced by code — the vending-machine analogy, 15 years before any chain could run it.' },
+              { year: '2009', tag: 'First chain',  color: '#f59e0b', title: 'Bitcoin — first on-chain contracts', desc: 'Script does conditional spending (multisig, timelocks) — deliberately non-Turing-complete.' },
+              { year: '2015', tag: 'Breakthrough', color: '#6366f1', title: 'Ethereum + Solidity', desc: 'The Turing-complete EVM ships: deploy arbitrary contract logic to a shared, trustless computer.' },
+              { year: '2016', tag: 'Crisis',       color: '#ED1C24', title: 'The DAO — first contract crisis', desc: 'A reentrancy bug drains $60M; Ethereum forks (ETH/ETC). Security becomes a discipline.' },
+              { year: '2017', tag: 'Standards',    color: '#6366f1', title: 'ERC-20 — token contracts', desc: 'A shared token interface every wallet & exchange understands. The ICO boom follows.' },
+              { year: '2018', tag: 'Standards',    color: '#f97316', title: 'ERC-721 — NFT contracts', desc: 'A standard for unique, owned tokens — assets plus automatic on-transfer royalties.' },
+              { year: '2020', tag: 'Composability',color: '#39B54A', title: 'DeFi Summer', desc: 'Contracts calling contracts — "money legos." Lending, trading & yield, no intermediary.' },
+              { year: 'Today', tag: 'Maturity',    color: '#22d3ee', title: 'Audited, multi-chain, high-stakes', desc: '$100B+ in contracts across chains; audits mandatory — $6B+ lost to exploits since 2016.' },
+            ].map((e, i) => (
+              <motion.div
+                key={e.year}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06, duration: 0.3 }}
+                className="flex flex-col rounded-xl border bg-card overflow-hidden"
+                style={{ borderColor: e.color + '40' }}
+              >
+                <div className="h-1.5 shrink-0" style={{ backgroundColor: e.color }} />
+                <div className="flex-1 flex flex-col gap-1.5 p-3.5">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-mono font-black text-lg" style={{ color: e.color }}>{e.year}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded" style={{ backgroundColor: e.color + '18', color: e.color }}>{e.tag}</span>
+                  </div>
+                  <div className="font-bold text-sm text-foreground leading-tight">{e.title}</div>
+                  <div className="text-xs text-muted-foreground leading-snug">{e.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* ═══════ EXERCISE ═══════ */}

@@ -15,7 +15,8 @@ const chapters = [
   { id: 's2-execution',    label: 'Execution Environment' },
   { id: 's2-web3',         label: 'The Web3 Landscape' },
   { id: 's2-dapp',         label: 'dApp & Smart Contracts' },
-  { id: 's2-vs',           label: 'Web3 vs Traditional' },
+  { id: 's2-vs',           label: 'Web2 vs Web3 Apps' },
+  { id: 's2-vs-2',         label: 'Trad vs Smart Contracts' },
   { id: 's2-standards',    label: 'Token Standards' },
   { id: 's2-solidity',     label: 'Reading Solidity' },
   { id: 's2-capabilities', label: 'New Capabilities' },
@@ -743,84 +744,88 @@ export function SC_Section2() {
         </div>
 
         {/* ═══════ WEB3 VS TRADITIONAL ═══════ */}
+        {/* ═══════ WEB2 vs WEB3 — APP INFRASTRUCTURE ═══════ */}
         <div id="s2-vs" className="h-full flex flex-col p-6 lg:p-10">
-          <div className="shrink-0 mb-4">
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Web3 vs Traditional — Two Comparisons</h2>
-            <p className="text-muted-foreground text-sm mt-1">Infrastructure and contracts — both transformed by the same underlying shift.</p>
+          <div className="shrink-0 mb-5">
+            <span className="text-xs font-black uppercase tracking-widest text-[#6366f1]">Web3 vs Traditional · 1 of 2</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">The App: Web2 vs Web3</h2>
+            <p className="text-sm text-muted-foreground mt-1">The same product, built on two very different foundations.</p>
           </div>
 
-          <div className="flex-1 min-h-0 flex flex-col gap-4">
-
-            {/* App infrastructure comparison */}
-            <div className="flex flex-col min-h-0 flex-1">
-              <div className="text-xs font-semibold text-[#6366f1] uppercase tracking-widest mb-2 shrink-0">App Infrastructure</div>
-              <div className="flex-1 min-h-0 bg-card border border-border rounded-xl overflow-hidden flex flex-col">
-                {/* Header */}
-                <div className="grid grid-cols-3 text-[11px] font-bold uppercase tracking-widest shrink-0">
-                  <div className="p-2.5 bg-muted border-b border-r border-border text-muted-foreground">Property</div>
-                  <div className="p-2.5 bg-[#ED1C24]/08 border-b border-r border-[#ED1C24]/20 text-[#ED1C24] text-center">Traditional App</div>
-                  <div className="p-2.5 bg-[#39B54A]/08 border-b border-[#39B54A]/20 text-[#39B54A] text-center">dApp</div>
-                </div>
-                <div className="flex-1 min-h-0 flex flex-col">
-                  {[
-                    { prop: '🏗️ Infrastructure', trad: 'Centralised servers (AWS, GCP)', dapp: 'Distributed nodes worldwide' },
-                    { prop: '🔐 Trust model', trad: 'Trust the company', dapp: 'Trust the protocol & code' },
-                    { prop: '⏱️ Uptime', trad: 'SLA-based, can go down', dapp: 'Protocol runs 24/7/365' },
-                    { prop: '🗄️ Data storage', trad: 'Private databases', dapp: 'On-chain state + IPFS' },
-                    { prop: '💰 Cost model', trad: 'Subscription / ads', dapp: 'Gas per transaction' },
-                    { prop: '🚫 Censorship', trad: 'Platform can ban users', dapp: 'No one can block valid txs' },
-                  ].map((r, i, arr) => {
-                    const odd = i % 2 === 1;
-                    const tradBg  = odd ? 'rgba(237, 28, 36, 0.07)'  : 'rgba(237, 28, 36, 0.03)';
-                    const dappBg  = odd ? 'rgba(57, 181, 74, 0.08)'  : 'rgba(57, 181, 74, 0.03)';
-                    return (
-                      <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
-                        <div className={`px-2.5 flex items-center border-r border-border font-semibold text-foreground ${odd ? 'bg-muted/60' : 'bg-muted/30'}`}>{r.prop}</div>
-                        <div className="px-2.5 flex items-center justify-center border-r border-[#ED1C24]/15 text-muted-foreground text-center" style={{ backgroundColor: tradBg }}>{r.trad}</div>
-                        <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center" style={{ backgroundColor: dappBg }}>{r.dapp}</div>
-                      </div>
-                    );
-                  })}
-                </div>
+          <div className="flex-1 min-h-0 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
+              className="w-full max-w-4xl rounded-2xl border border-border bg-card overflow-hidden shadow-sm"
+            >
+              <div className="grid grid-cols-[1.15fr_1fr_1fr]">
+                <div className="p-3.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground bg-muted">Property</div>
+                <div className="p-3.5 text-center text-sm font-black text-[#ED1C24] bg-[#ED1C24]/10 border-l border-border">🏛️ Traditional App</div>
+                <div className="p-3.5 text-center text-sm font-black text-[#39B54A] bg-[#39B54A]/10 border-l border-border">⛓️ dApp</div>
               </div>
-            </div>
-
-            {/* Contract comparison */}
-            <div className="flex flex-col min-h-0 flex-1">
-              <div className="text-xs font-semibold text-[#8b5cf6] uppercase tracking-widest mb-2 shrink-0">Contract Execution</div>
-              <div className="flex-1 min-h-0 bg-card border border-border rounded-xl overflow-hidden flex flex-col">
-                {/* Header */}
-                <div className="grid grid-cols-3 text-[11px] font-bold uppercase tracking-widest shrink-0">
-                  <div className="p-2.5 bg-muted border-b border-r border-border text-muted-foreground">Property</div>
-                  <div className="p-2.5 bg-[#ED1C24]/08 border-b border-r border-[#ED1C24]/20 text-[#ED1C24] text-center">Traditional Contract</div>
-                  <div className="p-2.5 bg-[#6366f1]/08 border-b border-[#6366f1]/20 text-[#6366f1] text-center">Smart Contract</div>
+              {[
+                { prop: '🏗️ Infrastructure', a: 'Centralised servers (AWS, GCP)', b: 'Distributed nodes worldwide' },
+                { prop: '🔐 Trust model', a: 'Trust the company', b: 'Trust the protocol & code' },
+                { prop: '⏱️ Uptime', a: 'SLA-based, can go down', b: 'Protocol runs 24/7/365' },
+                { prop: '🗄️ Data storage', a: 'Private databases', b: 'On-chain state + IPFS' },
+                { prop: '💰 Cost model', a: 'Subscription / ads', b: 'Gas per transaction' },
+                { prop: '🚫 Censorship', a: 'Platform can ban users', b: 'No one can block valid txs' },
+              ].map((r, i) => (
+                <div key={r.prop} className={`grid grid-cols-[1.15fr_1fr_1fr] border-t border-border ${i % 2 ? 'bg-muted/30' : ''}`}>
+                  <div className="px-3.5 py-3 font-semibold text-sm text-foreground">{r.prop}</div>
+                  <div className="px-3.5 py-3 text-sm text-muted-foreground text-center border-l border-border">{r.a}</div>
+                  <div className="px-3.5 py-3 text-sm text-foreground font-medium text-center border-l border-border bg-[#39B54A]/06" style={{ backgroundColor: 'rgba(57,181,74,0.05)' }}>{r.b}</div>
                 </div>
-                <div className="flex-1 min-h-0 flex flex-col">
-                  {[
-                    { prop: '⚙️ Execution',    trad: 'Manual — requires human action', smart: 'Automatic when conditions met' },
-                    { prop: '⏱️ Speed',        trad: 'Days to weeks', smart: 'Seconds to minutes' },
-                    { prop: '💸 Cost',         trad: 'Legal fees, intermediaries', smart: 'Gas fee only' },
-                    { prop: '🔐 Trust',        trad: 'Trust both parties + courts', smart: 'Trust the code only' },
-                    { prop: '👁️ Transparency', trad: 'Private, often ambiguous', smart: 'Public, deterministic code' },
-                    { prop: '🌍 Geography',    trad: 'Jurisdiction-dependent', smart: 'Borderless, always enforceable' },
-                  ].map((r, i, arr) => {
-                    const odd = i % 2 === 1;
-                    const tradBg  = odd ? 'rgba(237, 28, 36, 0.07)'  : 'rgba(237, 28, 36, 0.03)';
-                    const smartBg = odd ? 'rgba(99, 102, 241, 0.08)' : 'rgba(99, 102, 241, 0.03)';
-                    return (
-                      <div key={r.prop} className={`flex-1 grid grid-cols-3 text-xs ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
-                        <div className={`px-2.5 flex items-center border-r border-border font-semibold text-foreground ${odd ? 'bg-muted/60' : 'bg-muted/30'}`}>{r.prop}</div>
-                        <div className="px-2.5 flex items-center justify-center border-r border-[#ED1C24]/15 text-muted-foreground text-center" style={{ backgroundColor: tradBg }}>{r.trad}</div>
-                        <div className="px-2.5 flex items-center justify-center text-muted-foreground text-center" style={{ backgroundColor: smartBg }}>{r.smart}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+              ))}
+            </motion.div>
+          </div>
 
+          <div className="shrink-0 mt-4 rounded-xl border border-[#39B54A]/30 px-4 py-2.5 text-center text-sm" style={{ backgroundColor: 'rgba(57,181,74,0.07)' }}>
+            <span className="font-bold text-[#39B54A]">Takeaway: </span>
+            <span className="text-muted-foreground">a dApp trades a company you must trust for a protocol anyone can verify — at the cost of paying gas per action.</span>
           </div>
         </div>
+
+        {/* ═══════ TRADITIONAL vs SMART CONTRACTS ═══════ */}
+        <div id="s2-vs-2" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-5">
+            <span className="text-xs font-black uppercase tracking-widest text-[#6366f1]">Web3 vs Traditional · 2 of 2</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">The Agreement: Traditional vs Smart Contract</h2>
+            <p className="text-sm text-muted-foreground mt-1">Same intent — enforced by people and courts, or by code.</p>
+          </div>
+
+          <div className="flex-1 min-h-0 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
+              className="w-full max-w-4xl rounded-2xl border border-border bg-card overflow-hidden shadow-sm"
+            >
+              <div className="grid grid-cols-[1.15fr_1fr_1fr]">
+                <div className="p-3.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground bg-muted">Property</div>
+                <div className="p-3.5 text-center text-sm font-black text-[#ED1C24] bg-[#ED1C24]/10 border-l border-border">📜 Traditional Contract</div>
+                <div className="p-3.5 text-center text-sm font-black text-[#6366f1] bg-[#6366f1]/10 border-l border-border">⚙️ Smart Contract</div>
+              </div>
+              {[
+                { prop: '⚙️ Execution', a: 'Manual — requires human action', b: 'Automatic when conditions met' },
+                { prop: '⏱️ Speed', a: 'Days to weeks', b: 'Seconds to minutes' },
+                { prop: '💸 Cost', a: 'Legal fees, intermediaries', b: 'Gas fee only' },
+                { prop: '🔐 Trust', a: 'Trust both parties + courts', b: 'Trust the code only' },
+                { prop: '👁️ Transparency', a: 'Private, often ambiguous', b: 'Public, deterministic code' },
+                { prop: '🌍 Geography', a: 'Jurisdiction-dependent', b: 'Borderless, always enforceable' },
+              ].map((r, i) => (
+                <div key={r.prop} className={`grid grid-cols-[1.15fr_1fr_1fr] border-t border-border ${i % 2 ? 'bg-muted/30' : ''}`}>
+                  <div className="px-3.5 py-3 font-semibold text-sm text-foreground">{r.prop}</div>
+                  <div className="px-3.5 py-3 text-sm text-muted-foreground text-center border-l border-border">{r.a}</div>
+                  <div className="px-3.5 py-3 text-sm text-foreground font-medium text-center border-l border-border" style={{ backgroundColor: 'rgba(99,102,241,0.05)' }}>{r.b}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          <div className="shrink-0 mt-4 rounded-xl border border-[#6366f1]/30 px-4 py-2.5 text-center text-sm" style={{ backgroundColor: 'rgba(99,102,241,0.07)' }}>
+            <span className="font-bold text-[#6366f1]">Takeaway: </span>
+            <span className="text-muted-foreground">a smart contract removes lawyers, delay and ambiguity — but only for logic that can be expressed in code.</span>
+          </div>
+        </div>
+
         {/* ═══════ TOKEN STANDARDS ═══════ */}
         <div id="s2-standards" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
@@ -1096,10 +1101,10 @@ export function SC_Section2() {
         <div id="s2-why" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Why Build Using Smart Contracts?</h2>
-            <p className="text-muted-foreground text-sm mt-1">The case for choosing smart contracts over traditional software — and when not to.</p>
+            <p className="text-muted-foreground text-sm mt-1">The case for choosing smart contracts over traditional software.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center">
+          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
 
             {/* Column 1: Core reasons */}
             <div className="flex flex-col gap-3">
@@ -1137,43 +1142,6 @@ export function SC_Section2() {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Column 3: When to use & when not to */}
-            <div className="flex flex-col gap-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Decision framework</p>
-
-              <div className="flex-1 p-3 bg-[#39B54A]/08 border border-[#39B54A]/30 rounded-xl flex flex-col">
-                <div className="font-bold text-xs text-[#39B54A] mb-2">✅ Use smart contracts when…</div>
-                <ul className="space-y-1.5 text-xs text-muted-foreground flex-1">
-                  {[
-                    'Multiple untrusting parties need to transact',
-                    'Rules must be transparent and tamper-proof',
-                    'Automation replaces a human intermediary',
-                    'You need programmable, conditional payments',
-                    'Global access with no permission required',
-                    'Composability with other on-chain protocols is valuable',
-                  ].map(l => (
-                    <li key={l} className="flex gap-1.5"><span className="text-[#39B54A] shrink-0">›</span>{l}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex-1 p-3 bg-[#ED1C24]/08 border border-[#ED1C24]/30 rounded-xl flex flex-col">
-                <div className="font-bold text-xs text-[#ED1C24] mb-2">❌ Avoid smart contracts when…</div>
-                <ul className="space-y-1.5 text-xs text-muted-foreground flex-1">
-                  {[
-                    'Data is private and shouldn\'t be public',
-                    'You need to update logic frequently',
-                    'Speed is critical (sub-second responses)',
-                    'Storage requirements are large (images, video)',
-                    'Regulatory compliance requires reversibility',
-                    'A simple database and API would suffice',
-                  ].map(l => (
-                    <li key={l} className="flex gap-1.5"><span className="text-[#ED1C24] shrink-0">›</span>{l}</li>
-                  ))}
-                </ul>
-              </div>
             </div>
 
           </div>
