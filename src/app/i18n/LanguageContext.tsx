@@ -58,3 +58,16 @@ export function useLanguage() {
 export function useT() {
   return useLanguage().t;
 }
+
+/**
+ * Inline-translation helper for slide content where defining a dictionary key
+ * is more friction than it's worth. Returns a function `m(en, pt)` that picks
+ * the current locale's string at render time.
+ *
+ *   const m = useM();
+ *   return <h2>{m('Hello', 'Olá')}</h2>;
+ */
+export function useM() {
+  const { lang } = useLanguage();
+  return (en: string, pt: string) => (lang === 'pt' ? pt : en);
+}
