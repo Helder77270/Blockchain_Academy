@@ -164,85 +164,69 @@ export function SC_Section5() {
         <div id="s5-oracle" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">The Oracle Problem</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts are deterministic and closed — they cannot reach outside the blockchain on their own.</p>
+            <p className="text-muted-foreground text-sm mt-1">Smart contracts are closed and deterministic — reaching the outside world is the hard part.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
-
-            <div className="flex flex-col gap-3">
-              {[
-                {
-                  color: '#ED1C24', emoji: '🔒', label: 'The Problem',
-                  content: 'Blockchains are closed, deterministic systems. A smart contract cannot fetch stock prices, check the weather, verify a sports score, or confirm a package delivery. Any external call would produce different results on different nodes — breaking consensus.',
-                  sub: 'The blockchain knows nothing about the world outside itself.',
-                },
-                {
-                  color: '#6366f1', emoji: '🌉', label: 'The Solution: Oracles',
-                  content: 'Oracles are off-chain services that fetch real-world data and submit it on-chain as a signed transaction. The smart contract reads oracle-provided data just like any other on-chain value. Chainlink is the dominant oracle network.',
-                  sub: 'Oracle = a trusted data bridge between the real world and the blockchain.',
-                },
-                {
-                  color: '#f59e0b', emoji: '⚠️', label: 'The Risk: New Centralization',
-                  content: 'By introducing an oracle, you reintroduce trust. If the oracle is controlled by one entity, it becomes a centralized point of failure — and the single source of manipulation. A corrupt or hacked oracle can drain millions from dependent contracts.',
-                  sub: '"A smart contract is only as decentralized as its weakest data source."',
-                },
-              ].map(p => (
-                <div key={p.label} className="flex-1 p-4 bg-card border border-border rounded-xl flex gap-3" style={{ borderColor: p.color + '30' }}>
-                  <div className="size-9 rounded-xl flex items-center justify-center text-xl shrink-0" style={{ backgroundColor: p.color + '18' }}>{p.emoji}</div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+            {[
+              { emoji: '🔒', color: '#ED1C24', label: 'The Problem',
+                what: 'Chains are closed & deterministic',
+                body: "A contract can't fetch a price, score or delivery status itself — an external call would return different results on different nodes and break consensus.",
+                tag: 'The chain knows nothing outside itself' },
+              { emoji: '🌉', color: '#6366f1', label: 'The Fix — Oracles',
+                what: 'Signed real-world data, posted on-chain',
+                body: 'An off-chain service fetches the data and submits it as a signed transaction. The contract then reads it like any other on-chain value. Chainlink is the dominant network.',
+                tag: 'A data bridge: world → blockchain' },
+              { emoji: '⚠️', color: '#f59e0b', label: 'The Catch',
+                what: 'Oracles reintroduce trust',
+                body: 'A single controlled or hacked oracle becomes the point of manipulation — and can drain every contract that depends on it.',
+                tag: 'Only as decentralised as its weakest data source' },
+            ].map(c => (
+              <motion.div
+                key={c.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 rounded-xl border-2 p-5 justify-center"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '08' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-11 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: c.color + '18' }}>{c.emoji}</div>
                   <div>
-                    <div className="font-black text-sm mb-1" style={{ color: p.color }}>{p.label}</div>
-                    <p className="text-xs text-muted-foreground leading-relaxed mb-1.5">{p.content}</p>
-                    <p className="text-xs italic text-muted-foreground border-l-2 pl-2" style={{ borderColor: p.color + '50' }}>{p.sub}</p>
+                    <div className="font-black text-base text-foreground leading-tight">{c.label}</div>
+                    <div className="text-sm font-semibold mt-0.5" style={{ color: c.color }}>{c.what}</div>
                   </div>
                 </div>
-              ))}
+                <p className="text-sm text-foreground leading-relaxed flex-1">{c.body}</p>
+                <p className="text-xs italic text-muted-foreground border-l-2 pl-2" style={{ borderColor: c.color }}>{c.tag}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="rounded-xl border p-4" style={{ borderColor: '#6366f140', backgroundColor: '#6366f10a' }}>
+              <div className="text-xs font-black uppercase tracking-widest text-[#6366f1] mb-1">Example — parametric crop insurance</div>
+              <p className="text-sm text-foreground leading-snug">
+                Premium paid → contract holds "if rainfall &lt; X by date Z → pay $5k" → <span className="font-semibold">Chainlink + NOAA</span> posts daily rainfall → condition met → payout fires automatically. No claims adjuster — but a broken oracle stalls everything.
+              </p>
             </div>
-
-            <div className="flex flex-col gap-3">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Real-world example</div>
-
-              <div className="p-5 bg-gradient-to-br from-[#6366f1]/12 to-transparent border border-[#6366f1]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-2xl">🌾</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Crop Insurance Smart Contract</div>
-                    <div className="text-xs text-[#6366f1]">parametric insurance — no claims adjuster needed</div>
-                  </div>
-                </div>
-                <div className="space-y-2 mb-3">
-                  {[
-                    { step: '1', desc: 'Farmer pays premium into smart contract' },
-                    { step: '2', desc: 'Contract stores: if rainfall < X mm in region Y by date Z → pay out $5,000' },
-                    { step: '3', desc: 'Oracle (Chainlink + NOAA weather data) submits daily rainfall figures on-chain' },
-                    { step: '4', desc: 'Contract reads oracle data → condition met → payout released automatically' },
-                  ].map(s => (
-                    <div key={s.step} className="flex gap-2 text-xs text-muted-foreground">
-                      <span className="size-4 rounded-full bg-[#6366f1]/20 flex items-center justify-center font-bold text-[#6366f1] shrink-0">{s.step}</span>
-                      {s.desc}
-                    </div>
-                  ))}
-                </div>
-                <div className="p-2 bg-[#ED1C24]/10 border border-[#ED1C24]/20 rounded-lg text-xs text-muted-foreground">
-                  <span className="font-bold text-[#ED1C24]">Risk:</span> if the weather oracle is compromised or goes offline, the contract can't execute. The oracle is now the single point of trust.
-                </div>
-              </div>
-
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Oracle solutions in practice</div>
-              <div className="flex flex-col gap-2">
+            <div className="rounded-xl border bg-card p-4">
+              <div className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">Oracle networks in practice</div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
                 {[
-                  { name: 'Chainlink', color: '#375BD2', desc: 'Decentralised oracle network — aggregates from many independent nodes, reducing manipulation risk' },
-                  { name: 'Pyth Network', color: '#E6DAFE', darkColor: '#8b5cf6', desc: 'High-frequency financial data from institutional providers (exchanges, market makers) — 400ms latency' },
-                  { name: 'API3', color: '#6366f1', desc: 'First-party oracles — data providers run their own oracle nodes, removing the middleman layer entirely' },
-                  { name: 'UMA Optimistic', color: '#f59e0b', desc: 'Assume data is correct unless disputed within a window — cheaper but slower for edge cases' },
+                  { n: 'Chainlink', d: 'Decentralised, many-node aggregation', c: '#375BD2' },
+                  { n: 'Pyth', d: 'Sub-second institutional price feeds', c: '#8b5cf6' },
+                  { n: 'API3', d: 'First-party — providers run the node', c: '#6366f1' },
+                  { n: 'UMA', d: 'Optimistic — correct unless disputed', c: '#f59e0b' },
                 ].map(o => (
-                  <div key={o.name} className="flex items-start gap-2 p-2.5 bg-card border border-border rounded-lg">
-                    <div className="px-2 py-0.5 rounded font-bold text-xs shrink-0 text-white" style={{ backgroundColor: o.darkColor ?? o.color }}>{o.name}</div>
-                    <div className="text-xs text-muted-foreground">{o.desc}</div>
+                  <div key={o.n} className="flex items-baseline gap-1.5">
+                    <span className="font-bold shrink-0" style={{ color: o.c }}>{o.n}</span>
+                    <span className="text-muted-foreground leading-snug">{o.d}</span>
                   </div>
                 ))}
               </div>
             </div>
-
           </div>
         </div>
 
@@ -250,119 +234,67 @@ export function SC_Section5() {
         <div id="s5-challenges" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Challenges & Limitations</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts inherit the constraints of their underlying blockchain — and those constraints are significant.</p>
+            <p className="text-muted-foreground text-sm mt-1">Smart contracts inherit their chain's constraints — four that shape every design decision.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
-
-            <div className="flex flex-col gap-4">
-              <div className="flex-1 p-4 bg-card border border-[#ED1C24]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">🚦</span>
+          <div className="flex-1 min-h-0 grid grid-cols-2 grid-rows-2 gap-4">
+            {[
+              {
+                emoji: '🚦', color: '#ED1C24', title: 'Throughput',
+                what: "L1 can't match Web2 volume",
+                why: "Consensus is the bottleneck — every node re-executes every transaction, so raw L1 throughput stays low.",
+                fix: 'L2 rollups push it to thousands of TPS without giving up L1 security.',
+                stat: 'BTC 7 · ETH ~15 · Visa ~24,000 TPS',
+              },
+              {
+                emoji: '⏱️', color: '#f59e0b', title: 'Latency',
+                what: 'Block times vs millisecond web',
+                why: 'A tx waits for the next block and several confirmations before it is safe to rely on.',
+                fix: 'Use an L2 for instant UX; settle on L1 underneath.',
+                stat: 'ETH block 12s · BTC ~10 min · L2 ~250 ms',
+              },
+              {
+                emoji: '💾', color: '#8b5cf6', title: 'Storage Cost',
+                what: 'On-chain bytes are extraordinarily pricey',
+                why: 'Every full node stores it forever, so the protocol prices storage to discourage bloat.',
+                fix: 'Keep only a hash on-chain; put the data on IPFS / Arweave.',
+                stat: '~$1,000/MB on-chain vs ~$0.02 on S3 — 50,000×',
+              },
+              {
+                emoji: '⚙️', color: '#6366f1', title: 'Computation Limits',
+                what: 'Gas caps what a tx can compute',
+                why: "Each block has a gas ceiling, so ML inference or heavy loops simply can't run on-chain.",
+                fix: 'Compute off-chain, post the result + a ZK proof the chain can verify.',
+                stat: '~30M gas/block · on-chain ~1,000,000× pricier',
+              },
+            ].map(c => (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 rounded-xl border-2 p-5 justify-center"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '08' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-11 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: c.color + '18' }}>{c.emoji}</div>
                   <div>
-                    <div className="font-black text-sm text-foreground">Throughput</div>
-                    <div className="text-xs text-[#ED1C24]">Blockchain can't match Web2 transaction volume</div>
+                    <div className="font-black text-base text-foreground leading-tight">{c.title}</div>
+                    <div className="text-sm font-semibold mt-0.5" style={{ color: c.color }}>{c.what}</div>
                   </div>
                 </div>
-                <div className="space-y-2 mb-3">
-                  {[
-                    { label: 'Bitcoin', tps: 7, max: 24000, color: '#f59e0b' },
-                    { label: 'Ethereum', tps: 15, max: 24000, color: '#627EEA' },
-                    { label: 'Solana', tps: 5000, max: 24000, color: '#9945FF' },
-                    { label: 'Visa', tps: 24000, max: 24000, color: '#39B54A' },
-                  ].map(c => (
-                    <div key={c.label} className="flex items-center gap-2">
-                      <div className="w-20 text-xs font-medium text-muted-foreground shrink-0">{c.label}</div>
-                      <div className="flex-1 h-5 bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full flex items-center justify-end pr-1.5 transition-all"
-                          style={{ width: `${Math.max(2, (c.tps / c.max) * 100)}%`, backgroundColor: c.color }}
-                        >
-                          {c.tps >= 1000 && <span className="text-[9px] font-bold text-white">{c.tps.toLocaleString()}</span>}
-                        </div>
-                      </div>
-                      <div className="text-xs font-bold w-16 text-right shrink-0" style={{ color: c.color }}>{c.tps.toLocaleString()} TPS</div>
-                    </div>
-                  ))}
+                <div className="rounded-lg bg-card border p-3" style={{ borderColor: c.color + '25' }}>
+                  <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Why</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.why}</p>
                 </div>
-                <div className="text-xs text-muted-foreground p-2 bg-muted rounded-lg">
-                  Bitcoin and Ethereum L1 are 1,600–3,400× slower than Visa. L2s narrow this gap significantly but don't fully close it.
+                <div className="rounded-lg p-3 border-l-2" style={{ borderColor: c.color, backgroundColor: c.color + '12' }}>
+                  <span className="text-xs font-black uppercase tracking-widest" style={{ color: c.color }}>What helps</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.fix}</p>
                 </div>
-              </div>
-
-              <div className="flex-1 p-4 bg-card border border-[#f59e0b]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">⏱️</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Latency</div>
-                    <div className="text-xs text-[#f59e0b]">Block times vs. millisecond web responses</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { label: 'Ethereum block time', value: '12 seconds', sub: 'Per block — finality takes 2–3 blocks', color: '#627EEA' },
-                    { label: 'Bitcoin block time', value: '~10 minutes', sub: '6 confirmations for high-value tx = 1 hour', color: '#f59e0b' },
-                    { label: 'Web2 API response', value: '<100ms', sub: 'REST APIs, CDN-backed — imperceptible to user', color: '#39B54A' },
-                    { label: 'L2 (Arbitrum)', value: '~250ms', sub: 'Near-instant UX, final on L1 in ~7 days', color: '#6366f1' },
-                  ].map(l => (
-                    <div key={l.label} className="p-2 bg-muted rounded-lg">
-                      <div className="font-bold text-sm" style={{ color: l.color }}>{l.value}</div>
-                      <div className="text-[10px] font-semibold text-foreground">{l.label}</div>
-                      <div className="text-[10px] text-muted-foreground">{l.sub}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <div className="flex-1 p-4 bg-card border border-[#8b5cf6]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">💾</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Storage Costs</div>
-                    <div className="text-xs text-[#8b5cf6]">On-chain storage is extraordinarily expensive</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3 mb-3">
-                  <div className="p-3 bg-[#ED1C24]/10 border border-[#ED1C24]/20 rounded-xl text-center">
-                    <div className="text-2xl font-black text-[#ED1C24]">~$1,000</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">per MB on-chain (Ethereum)</div>
-                  </div>
-                  <div className="p-3 bg-[#39B54A]/10 border border-[#39B54A]/20 rounded-xl text-center">
-                    <div className="text-2xl font-black text-[#39B54A]">~$0.02</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">per MB on AWS S3</div>
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground p-2 bg-muted rounded-lg">
-                  <span className="font-semibold text-foreground">50,000× more expensive.</span> This is why NFT metadata is stored on IPFS, not on-chain. Smart contracts only store the minimum required state — everything else lives off-chain.
-                </div>
-              </div>
-
-              <div className="flex-1 p-4 bg-card border border-[#6366f1]/30 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">⚙️</span>
-                  <div>
-                    <div className="font-black text-sm text-foreground">Computation Limits</div>
-                    <div className="text-xs text-[#6366f1]">Gas limits cap what contracts can calculate</div>
-                  </div>
-                </div>
-                <ul className="space-y-2 text-xs text-muted-foreground mb-3">
-                  {[
-                    'Every block has a gas limit (~30M gas on Ethereum) — no transaction can exceed this',
-                    'Complex machine learning inference, large sorting algorithms, or image processing: impossible on-chain',
-                    'Deep recursive loops will either hit gas limits and revert, or drain user wallets',
-                    'On-chain computation is ~1,000,000× more expensive than off-chain for equivalent work',
-                  ].map(l => (
-                    <li key={l} className="flex gap-2"><span className="text-[#6366f1] shrink-0 mt-0.5">›</span>{l}</li>
-                  ))}
-                </ul>
-                <div className="p-2 bg-[#6366f1]/10 rounded-lg text-xs text-muted-foreground">
-                  <span className="font-semibold text-foreground">Pattern:</span> move heavy computation off-chain, submit only the result + proof on-chain. Zero-knowledge proofs (ZK-SNARKs) make this verifiable.
-                </div>
-              </div>
-            </div>
-
+                <p className="text-xs text-muted-foreground italic">{c.stat}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
 
@@ -370,128 +302,67 @@ export function SC_Section5() {
         <div id="s5-technical" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Technical Challenges & Limitations</h2>
-            <p className="text-muted-foreground text-sm mt-1">Four structural problems that define the frontier of blockchain engineering.</p>
+            <p className="text-muted-foreground text-sm mt-1">Four structural problems — what they are, why they happen, and how the field is fixing them.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
-
-            <div className="p-5 bg-card border border-[#ED1C24]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#ED1C24]/15 flex items-center justify-center text-xl shrink-0">🤖</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">MEV — Maximal Extractable Value</div>
-                  <div className="text-xs font-semibold text-[#ED1C24]">Validators (and anyone) can reorder transactions for profit</div>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Block producers choose which transactions to include and in what order. This gives them the power to front-run users — seeing a profitable trade in the mempool and inserting their own transaction first to capture the price difference.
-              </p>
-              <ul className="space-y-1.5 text-xs text-muted-foreground">
-                {[
-                  'Front-running: validator sees your DEX trade → inserts same trade before yours → sells into your transaction',
-                  'Sandwich attacks: buy before you, sell after you — you get a worse price, they profit',
-                  '$1.3B+ extracted from Ethereum users since 2020 (Flashbots data)',
-                ].map(l => (
-                  <li key={l} className="flex gap-1.5"><span className="text-[#ED1C24] shrink-0">›</span>{l}</li>
-                ))}
-              </ul>
-              <div className="mt-auto p-2 bg-[#ED1C24]/08 rounded-lg text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Mitigation:</span> Flashbots SUAVE, private mempools, commit-reveal schemes, and MEV-aware DEX designs (e.g. CoW Protocol).
-              </div>
-            </div>
-
-            <div className="p-5 bg-card border border-[#f59e0b]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#f59e0b]/15 flex items-center justify-center text-xl shrink-0">🔧</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">Upgradability</div>
-                  <div className="text-xs font-semibold text-[#f59e0b]">Immutable code makes fixing bugs extremely difficult</div>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Once deployed, a smart contract's code cannot be changed. A bug discovered post-deployment — even a critical one — cannot be patched directly. Adding upgrade patterns reintroduces centralisation and complexity.
-              </p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2 bg-[#ED1C24]/08 border border-[#ED1C24]/20 rounded-lg">
-                  <div className="font-bold text-[#ED1C24] mb-1">Immutable risk</div>
-                  <div className="text-muted-foreground">Bug = permanent. The DAO hack: $60M lost, required Ethereum hard fork to recover.</div>
-                </div>
-                <div className="p-2 bg-[#f59e0b]/08 border border-[#f59e0b]/20 rounded-lg">
-                  <div className="font-bold text-[#f59e0b] mb-1">Proxy pattern risk</div>
-                  <div className="text-muted-foreground">Upgradeable contracts require an admin key — making the protocol only as decentralised as that key holder.</div>
-                </div>
-              </div>
-              <div className="mt-auto p-2 bg-[#f59e0b]/08 rounded-lg text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Best practice:</span> immutable core logic + audits before deployment. Upgrade patterns only where strictly necessary, with timelocks and multisig governance.
-              </div>
-            </div>
-
-            <div className="p-5 bg-card border border-[#6366f1]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#6366f1]/15 flex items-center justify-center text-xl shrink-0">🔺</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">The Blockchain Trilemma</div>
-                  <div className="text-xs font-semibold text-[#6366f1]">Cannot optimise security, scalability, and decentralisation simultaneously</div>
-                </div>
-              </div>
-              <div className="flex justify-center">
-                <div className="relative w-48 h-36">
-                  <svg viewBox="0 0 200 160" className="w-full h-full">
-                    <polygon points="100,10 190,150 10,150" fill="none" stroke="#6366f180" strokeWidth="2" />
-                    <circle cx="100" cy="10" r="5" fill="#ED1C24" />
-                    <circle cx="190" cy="150" r="5" fill="#39B54A" />
-                    <circle cx="10" cy="150" r="5" fill="#f59e0b" />
-                    <text x="100" y="6" textAnchor="middle" className="text-[10px]" fill="#ED1C24" fontSize="10">Security</text>
-                    <text x="196" y="148" textAnchor="start" fill="#39B54A" fontSize="9">Scalability</text>
-                    <text x="4" y="148" textAnchor="end" fill="#f59e0b" fontSize="9">Decentralisation</text>
-                    <text x="100" y="95" textAnchor="middle" fill="#6366f180" fontSize="9">pick 2</text>
-                  </svg>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-1.5 text-[10px] text-center">
-                {[
-                  { name: 'Bitcoin', sacrifice: 'Scalability (7 TPS)', color: '#f59e0b' },
-                  { name: 'Ethereum L1', sacrifice: 'Scalability → L2s solve this', color: '#627EEA' },
-                  { name: 'Solana', sacrifice: 'Decentralisation (fewer validators)', color: '#9945FF' },
-                ].map(t => (
-                  <div key={t.name} className="p-1.5 bg-muted rounded-lg">
-                    <div className="font-bold" style={{ color: t.color }}>{t.name}</div>
-                    <div className="text-muted-foreground leading-tight">{t.sacrifice}</div>
+          <div className="flex-1 min-h-0 grid grid-cols-2 grid-rows-2 gap-4">
+            {[
+              {
+                emoji: '🤖', color: '#ED1C24', title: 'MEV — Maximal Extractable Value',
+                what: 'Block producers reorder transactions for profit',
+                why: 'They decide which txs go in and in what order — so they can front-run or sandwich a trade they see waiting in the mempool.',
+                fix: 'Private mempools, commit-reveal, MEV-aware DEXs (CoW Protocol, Flashbots SUAVE).',
+                stat: '$1.3B+ extracted from users since 2020',
+              },
+              {
+                emoji: '🔧', color: '#f59e0b', title: 'Upgradability',
+                what: "Immutable code can't be patched",
+                why: 'Deployed code is permanent. A critical bug stays exploitable forever — The DAO lost $60M and forced an Ethereum hard fork.',
+                fix: 'Audit before deploy; add upgrade proxies only when essential, behind a timelock + multisig.',
+                stat: 'Proxy admin key = a centralisation point',
+              },
+              {
+                emoji: '🔺', color: '#6366f1', title: 'The Blockchain Trilemma',
+                what: 'Security · scalability · decentralisation — pick 2',
+                why: "Maximising all three at L1 isn't possible; every chain deliberately trades one away.",
+                fix: 'Ethereum keeps security + decentralisation and pushes scale to L2 rollups.',
+                stat: 'BTC → 7 TPS · Solana → fewer validators',
+              },
+              {
+                emoji: '📈', color: '#39B54A', title: 'State Growth',
+                what: 'The chain grows ~50 GB/year — forever',
+                why: 'History is append-only and every full node must keep all of it, so eventually only datacenters can run one.',
+                fix: 'EIP-4444 history expiry, stateless clients, and Verkle trees decouple storage from running a node.',
+                stat: 'ETH full ~1.2 TB · archive 15+ TB',
+              },
+            ].map(c => (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 rounded-xl border-2 p-5 justify-center"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '08' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-11 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: c.color + '18' }}>{c.emoji}</div>
+                  <div>
+                    <div className="font-black text-base text-foreground leading-tight">{c.title}</div>
+                    <div className="text-sm font-semibold mt-0.5" style={{ color: c.color }}>{c.what}</div>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-5 bg-card border border-[#39B54A]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-xl bg-[#39B54A]/15 flex items-center justify-center text-xl shrink-0">📈</div>
-                <div>
-                  <div className="font-black text-sm text-foreground">State Growth</div>
-                  <div className="text-xs font-semibold text-[#39B54A]">Blockchain size grows 50 GB+ annually — forever</div>
                 </div>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Every transaction ever executed is stored permanently on every full node. The blockchain is append-only — nothing is ever deleted. As adoption grows, so does the burden of running a full node.
-              </p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {[
-                  { label: 'Bitcoin full chain', value: '~600 GB', color: '#f59e0b', note: 'Growing ~50 GB/year' },
-                  { label: 'Ethereum full chain', value: '~1.2 TB', color: '#627EEA', note: 'Archive node: 15+ TB' },
-                  { label: 'Pruned node', value: '~10 GB', color: '#39B54A', note: 'Stores only recent state' },
-                  { label: 'State growth risk', value: 'Centralisation', color: '#ED1C24', note: 'Only datacenters can run full nodes' },
-                ].map(s => (
-                  <div key={s.label} className="p-2 bg-muted rounded-lg">
-                    <div className="font-black text-sm" style={{ color: s.color }}>{s.value}</div>
-                    <div className="font-semibold text-[10px] text-foreground">{s.label}</div>
-                    <div className="text-[10px] text-muted-foreground">{s.note}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-auto p-2 bg-[#39B54A]/08 rounded-lg text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Mitigation:</span> EIP-4444 (Ethereum history expiry), stateless clients, and Verkle trees aim to decouple state storage from full node requirements.
-              </div>
-            </div>
-
+                <div className="rounded-lg bg-card border p-3" style={{ borderColor: c.color + '25' }}>
+                  <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Why</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.why}</p>
+                </div>
+                <div className="rounded-lg p-3 border-l-2" style={{ borderColor: c.color, backgroundColor: c.color + '12' }}>
+                  <span className="text-xs font-black uppercase tracking-widest" style={{ color: c.color }}>What helps</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.fix}</p>
+                </div>
+                <p className="text-xs text-muted-foreground italic">{c.stat}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
 
@@ -500,44 +371,54 @@ export function SC_Section5() {
           <OracleAttackExercise />
         </div>
 
-        {/* ═══════ SECURITY RISKS DEEP-DIVE ═══════ */}
+        {/* ═══════ SECURITY RISKS ═══════ */}
         <div id="s5-risks-security" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Security Risks</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contract vulnerabilities are public, permanent, and exploited within hours of deployment if missed.</p>
+            <p className="text-muted-foreground text-sm mt-1">Bugs are public, permanent, and exploited within hours. The most expensive ones are the simplest.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center">
+          <div className="flex-1 min-h-0 grid grid-cols-3 grid-rows-2 gap-4">
             {[
               { title: 'Reentrancy', emoji: '🔁', color: '#ED1C24',
-                desc: 'A function calls an external contract before updating its own state. The external contract calls back into the original — repeating the original action with stale state. The DAO (2016): $60M.',
-                fix: 'Checks-Effects-Interactions pattern; OpenZeppelin ReentrancyGuard.' },
+                what: 'Calls out before updating its own state — attacker calls back in and drains it.',
+                fix: 'Checks-Effects-Interactions · ReentrancyGuard', stat: 'The DAO (2016): $60M' },
               { title: 'Flash Loan Attacks', emoji: '⚡', color: '#f59e0b',
-                desc: 'Borrow $100M with no collateral, manipulate an on-chain price oracle, exploit a dependent protocol, repay the loan — all atomic in one transaction. Harvest Finance (2020): $34M.',
-                fix: 'Time-weighted average prices (TWAP); decentralised oracles; multi-source pricing.' },
+                what: 'Borrow millions uncollateralised, bend a price oracle, exploit, repay — one atomic tx.',
+                fix: 'TWAP prices · decentralised, multi-source oracles', stat: 'Harvest (2020): $34M' },
               { title: 'Access Control', emoji: '🔑', color: '#8b5cf6',
-                desc: 'Critical functions (mint, withdraw, upgrade) lack proper modifiers. Parity multisig (2017): $30M frozen because anyone could call the kill function and self-destruct the library.',
-                fix: 'Role-based access control (OpenZeppelin AccessControl); thorough testing; audit by experts.' },
-              { title: 'Integer Over/Underflow', emoji: '🧮', color: '#6366f1',
-                desc: 'In Solidity <0.8, arithmetic wraps silently: balance - withdraw can underflow to MAX_UINT, granting attacker huge balance. Mitigated by default in Solidity 0.8+.',
-                fix: 'Use Solidity ≥0.8 for built-in checks, or SafeMath library in older code.' },
+                what: 'Critical functions (mint, withdraw, upgrade) miss the right modifier.',
+                fix: 'Role-based access (OZ AccessControl) · audits', stat: 'Parity (2017): $30M frozen' },
+              { title: 'Over/Underflow', emoji: '🧮', color: '#6366f1',
+                what: 'Pre-0.8 Solidity wraps silently — balance − x underflows to a huge number.',
+                fix: 'Solidity ≥0.8 (checked) or SafeMath', stat: 'Fixed by default since 0.8' },
               { title: 'Logic Bugs', emoji: '🐛', color: '#39B54A',
-                desc: 'Code does what it says, but what it says is wrong. Off-by-one errors, incorrect price calculations, mis-named function arguments. Often missed by automated tools — only caught by careful audit.',
-                fix: 'Multiple independent audits; formal verification for critical contracts; bug bounties.' },
+                what: 'Code runs as written, but the logic is wrong — off-by-one, bad sign, wrong arg.',
+                fix: 'Independent audits · formal verification', stat: 'Tools miss these — humans catch them' },
               { title: 'Cumulative Loss', emoji: '💸', color: '#ED1C24',
-                desc: '$6B+ stolen from smart contracts since 2016 across thousands of incidents. The most expensive bugs are the simplest ones — a missing modifier, a wrong sign in an inequality, a copy-paste error.',
-                fix: 'Treat audits as non-optional. Smart Contract Security audits are a discipline — not a checkbox.' },
+                what: 'Thousands of incidents — usually a missing modifier or a copy-paste slip.',
+                fix: 'Audits are a discipline, not a checkbox', stat: '$6B+ lost since 2016' },
             ].map(r => (
-              <div key={r.title} className="p-4 bg-card border rounded-xl flex flex-col gap-2" style={{ borderColor: r.color + '30' }}>
-                <div className="flex items-center gap-2">
-                  <div className="size-9 rounded-lg flex items-center justify-center text-xl" style={{ backgroundColor: r.color + '15' }}>{r.emoji}</div>
-                  <div className="font-bold text-sm text-foreground">{r.title}</div>
+              <motion.div
+                key={r.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.25 }}
+                className="flex flex-col gap-2.5 rounded-xl border-2 p-4 justify-center"
+                style={{ borderColor: r.color + '50', backgroundColor: r.color + '08' }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="size-9 rounded-lg flex items-center justify-center text-lg shrink-0" style={{ backgroundColor: r.color + '18' }}>{r.emoji}</div>
+                  <div className="font-black text-base text-foreground leading-tight">{r.title}</div>
                 </div>
-                <div className="text-xs text-muted-foreground leading-snug flex-1">{r.desc}</div>
-                <div className="text-xs p-2 rounded-lg" style={{ backgroundColor: r.color + '08' }}>
-                  <span className="font-semibold" style={{ color: r.color }}>Fix:</span> <span className="text-muted-foreground">{r.fix}</span>
+                <p className="text-sm text-foreground leading-snug flex-1">{r.what}</p>
+                <div className="rounded-lg p-2 border-l-2" style={{ borderColor: r.color, backgroundColor: r.color + '12' }}>
+                  <span className="text-[11px] font-bold" style={{ color: r.color }}>Fix: </span>
+                  <span className="text-[11px] text-muted-foreground">{r.fix}</span>
                 </div>
-              </div>
+                <p className="text-xs text-muted-foreground italic">{r.stat}</p>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -546,48 +427,53 @@ export function SC_Section5() {
         <div id="s5-risks-cost" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Cost Risks</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts are not plug-and-play — significant upfront investment is required and ongoing costs must be planned for.</p>
+            <p className="text-muted-foreground text-sm mt-1">Smart contracts are not plug-and-play — budget for the upfront and the ongoing.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5 content-center">
+          <div className="flex-1 min-h-0 grid grid-cols-2 grid-rows-2 gap-4">
             {[
-              { title: 'Immutability & Redeployment', color: '#ED1C24',
-                points: [
-                  'Contracts cannot be modified once deployed.',
-                  'Fixing bugs requires terminating the broken contract and redeploying — costly and risky.',
-                  'Demands thorough testing and secure design upfront — ship-and-iterate doesn\'t apply here.',
-                  'Migration of users and state from v1 to v2 is its own engineering project.',
-                ] },
-              { title: 'Development & Maintenance', color: '#f59e0b',
-                points: [
-                  'Solidity (and other on-chain languages) are complex and rapidly evolving.',
-                  'Bugs are introduced unintentionally — even by experienced developers.',
-                  'Maintainability is hard precisely because immutability blocks normal patching workflows.',
-                  'Specialised hires (auditors, security engineers) command premium rates.',
-                ] },
-              { title: 'Gas & Execution', color: '#8b5cf6',
-                points: [
-                  'Execution costs vary with network congestion — fees can spike 10–100× during high demand.',
-                  'Inefficient code = higher gas fees forever for every user.',
-                  'Optimisation discipline: limit storage writes, reduce external calls, use compact data structures.',
-                  'High fees can undermine the economic viability of micro-transactions and small payments.',
-                ] },
-              { title: 'Security vs Performance', color: '#6366f1',
-                points: [
-                  'Defensive checks (require statements, access modifiers) all consume gas.',
-                  'Developers must balance security (more checks) against efficiency (fewer checks) and cost.',
-                  'Audit costs scale with code complexity — a $50K audit for 500 lines is normal.',
-                  'Bug bounty programs add ongoing operational cost but reduce catastrophic risk.',
-                ] },
-            ].map(b => (
-              <div key={b.title} className="p-5 bg-card border rounded-xl flex flex-col gap-3" style={{ borderColor: b.color + '30' }}>
-                <div className="font-black text-sm" style={{ color: b.color }}>{b.title}</div>
-                <ul className="space-y-2 text-xs text-muted-foreground flex-1">
-                  {b.points.map(p => (
-                    <li key={p} className="flex gap-2"><span style={{ color: b.color }} className="shrink-0 mt-0.5">›</span>{p}</li>
-                  ))}
-                </ul>
-              </div>
+              { emoji: '🧱', color: '#ED1C24', title: 'Immutability & Redeployment',
+                what: "You can't patch — you redeploy",
+                why: 'A fix means deploying a new contract and migrating users + state. Ship-and-iterate does not apply.',
+                fix: 'Heavy testing and secure design before launch; plan a v1→v2 migration path.' },
+              { emoji: '🛠️', color: '#f59e0b', title: 'Development & Maintenance',
+                what: 'Scarce, expensive expertise',
+                why: 'Solidity is complex and fast-moving; even strong devs ship bugs, and immutability blocks normal patching.',
+                fix: 'Budget premium rates for auditors and security engineers as a line item, not an afterthought.' },
+              { emoji: '⛽', color: '#8b5cf6', title: 'Gas & Execution',
+                what: 'Fees vary and compound',
+                why: 'Costs spike 10–100× under congestion, and inefficient code taxes every future user forever.',
+                fix: 'Optimise storage writes and external calls; reconsider micro-payment economics.' },
+              { emoji: '⚖️', color: '#6366f1', title: 'Security vs Performance',
+                what: 'Every safety check costs gas',
+                why: 'Defensive checks trade off against efficiency, and audit cost scales with code complexity.',
+                fix: 'A ~$50K audit per ~500 lines is normal; bug bounties add cost but cut catastrophic risk.' },
+            ].map(c => (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 rounded-xl border-2 p-5 justify-center"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '08' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-11 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: c.color + '18' }}>{c.emoji}</div>
+                  <div>
+                    <div className="font-black text-base text-foreground leading-tight">{c.title}</div>
+                    <div className="text-sm font-semibold mt-0.5" style={{ color: c.color }}>{c.what}</div>
+                  </div>
+                </div>
+                <div className="rounded-lg bg-card border p-3" style={{ borderColor: c.color + '25' }}>
+                  <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Why</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.why}</p>
+                </div>
+                <div className="rounded-lg p-3 border-l-2" style={{ borderColor: c.color, backgroundColor: c.color + '12' }}>
+                  <span className="text-xs font-black uppercase tracking-widest" style={{ color: c.color }}>Manage it</span>
+                  <p className="text-sm text-foreground leading-snug mt-0.5">{c.fix}</p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -596,50 +482,44 @@ export function SC_Section5() {
         <div id="s5-risks-regulatory" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-5">
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground">Regulatory Risks</h2>
-            <p className="text-muted-foreground text-sm mt-1">Smart contracts blur the boundary between code and law — and law has not yet caught up.</p>
+            <p className="text-muted-foreground text-sm mt-1">Smart contracts blur code and law — and the law has not caught up.</p>
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 content-center">
-
-            <div className="p-5 bg-card border border-[#ED1C24]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <div className="size-10 rounded-xl bg-[#ED1C24]/15 flex items-center justify-center text-xl">⚖️</div>
-                <div className="font-black text-sm text-foreground">Legal Adjudication</div>
-              </div>
-              <ul className="text-xs text-muted-foreground space-y-2 flex-1">
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Smart contracts often lack traditional legal form (signatures, mutual assent, considered terms).</li>
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>May not fulfil legal standards for a valid contract in many jurisdictions.</li>
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>Court enforcement is uncertain — especially in regulated sectors like finance, insurance, healthcare.</li>
-                <li className="flex gap-1.5"><span className="text-[#ED1C24]">›</span>"Code is law" is rejected by courts when stakes are high — see The DAO and the Ethereum hard fork.</li>
-              </ul>
-            </div>
-
-            <div className="p-5 bg-card border border-[#8b5cf6]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <div className="size-10 rounded-xl bg-[#8b5cf6]/15 flex items-center justify-center text-xl">🔍</div>
-                <div className="font-black text-sm text-foreground">Privacy vs Transparency</div>
-              </div>
-              <ul className="text-xs text-muted-foreground space-y-2 flex-1">
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>Public blockchains expose every transaction to all nodes — by design.</li>
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>This conflicts directly with GDPR ("right to be forgotten"), HIPAA, and sector-specific confidentiality laws.</li>
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>Even hashed data can leak personal information through metadata, timing, or linkability.</li>
-                <li className="flex gap-1.5"><span className="text-[#8b5cf6]">›</span>Mitigation: zero-knowledge proofs, permissioned chains, on-chain hashes + off-chain encrypted data.</li>
-              </ul>
-            </div>
-
-            <div className="p-5 bg-card border border-[#f59e0b]/30 rounded-xl flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <div className="size-10 rounded-xl bg-[#f59e0b]/15 flex items-center justify-center text-xl">🏃</div>
-                <div className="font-black text-sm text-foreground">Tech Outpacing Law</div>
-              </div>
-              <ul className="text-xs text-muted-foreground space-y-2 flex-1">
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Legal frameworks evolve in years; smart contract use cases evolve in months.</li>
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>By the time regulations are written, the industry has moved to a different paradigm.</li>
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>Cross-jurisdictional conflicts: a contract legal in Singapore may be illegal in the US.</li>
-                <li className="flex gap-1.5"><span className="text-[#f59e0b]">›</span>EU's MiCA (2024) is a notable exception — first comprehensive crypto regulation.</li>
-              </ul>
-            </div>
-
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4">
+            {[
+              { emoji: '⚖️', color: '#ED1C24', title: 'Legal Adjudication',
+                what: 'May not count as a valid contract',
+                body: 'Often no signatures or mutual assent, so court enforcement is uncertain — and "code is law" gets overruled when stakes are high (The DAO fork).',
+                tag: 'Pair on-chain logic with a legal wrapper' },
+              { emoji: '🔍', color: '#8b5cf6', title: 'Privacy vs Transparency',
+                what: 'Public by design clashes with GDPR',
+                body: 'Every tx is visible to all nodes — colliding with the right to be forgotten and HIPAA. Even hashes leak via metadata and linkability.',
+                tag: 'ZK proofs · permissioned chains · off-chain encryption' },
+              { emoji: '🏃', color: '#f59e0b', title: 'Tech Outpaces Law',
+                what: 'Rules lag the technology by years',
+                body: 'Use cases shift in months while frameworks take years; a contract legal in Singapore may be illegal in the US.',
+                tag: "EU's MiCA (2024) is the first comprehensive exception" },
+            ].map(c => (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 rounded-xl border-2 p-5 justify-center"
+                style={{ borderColor: c.color + '50', backgroundColor: c.color + '08' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-11 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: c.color + '18' }}>{c.emoji}</div>
+                  <div>
+                    <div className="font-black text-base text-foreground leading-tight">{c.title}</div>
+                    <div className="text-sm font-semibold mt-0.5" style={{ color: c.color }}>{c.what}</div>
+                  </div>
+                </div>
+                <p className="text-sm text-foreground leading-relaxed flex-1">{c.body}</p>
+                <p className="text-xs italic text-muted-foreground border-l-2 pl-2" style={{ borderColor: c.color }}>{c.tag}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
 

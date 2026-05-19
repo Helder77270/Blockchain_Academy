@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { TitleSlide } from '../../components/templates/TitleSlide';
 import { TakeawaySlide } from '../../components/templates/TakeawaySlide';
-import { TimelineSlide } from '../../components/templates/TimelineSlide';
 import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { FileCode2, Check, X } from 'lucide-react';
@@ -10,10 +9,11 @@ import { FileCode2, Check, X } from 'lucide-react';
 import imgSzaboVending from '../../../assets/sc/szabo-vending-machine.png';
 
 const chapters = [
+  { id: 's1-warmup',   label: '🧩 BTC vs ETH' },
+  { id: 's1-recap',    label: 'Ethereum Recap' },
   { id: 's1-what',     label: 'What is a Smart Contract?' },
   { id: 's1-szabo',    label: 'Nick Szabo\'s Vending Machine' },
   { id: 's1-history',    label: 'Historical Evolution' },
-  { id: 's1-standards',  label: 'Token Standards' },
   { id: 's1-exercise',   label: '🧩 Exercise' },
   { id: 's1-quiz',     label: 'Quiz' },
   { id: 's1-takeaways', label: 'Takeaways' },
@@ -140,6 +140,124 @@ function SmartContractSortingExercise() {
   );
 }
 
+// ─── Warm-up: Bitcoin or Ethereum? (recap from Course 02) ───────────────────
+
+type Chain = 'btc' | 'eth' | 'both';
+
+const BTC_ETH: { stmt: string; answer: Chain; why: string }[] = [
+  { stmt: 'Launched in 2009 by Satoshi Nakamoto', answer: 'btc',  why: 'Bitcoin was the first blockchain. Ethereum came in 2015.' },
+  { stmt: 'Launched in 2015 by Vitalik Buterin & co.', answer: 'eth',  why: 'Ethereum mainnet went live July 2015 with the Solidity language.' },
+  { stmt: 'Hard cap of 21 million coins', answer: 'btc',  why: 'Bitcoin has a fixed 21M supply. ETH has no hard cap (~120M circulating).' },
+  { stmt: 'Turing-complete smart contracts (the EVM)', answer: 'eth',  why: 'Ethereum runs arbitrary logic on the EVM. Bitcoin Script is intentionally limited.' },
+  { stmt: 'Tracks funds with the UTXO model', answer: 'btc',  why: 'Bitcoin spends discrete unspent outputs. Ethereum uses account balances.' },
+  { stmt: 'Tracks funds with account balances', answer: 'eth',  why: 'Ethereum mutates a balance per account. Bitcoin uses UTXOs.' },
+  { stmt: 'Switched to Proof of Stake in 2022', answer: 'eth',  why: 'The Merge moved Ethereum to PoS. Bitcoin still uses Proof of Work.' },
+  { stmt: 'A public, decentralised ledger where the native coin pays fees', answer: 'both', why: 'True of both — BTC pays Bitcoin fees, ETH pays Ethereum gas.' },
+];
+
+const CHAIN_META: Record<Chain, { label: string; color: string; glyph: string }> = {
+  btc:  { label: 'Bitcoin',  color: '#f59e0b', glyph: '₿' },
+  eth:  { label: 'Ethereum', color: '#6366f1', glyph: 'Ξ' },
+  both: { label: 'Both',     color: '#8b5cf6', glyph: '⇋' },
+};
+
+function BitcoinEthereumWarmup() {
+  const [picks, setPicks] = useState<Record<number, Chain>>({});
+  const total = BTC_ETH.length;
+  const done = Object.keys(picks).length;
+  const correct = Object.entries(picks).filter(([i, p]) => p === BTC_ETH[+i].answer).length;
+
+  const pick = (i: number, c: Chain) => {
+    if (picks[i]) return;
+    setPicks(prev => ({ ...prev, [i]: c }));
+  };
+  const reset = () => setPicks({});
+
+  return (
+    <div className="h-full flex flex-col p-6 lg:p-8">
+      <div className="shrink-0 flex items-center justify-between mb-4">
+        <div>
+          <span className="px-2.5 py-0.5 rounded-full bg-[#6366f1]/15 border border-[#6366f1]/40 text-[#6366f1] text-xs font-bold">🧩 Warm-up · from Course 02</span>
+          <h2 className="text-2xl font-bold text-foreground mt-1">Bitcoin or Ethereum?</h2>
+          <p className="text-muted-foreground text-sm mt-0.5">Recall before we build. Tag each statement, then see the answer.</p>
+        </div>
+        <div className="flex items-center gap-4">
+          {done > 0 && (
+            <div className="text-right">
+              <div className="text-2xl font-black" style={{ color: correct === done ? '#39B54A' : '#f59e0b' }}>{correct}/{done}</div>
+              <div className="text-xs text-muted-foreground">correct</div>
+            </div>
+          )}
+          {done === total && (
+            <button onClick={reset} className="px-3 py-1.5 rounded-lg bg-muted hover:bg-muted/80 text-xs font-semibold text-muted-foreground transition-colors">↺ Reset</button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 gap-3 content-center auto-rows-min">
+        {BTC_ETH.map((q, i) => {
+          const picked = picks[i];
+          const open = !!picked;
+          const right = picked === q.answer;
+          const ans = CHAIN_META[q.answer];
+          return (
+            <motion.div
+              key={i}
+              layout
+              className="relative rounded-xl border-2 overflow-hidden flex flex-col min-h-[9.5rem] lg:min-h-[11rem]"
+              style={{
+                borderColor: !open ? 'var(--border)' : right ? '#39B54A' : '#ED1C24',
+                backgroundColor: !open ? 'var(--card)' : right ? '#39B54A10' : '#ED1C2410',
+              }}
+            >
+              <div className="flex-1 p-3 flex flex-col gap-2">
+                <div className="text-sm font-semibold text-foreground leading-snug flex-1">{q.stmt}</div>
+                <AnimatePresence>
+                  {open && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+                      className="text-[11px] leading-snug"
+                    >
+                      <span className="font-black" style={{ color: ans.color }}>{ans.glyph} {ans.label}</span>
+                      <span className="text-muted-foreground"> — {q.why}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              {!open ? (
+                <div className="flex border-t border-border shrink-0">
+                  {(['btc','eth','both'] as Chain[]).map((c, ci) => {
+                    const m = CHAIN_META[c];
+                    return (
+                      <button
+                        key={c}
+                        onClick={() => pick(i, c)}
+                        className={`flex-1 py-2 text-xs font-black transition-colors ${ci < 2 ? 'border-r border-border' : ''}`}
+                        style={{ color: m.color }}
+                      >
+                        {m.glyph} {m.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="shrink-0 flex items-center justify-center py-2 gap-1.5 border-t" style={{ borderColor: right ? '#39B54A40' : '#ED1C2440' }}>
+                  {right
+                    ? <Check className="size-4 text-[#39B54A]" strokeWidth={3} />
+                    : <X className="size-4 text-[#ED1C24]" strokeWidth={3} />}
+                  <span className="text-xs font-bold" style={{ color: right ? '#39B54A' : '#ED1C24' }}>
+                    {right ? 'Correct' : `You said ${CHAIN_META[picked].label}`}
+                  </span>
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function SC_Section1() {
   return (
     <div className="h-full w-full flex overflow-hidden">
@@ -156,6 +274,66 @@ export function SC_Section1() {
             icon={<FileCode2 className="size-20 text-[#6366f1]" />}
             gradient="from-[#6366f1] to-[#8b5cf6]"
           />
+        </div>
+
+        {/* ═══════ 0a. WARM-UP: BITCOIN vs ETHEREUM ═══════ */}
+        <div id="s1-warmup" className="h-full">
+          <BitcoinEthereumWarmup />
+        </div>
+
+        {/* ═══════ 0b. ETHEREUM RECAP (warm-up) ═══════ */}
+        <div id="s1-recap" className="h-full flex flex-col p-6 lg:p-10">
+          <div className="shrink-0 mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-[#6366f1]">Warm-up · from Course 02</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">Quick Recap — Ethereum, the World Computer</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              You met all of this in <span className="font-semibold text-foreground">Course 02 → Ethereum</span>. A 60-second refresher before we go deeper into the contracts themselves.
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 gap-4 content-center">
+            {[
+              {
+                emoji: '👤', color: '#6366f1', title: 'Accounts',
+                desc: 'Two kinds: EOAs controlled by a private key (people), and contract accounts controlled by their code.',
+                tag: 'EOA vs Contract',
+              },
+              {
+                emoji: '🖥️', color: '#8b5cf6', title: 'The EVM',
+                desc: 'Every node runs the same Ethereum Virtual Machine, so a program produces the same result everywhere.',
+                tag: 'Deterministic',
+              },
+              {
+                emoji: '⛽', color: '#f59e0b', title: 'Gas',
+                desc: 'You pay for computation. Gas prices each step and guarantees programs always halt — no infinite loops.',
+                tag: 'Pay per step',
+              },
+              {
+                emoji: '✍️', color: '#39B54A', title: 'Transactions',
+                desc: 'Signed messages that change global state. Only an EOA can start one; it can call a contract.',
+                tag: 'State change',
+              },
+            ].map((c, i) => (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08, duration: 0.3 }}
+                className="flex flex-col gap-2 p-4 rounded-2xl border bg-card"
+                style={{ borderColor: c.color + '40' }}
+              >
+                <div className="text-3xl">{c.emoji}</div>
+                <div className="font-black text-base" style={{ color: c.color }}>{c.title}</div>
+                <div className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest rounded-md px-2 py-1 self-start" style={{ backgroundColor: c.color + '15', color: c.color }}>{c.tag}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="shrink-0 mt-4 p-3 rounded-xl border border-[#6366f1]/30 bg-[#6366f1]/08 text-center text-sm" style={{ backgroundColor: '#6366f10f' }}>
+            <span className="font-bold text-[#6366f1]">Where this course picks up: </span>
+            <span className="text-muted-foreground">a contract account <em>is</em> a smart contract. The next sections are all about what that code can do, how to read it, and when it's the right tool.</span>
+          </div>
         </div>
 
         {/* ═══════ 1. WHAT IS A SMART CONTRACT ═══════ */}
@@ -288,130 +466,42 @@ export function SC_Section1() {
         </div>
 
         {/* ═══════ 3. HISTORICAL EVOLUTION ═══════ */}
-        <div id="s1-history" className="h-full">
-          <TimelineSlide
-            title="Historical Evolution of Smart Contracts"
-            events={[
-              {
-                year: '1998',
-                title: 'Szabo designs Bit Gold',
-                description: 'The closest precursor to Bitcoin: proof-of-work chains of ownership. Still lacks a decentralized execution environment to run contracts.',
-              },
-              {
-                year: '2009',
-                title: 'Bitcoin launches — limited scripting',
-                description: 'Bitcoin Script enables basic conditional logic (multisig, timelocks) but is intentionally non-Turing-complete. Smart contracts remain constrained.',
-              },
-              {
-                year: '2015',
-                title: 'Ethereum mainnet — Solidity launches',
-                description: 'The first general-purpose smart contract platform goes live. Developers can now write arbitrary business logic on a global, trustless computer.',
-              },
-              {
-                year: '2016',
-                title: 'The DAO hack — $60M drained',
-                description: 'A reentrancy bug is exploited repeatedly before anyone can react. Ethereum hard-forks to recover funds. "Code is law" meets its first major stress test.',
-              },
-              {
-                year: '2017',
-                title: 'ICO boom — ERC-20 tokens',
-                description: 'ERC-20 lets anyone issue a token and raise capital via smart contract in minutes. Billions raised; most projects fail. Regulation follows.',
-              },
-              {
-                year: '2020',
-                title: 'DeFi Summer — protocols replace banks',
-                description: 'Uniswap, Compound, Aave lock $1B+ in smart contracts. Permissionless lending, trading, and yield — no banks, no accounts, no KYC.',
-              },
-              {
-                year: '2021',
-                title: 'NFT explosion — ERC-721 goes mainstream',
-                description: '$41B NFT market. On-chain ownership of art, collectibles, and gaming assets. Smart contracts enforce royalties automatically on every resale.',
-              },
-              {
-                year: 'Today',
-                title: '$100B+ locked — multi-chain ecosystem',
-                description: 'Ethereum, Solana, BNB Chain, Avalanche, and L2s host thousands of live contracts. Security is now the primary battleground — $6B+ lost to exploits since 2016.',
-              },
-            ]}
-          />
-        </div>
-
-        {/* ═══════ TOKEN STANDARDS ═══════ */}
-        <div id="s1-standards" className="h-full flex flex-col p-5 lg:p-8">
+        <div id="s1-history" className="h-full flex flex-col p-6 lg:p-10">
           <div className="shrink-0 mb-4">
             <span className="text-xs font-black uppercase tracking-widest text-[#6366f1]">Section 01</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Token Standards: ERC-20, ERC-721, ERC-1155</h2>
-            <p className="text-sm text-muted-foreground">Token standards are shared interfaces — agreed-upon function signatures that let any wallet, exchange, or protocol interact with any token without custom integration.</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1">Historical Evolution of Smart Contracts</h2>
+            <p className="text-sm text-muted-foreground mt-1">From an idea with no computer to run it, to $100B+ in live contracts.</p>
           </div>
-          <div className="flex-1 min-h-0 flex gap-4">
-            {([
-              {
-                standard: 'ERC-20',
-                color: '#6366f1',
-                icon: '🪙',
-                name: 'Fungible Token',
-                tagline: 'Every unit is identical and interchangeable',
-                howItWorks: 'Each token is indistinguishable from another of the same contract. 1 USDC = 1 USDC. Balances tracked in a mapping(address => uint256).',
-                coreFunctions: ['transfer(to, amount)', 'approve(spender, amount)', 'transferFrom(from, to, amount)', 'balanceOf(address) → uint256', 'allowance(owner, spender) → uint256'],
-                examples: ['USDC, USDT — stablecoins', 'UNI, AAVE — governance tokens', 'WETH — wrapped ETH', 'DAI — algorithmic stablecoin'],
-                keyInsight: 'The allowance pattern enables DeFi composability — you approve a DEX contract to move your tokens, then the swap executes in one atomic transaction.',
-                insightColor: '#6366f1',
-              },
-              {
-                standard: 'ERC-721',
-                color: '#f97316',
-                icon: '🖼️',
-                name: 'Non-Fungible Token (NFT)',
-                tagline: 'Each token has a unique ID and is not interchangeable',
-                howItWorks: 'Each token has a unique uint256 tokenId. Ownership tracked in mapping(uint256 => address). Metadata (image, attributes) stored off-chain via tokenURI().',
-                coreFunctions: ['ownerOf(tokenId) → address', 'transferFrom(from, to, tokenId)', 'approve(to, tokenId)', 'setApprovalForAll(operator, bool)', 'tokenURI(tokenId) → string'],
-                examples: ['CryptoPunks, Bored Apes — profile pictures', 'ENS domains — .eth names', 'Real estate title deeds (Propy)', 'California DMV vehicle titles'],
-                keyInsight: 'tokenURI() is a critical off-chain dependency — if the metadata server goes down, the NFT image disappears. IPFS pinning is the standard mitigation.',
-                insightColor: '#f97316',
-              },
-              {
-                standard: 'ERC-1155',
-                color: '#39B54A',
-                icon: '🎮',
-                name: 'Multi-Token Standard',
-                tagline: 'One contract holds both fungible and non-fungible tokens',
-                howItWorks: 'Uses mapping(uint256 => mapping(address => uint256)) — each token ID can be fungible (supply > 1) or non-fungible (supply = 1). Batch transfers in a single call.',
-                coreFunctions: ['balanceOf(account, id) → uint256', 'balanceOfBatch(accounts[], ids[]) → uint256[]', 'safeTransferFrom(from, to, id, amount, data)', 'safeBatchTransferFrom(from, to, ids[], amounts[], data)'],
-                examples: ['Gaming items — 1000× common sword (fungible), 1× legendary weapon (NFT)', 'Event tickets — 500 general admission + 10 VIP', 'Fractional NFT ownership', 'Multi-asset DeFi vaults'],
-                keyInsight: 'Batch transfers are the killer feature — send 50 different game items in one transaction instead of 50. Gas savings of 80–90% vs multiple ERC-20/721 transfers.',
-                insightColor: '#39B54A',
-              },
-            ] as const).map(s => (
-              <div key={s.standard} className="flex-1 flex flex-col rounded-xl border-2 bg-card overflow-hidden" style={{ borderColor: s.color + '40' }}>
-                <div className="h-1.5 shrink-0" style={{ backgroundColor: s.color }} />
-                <div className="flex flex-col flex-1 p-4 min-h-0 gap-3">
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-2xl">{s.icon}</span>
-                    <div>
-                      <div className="font-black text-base" style={{ color: s.color }}>{s.standard}</div>
-                      <div className="text-xs font-semibold text-foreground">{s.name}</div>
-                    </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 gap-3 content-center">
+            {[
+              { year: '1994', tag: 'The idea',     color: '#8b5cf6', title: 'Szabo coins "smart contract"', desc: 'Promises enforced by code — the vending-machine analogy, 15 years before any chain could run it.' },
+              { year: '2009', tag: 'First chain',  color: '#f59e0b', title: 'Bitcoin — first on-chain contracts', desc: 'Script does conditional spending (multisig, timelocks) — deliberately non-Turing-complete.' },
+              { year: '2015', tag: 'Breakthrough', color: '#6366f1', title: 'Ethereum + Solidity', desc: 'The Turing-complete EVM ships: deploy arbitrary contract logic to a shared, trustless computer.' },
+              { year: '2016', tag: 'Crisis',       color: '#ED1C24', title: 'The DAO — first contract crisis', desc: 'A reentrancy bug drains $60M; Ethereum forks (ETH/ETC). Security becomes a discipline.' },
+              { year: '2017', tag: 'Standards',    color: '#6366f1', title: 'ERC-20 — token contracts', desc: 'A shared token interface every wallet & exchange understands. The ICO boom follows.' },
+              { year: '2018', tag: 'Standards',    color: '#f97316', title: 'ERC-721 — NFT contracts', desc: 'A standard for unique, owned tokens — assets plus automatic on-transfer royalties.' },
+              { year: '2020', tag: 'Composability',color: '#39B54A', title: 'DeFi Summer', desc: 'Contracts calling contracts — "money legos." Lending, trading & yield, no intermediary.' },
+              { year: 'Today', tag: 'Maturity',    color: '#22d3ee', title: 'Audited, multi-chain, high-stakes', desc: '$100B+ in contracts across chains; audits mandatory — $6B+ lost to exploits since 2016.' },
+            ].map((e, i) => (
+              <motion.div
+                key={e.year}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06, duration: 0.3 }}
+                className="flex flex-col rounded-xl border bg-card overflow-hidden"
+                style={{ borderColor: e.color + '40' }}
+              >
+                <div className="h-1.5 shrink-0" style={{ backgroundColor: e.color }} />
+                <div className="flex-1 flex flex-col gap-1.5 p-3.5">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-mono font-black text-lg" style={{ color: e.color }}>{e.year}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded" style={{ backgroundColor: e.color + '18', color: e.color }}>{e.tag}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground italic shrink-0">{s.tagline}</p>
-                  <p className="text-xs text-muted-foreground shrink-0">{s.howItWorks}</p>
-                  <div className="shrink-0">
-                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Core Interface</div>
-                    <div className="bg-[#0d1117] rounded-lg p-2 font-mono space-y-0.5">
-                      {s.coreFunctions.map(f => <div key={f} className="text-xs" style={{ color: s.color }}>{f}</div>)}
-                    </div>
-                  </div>
-                  <div className="shrink-0">
-                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Real Examples</div>
-                    <ul className="space-y-0.5">
-                      {s.examples.map(e => <li key={e} className="text-xs text-muted-foreground flex gap-1.5"><span style={{ color: s.color }}>•</span>{e}</li>)}
-                    </ul>
-                  </div>
-                  <div className="mt-auto pt-3 border-t border-border shrink-0">
-                    <div className="text-xs font-semibold mb-0.5" style={{ color: s.insightColor }}>Key Insight</div>
-                    <div className="text-xs text-muted-foreground">{s.keyInsight}</div>
-                  </div>
+                  <div className="font-bold text-sm text-foreground leading-tight">{e.title}</div>
+                  <div className="text-xs text-muted-foreground leading-snug">{e.desc}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
