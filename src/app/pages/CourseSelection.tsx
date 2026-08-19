@@ -55,7 +55,7 @@ const courses: Course[] = [
     gradient: 'from-[#f97316] to-[#eab308]',
     accentColor: '#f97316',
     slug: 'project-management',
-    available: false,
+    available: true,
   },
 ];
 

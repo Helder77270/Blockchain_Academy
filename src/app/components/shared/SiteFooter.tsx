@@ -2,11 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { BrandLogo } from './BrandLogo';
 import prrBar from '../../../assets/sc/prr-funding-bar.png';
 import novaKcData from '../../../assets/sc/nova-kc-data.png';
+import rippleUbri from '../../../assets/sc/ripple-ubri.png';
 
 const LINKS = {
   prr: 'https://recuperarportugal.gov.pt',
   blockchainPt: 'https://www.blockchain.pt',
   nova: 'https://www.novasbe.unl.pt',
+  ubri: 'https://ripple.com/impact/ubri/',
 } as const;
 
 /**
@@ -70,6 +72,16 @@ export function SiteFooter({ className = '' }: SiteFooterProps) {
             >
               <img src={novaKcData} alt={t('footer.visitNova')} className="h-12 object-contain" />
             </a>
+            <a
+              href={LINKS.ubri}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={t('footer.visitUbri')}
+              aria-label={t('footer.visitUbri')}
+              className="bg-white rounded-lg p-3 shadow-sm border border-black/5 transition-transform hover:scale-[1.02]"
+            >
+              <img src={rippleUbri} alt={t('footer.visitUbri')} className="h-12 object-contain" />
+            </a>
           </div>
         </div>
 
@@ -80,6 +92,8 @@ export function SiteFooter({ className = '' }: SiteFooterProps) {
           <a href={LINKS.blockchainPt} target="_blank" rel="noopener noreferrer" className="hover:text-foreground hover:underline">Blockchain.pt</a>
           <span aria-hidden="true">·</span>
           <a href={LINKS.nova} target="_blank" rel="noopener noreferrer" className="hover:text-foreground hover:underline">NOVA SBE</a>
+          <span aria-hidden="true">·</span>
+          <a href={LINKS.ubri} target="_blank" rel="noopener noreferrer" className="hover:text-foreground hover:underline">Ripple UBRI</a>
         </nav>
       </div>
     </footer>
