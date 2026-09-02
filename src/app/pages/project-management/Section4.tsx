@@ -4,14 +4,21 @@ import { DiscussionSlide } from '../../components/templates/DiscussionSlide';
 import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { SiteFooter } from '../../components/shared/SiteFooter';
-import { MessageSquare } from 'lucide-react';
+import { MicroVaultCallout } from '../../components/shared/MicroVaultCallout';
+import { DeepDiveBadge } from '../../components/shared/DeepDiveBadge';
+import { MessageSquare, ArrowRight } from 'lucide-react';
 
 const chapters = [
-  { id: 's4-landscape',    label: 'Stakeholder Landscape' },
-  { id: 's4-translation',  label: 'Tech → Business' },
-  { id: 's4-documentation',label: 'Documentation' },
-  { id: 's4-governance',   label: 'Decision-Making' },
-  { id: 's4-community',    label: 'Community Management' },
+  { id: 's4-core',         label: '4.1 Communication as Core' },
+  { id: 's4-landscape',    label: '4.2 Tech & Non-Tech Audiences' },
+  { id: 's4-protocols',    label: '4.3 Protocols & Incidents' },
+  { id: 's4-tools',        label: '4.4 Collaboration Tools' },
+  { id: 's4-selection',    label: '4.5 Selecting Tools' },
+  { id: 's4-extras',       label: 'Extras', kind: 'group' as const },
+  { id: 's4-translation',  label: 'Deep Dive: Tech → Business' },
+  { id: 's4-documentation',label: 'Deep Dive: Documentation' },
+  { id: 's4-governance',   label: 'Deep Dive: DACI Decisions' },
+  { id: 's4-community',    label: 'Deep Dive: Community' },
   { id: 's4-discussion',   label: 'Discussion' },
   { id: 's4-quiz',         label: 'Quiz' },
   { id: 's4-takeaways',    label: 'Takeaways' },
@@ -20,29 +27,71 @@ const chapters = [
 export function PM_Section4() {
   return (
     <div className="h-full w-full flex overflow-hidden">
-      <SectionNav chapters={chapters} />
+      <SectionNav chapters={chapters} accentColor="#22d3ee" />
       <div id="section-scroll" className="flex-1 overflow-y-auto snap-y snap-mandatory">
         <div className="slide-flow">
 
         {/* ═══════ TITLE ═══════ */}
         <div className="h-full">
           <TitleSlide
-            sectionNumber="SESSION 04"
+            sectionNumber="SECTION 04"
             title="Communication & Collaboration for Blockchain Teams"
-            subtitle="The PM as translator — bridging technical reality and business expectation across a fragmented stakeholder universe"
+            subtitle="Communication strategies for technical and non-technical stakeholders, collaboration tools, and protocols across the project lifecycle"
             icon={<MessageSquare className="size-20 text-[#22d3ee]" />}
             gradient="from-[#22d3ee] to-[#f97316]"
           />
         </div>
 
-        {/* ═══════ STAKEHOLDER LANDSCAPE ═══════ */}
-        <div id="s4-landscape" className="h-full flex flex-col p-5 lg:p-8">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Session 04</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">The Blockchain Communication Challenge</h2>
-            <p className="text-sm text-muted-foreground">Blockchain teams communicate across technical complexity, organizational boundaries, and often across pseudonymous global communities simultaneously.</p>
+        {/* ═══════ 4.1 COMMUNICATION AS THE CORE OF PM ═══════ */}
+        <div id="s4-core" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04 · Slide 4.1</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Communication as the Core of Project Management</h2>
+            <p className="text-sm text-muted-foreground">
+              Project managers spend a significant portion of their time communicating — success depends not only on technical expertise
+              or planning quality, but on effective communication among stakeholders, teams, sponsors, and customers (PMBOK).
+            </p>
           </div>
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-5">
+
+          <div className="flex-1 min-h-0 flex flex-col gap-4">
+            <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-3 gap-3 content-center">
+              {[
+                { t: 'Alignment', icon: '🎯', d: 'Shared understanding of objectives and expectations across every stakeholder group.' },
+                { t: 'Transparency', icon: '🔍', d: 'Visible progress, visible problems — no information asymmetries that erode confidence.' },
+                { t: 'Trust', icon: '🤝', d: 'Built through consistent, honest communication — the foundation Section 5 develops further.' },
+                { t: 'Stakeholder engagement', icon: '👥', d: 'The stakeholder map from Section 1 tells you who needs what, how often, through which channel.' },
+                { t: 'Decision-making', icon: '⚡', d: 'Faster, better-informed decisions when the right information reaches the right people in time.' },
+                { t: 'Value delivery', icon: '💎', d: 'Communication is what turns plans into results — the PMI framing of the discipline itself.' },
+              ].map(c => (
+                <div key={c.t} className="p-4 rounded-xl bg-card border border-border flex flex-col gap-1.5">
+                  <span className="text-2xl">{c.icon}</span>
+                  <div className="font-bold text-sm text-[#22d3ee]">{c.t}</div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{c.d}</p>
+                </div>
+              ))}
+            </div>
+            <div className="shrink-0 p-3 lg:p-4 rounded-xl bg-gradient-to-r from-[#22d3ee]/15 to-[#f97316]/15 border-2 border-[#22d3ee]/40 text-sm text-foreground font-semibold">
+              Key principle: effective communication enables teams to transform plans into results. Communication management and
+              stakeholder engagement are inseparable — the stakeholder map is the direct input to everything in this section.
+            </div>
+            <MicroVaultCallout className="shrink-0">
+              MicroVault's stakeholders — founders, the audit firm, early depositors, later token holders — each need different
+              information, even for a three-person team. We map who needs what, building directly on the stakeholder register from Section 1.
+            </MicroVaultCallout>
+          </div>
+        </div>
+
+        {/* ═══════ 4.2 TECHNICAL & NON-TECHNICAL STAKEHOLDERS ═══════ */}
+        <div id="s4-landscape" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04 · Slide 4.2</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Communicating with Technical &amp; Non-Technical Stakeholders</h2>
+            <p className="text-sm text-muted-foreground">
+              Remote teams across time zones, technical and non-technical stakeholders side by side, open-source environments,
+              decentralized governance, rapidly changing requirements — increased complexity requires increased communication discipline.
+            </p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 lg:gap-5">
             <div className="space-y-3">
               <div className="font-bold text-sm text-[#22d3ee]">The Technical Team</div>
               <div className="p-4 bg-[#22d3ee]/8 border border-[#22d3ee]/30 rounded-xl text-sm text-muted-foreground leading-relaxed">
@@ -83,14 +132,242 @@ export function PM_Section4() {
               </ul>
             </div>
           </div>
+
+          {/* Communication needs */}
+          <div className="shrink-0 mt-3 flex flex-wrap items-center gap-1.5">
+            <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground mr-1">Communication needs:</span>
+            {['Clear communication channels', 'Transparent reporting', 'Feedback loops', 'Asynchronous collaboration', 'Documented decisions'].map(n => (
+              <span key={n} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#22d3ee]/10 border border-[#22d3ee]/30 text-[#22d3ee]">{n}</span>
+            ))}
+          </div>
+
+          {/* Bridging strategies */}
+          <div className="shrink-0 mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <div className="p-3 rounded-xl bg-card border border-border text-xs text-muted-foreground leading-relaxed">
+              <span className="font-bold text-foreground">Three bridging strategies:</span>{' '}
+              <span className="font-semibold text-foreground">translate</span> technical risk into business-impact language ("funds could be
+              at risk if this isn't fixed before audit") without dropping the detail technical stakeholders need;{' '}
+              <span className="font-semibold text-foreground">demonstrate</span> — working software, not slides, as the primary alignment
+              mechanism (showing beats explaining); and <span className="font-semibold text-foreground">document decisions in writing</span>{' '}
+              regardless of how they were reached verbally — distributed, asynchronous teams can't rely on "everyone was in the room."
+            </div>
+            <MicroVaultCallout>
+              MicroVault's auditors, developers, and community span time zones and very different technical depth — the team relies on
+              async updates, documented decisions, and regular working-software demos to keep non-technical founders and early depositors
+              aligned without requiring them to read code.
+            </MicroVaultCallout>
+          </div>
         </div>
 
-        {/* ═══════ TECH TO BUSINESS TRANSLATION ═══════ */}
+        {/* ═══════ 4.3 COMMUNICATION PROTOCOLS ACROSS THE LIFECYCLE ═══════ */}
+        <div id="s4-protocols" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04 · Slide 4.3</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Communication Protocols Across the Project Lifecycle</h2>
+            <p className="text-sm text-muted-foreground">
+              Communication should be timely, transparent, traceable, and secure — and its focus evolves with the lifecycle.
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Left: phase table + planning steps */}
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="rounded-xl border border-border overflow-hidden">
+                <div className="grid grid-cols-[0.8fr_1.2fr] text-xs font-bold bg-muted text-foreground">
+                  <div className="p-2">Phase</div>
+                  <div className="p-2">Communication focus</div>
+                </div>
+                {[
+                  { p: 'Initiation', f: 'Vision, goals, stakeholder alignment' },
+                  { p: 'Planning', f: 'Scope, schedule, risks' },
+                  { p: 'Execution', f: 'Coordination and issue resolution' },
+                  { p: 'Monitoring & Controlling', f: 'Status reporting, KPI tracking' },
+                  { p: 'Closing', f: 'Lessons learned and transition (Section 6)' },
+                ].map(r => (
+                  <div key={r.p} className="grid grid-cols-[0.8fr_1.2fr] text-xs border-t border-border">
+                    <div className="p-2 font-semibold text-foreground bg-muted/40">{r.p}</div>
+                    <div className="p-2 text-muted-foreground">{r.f}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="p-3 rounded-xl bg-card border border-border">
+                <div className="text-[10px] font-black uppercase tracking-wider text-muted-foreground mb-2">Communication planning steps</div>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {['Identify stakeholders', 'Define needs', 'Select channels', 'Establish frequency', 'Monitor effectiveness'].map((s, i, arr) => (
+                    <span key={s} className="flex items-center gap-1.5">
+                      <span className="text-[11px] font-semibold px-2 py-1 rounded bg-muted text-foreground">{s}</span>
+                      {i < arr.length - 1 && <ArrowRight className="size-3 text-muted-foreground/40" />}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  <span className="font-semibold text-foreground">Common protocols:</span> daily stand-ups, weekly status reports, sprint
+                  reviews, escalation procedures, risk communication plans, change approval workflows (Section 6).
+                </p>
+              </div>
+            </div>
+
+            {/* Right: the incident communication protocol */}
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="flex-1 min-h-0 p-4 rounded-xl bg-[#ef4444]/8 border-2 border-[#ef4444]/40 flex flex-col">
+                <div className="font-bold text-[#ef4444] mb-2">🚨 Blockchain-specific addition: the incident communication protocol</div>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                  Separate from routine status reporting — an explicit, pre-agreed protocol for security incidents and vulnerability
+                  disclosures. This is a leadership and communication process, not just a line in the risk register: it defines how the
+                  team behaves in the first hours of a live security problem.
+                </p>
+                <div className="space-y-2 flex-1">
+                  <div className="p-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground">
+                    <span className="font-bold text-foreground">Internal protocol:</span> who is on the response team, who has final decision
+                    authority (e.g., to trigger a pause function), what channel and cadence during an active incident.
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-card border border-border text-xs text-muted-foreground">
+                    <span className="font-bold text-foreground">External protocol:</span> who is authorized to communicate publicly, what gets
+                    disclosed and when, how users, community, and regulators are informed.
+                  </div>
+                </div>
+                <div className="mt-3 p-2.5 rounded-lg bg-[#ef4444]/15 border border-[#ef4444]/40 text-xs font-semibold text-foreground shrink-0">
+                  Agreed and rehearsed <span className="italic">before</span> launch — immutable, high-value systems don't leave room to
+                  improvise the first response after an incident has begun.
+                </div>
+              </div>
+              <MicroVaultCallout className="shrink-0">
+                Defined before mainnet: the technical lead has authority to trigger the pause function, the founders jointly approve any
+                public statement, and status updates go out on a fixed cadence during any active incident. A rehearsed protocol — not an
+                improvised response.
+              </MicroVaultCallout>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ 4.4 COLLABORATION TOOLS & PLATFORMS ═══════ */}
+        <div id="s4-tools" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04 · Slide 4.4</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Collaboration Tools &amp; Platforms for Blockchain Teams</h2>
+            <p className="text-sm text-muted-foreground">
+              Distributed teams depend on digital collaboration ecosystems for transparency, traceability, and coordination.
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Tool categories */}
+            <div className="rounded-xl border border-border overflow-hidden flex flex-col min-h-0">
+              <div className="grid grid-cols-2 text-xs font-bold bg-muted text-foreground shrink-0">
+                <div className="p-2.5">Category</div>
+                <div className="p-2.5">Tools</div>
+              </div>
+              <div className="flex-1 min-h-0 overflow-auto">
+                {[
+                  { c: 'Communication', t: 'Slack, Microsoft Teams, Discord' },
+                  { c: 'Task management', t: 'Jira, Trello, Asana' },
+                  { c: 'Documentation', t: 'Confluence, Notion' },
+                  { c: 'Code collaboration', t: 'GitHub, GitLab' },
+                  { c: 'Smart contract review', t: 'Remix, Hardhat' },
+                  { c: 'Knowledge sharing', t: 'Wikis, Miro' },
+                ].map(r => (
+                  <div key={r.c} className="grid grid-cols-2 text-xs border-t border-border">
+                    <div className="p-2.5 font-semibold text-foreground bg-muted/40">{r.c}</div>
+                    <div className="p-2.5 text-muted-foreground">{r.t}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* PMI practices + blockchain considerations */}
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="p-3 lg:p-4 rounded-xl bg-card border border-border">
+                <div className="font-bold text-sm text-foreground mb-2">Key collaboration practices (PMI)</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {['Shared dashboards', 'Sprint retrospectives', 'Real-time issue tracking', 'Transparent backlog management', 'Documentation repositories'].map(p => (
+                    <span key={p} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#22d3ee]/10 border border-[#22d3ee]/30 text-[#22d3ee]">{p}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1 p-3 lg:p-4 rounded-xl bg-[#8b5cf6]/8 border border-[#8b5cf6]/30">
+                <div className="font-bold text-sm text-[#8b5cf6] mb-2">Blockchain-specific considerations</div>
+                <ul className="text-xs lg:text-sm text-muted-foreground space-y-1.5">
+                  <li className="flex gap-2"><span className="text-[#8b5cf6]">•</span> Smart contract audit coordination</li>
+                  <li className="flex gap-2"><span className="text-[#8b5cf6]">•</span> Security review workflows</li>
+                  <li className="flex gap-2"><span className="text-[#8b5cf6]">•</span> DAO / community communication</li>
+                  <li className="flex gap-2"><span className="text-[#8b5cf6]">•</span> Open-source governance and contributions</li>
+                </ul>
+              </div>
+              <MicroVaultCallout className="shrink-0">
+                MicroVault uses GitHub for contract reviews, a board for sprints, and a shared repo for audit findings and compliance
+                notes. We set up this ecosystem — and nothing more.
+              </MicroVaultCallout>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ 4.5 SELECTING TOOLS & SUCCESS FACTORS ═══════ */}
+        <div id="s4-selection" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04 · Slide 4.5</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Selecting the Right Tools &amp; Communication Success Factors</h2>
+            <p className="text-sm text-muted-foreground">
+              Never select tools because they're popular. Select according to project needs, team size, complexity, regulatory and
+              security requirements, and the stakeholder environment.
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 flex flex-col gap-3">
+            <div className="shrink-0 p-3 lg:p-4 rounded-xl bg-card border border-border">
+              <div className="text-[10px] font-black uppercase tracking-wider text-muted-foreground mb-2">A minimal, standardized example</div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                {[
+                  { k: 'Communication', v: 'Slack' },
+                  { k: 'Task management', v: 'Jira' },
+                  { k: 'Code collaboration', v: 'GitHub' },
+                  { k: 'Stakeholder engagement', v: 'Weekly demonstrations' },
+                ].map(x => (
+                  <div key={x.k} className="p-2.5 rounded-lg bg-muted/40 border border-border text-center">
+                    <div className="text-[10px] text-muted-foreground uppercase font-bold">{x.k}</div>
+                    <div className="text-sm font-bold text-foreground">{x.v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div className="p-3 lg:p-4 rounded-xl bg-card border border-border flex flex-col">
+                <div className="font-bold text-sm text-foreground mb-2">Success factors</div>
+                <div className="flex flex-wrap gap-1.5 content-start flex-1">
+                  {['Tool standardization', 'Role clarity', 'Communication etiquette', 'Version control discipline', 'Stakeholder accessibility'].map(f => (
+                    <span key={f} className="h-fit text-xs font-semibold px-2.5 py-1 rounded-full bg-[#39B54A]/10 border border-[#39B54A]/30 text-[#39B54A]">{f}</span>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  <span className="font-semibold text-foreground">AI-enabled productivity</span> (full treatment in Slide 2.9): meeting
+                  transcription, automated note-taking, action-item tracking, status report generation, meeting scheduling.
+                </p>
+              </div>
+              <div className="p-3 lg:p-4 rounded-xl bg-gradient-to-r from-[#22d3ee]/15 to-[#8b5cf6]/15 border-2 border-[#22d3ee]/40 flex items-center">
+                <p className="text-sm text-foreground font-semibold leading-relaxed">
+                  Technology supports communication — but active listening, leadership, and human interaction build trust. Especially in
+                  small teams, resist adding tools beyond what's actually needed: the goal is standardization and clarity, not feature
+                  coverage.
+                </p>
+              </div>
+            </div>
+
+            <MicroVaultCallout className="shrink-0">
+              MicroVault keeps its toolset minimal — one chat, one board, one repo — and uses demos to keep non-technical stakeholders
+              aligned. We standardize these few tools rather than adding more.
+            </MicroVaultCallout>
+          </div>
+        </div>
+
+        {/* ═══════ DEEP DIVE: TECH TO BUSINESS TRANSLATION ═══════ */}
         <div id="s4-translation" className="h-full flex flex-col p-5 lg:p-8">
           <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Session 04</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04</span>
+              <DeepDiveBadge />
+            </div>
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Technical → Business Translation</h2>
-            <p className="text-sm text-muted-foreground">The PM's most valuable skill in blockchain: making complex concepts actionable for non-technical decision-makers.</p>
+            <p className="text-sm text-muted-foreground">The bridging strategy from Slide 4.2 in practice: four worked examples of making complex concepts actionable for non-technical decision-makers.</p>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-2 gap-4">
             {[
@@ -131,10 +408,13 @@ export function PM_Section4() {
           </div>
         </div>
 
-        {/* ═══════ DOCUMENTATION ═══════ */}
+        {/* ═══════ DEEP DIVE: DOCUMENTATION ═══════ */}
         <div id="s4-documentation" className="h-full flex flex-col p-5 lg:p-8">
           <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Session 04</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04</span>
+              <DeepDiveBadge />
+            </div>
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Documentation Practices for Blockchain Projects</h2>
             <p className="text-sm text-muted-foreground">Blockchain projects require documentation that serves multiple audiences simultaneously — engineers, business stakeholders, auditors, and the public.</p>
           </div>
@@ -198,10 +478,13 @@ export function PM_Section4() {
           </div>
         </div>
 
-        {/* ═══════ DECISION-MAKING ═══════ */}
+        {/* ═══════ DEEP DIVE: DECISION-MAKING ═══════ */}
         <div id="s4-governance" className="h-full flex flex-col p-5 lg:p-8">
           <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Session 04</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04</span>
+              <DeepDiveBadge />
+            </div>
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Decision-Making in Distributed Teams</h2>
             <p className="text-sm text-muted-foreground">Without clear decision frameworks, blockchain projects stall in endless discussion. The PM must define who decides what — and enforce it.</p>
           </div>
@@ -247,10 +530,13 @@ export function PM_Section4() {
           </div>
         </div>
 
-        {/* ═══════ COMMUNITY MANAGEMENT ═══════ */}
+        {/* ═══════ DEEP DIVE: COMMUNITY MANAGEMENT ═══════ */}
         <div id="s4-community" className="h-full flex flex-col p-5 lg:p-8">
           <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Session 04</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#22d3ee]">Section 04</span>
+              <DeepDiveBadge />
+            </div>
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Community Management & Open-Source Collaboration</h2>
             <p className="text-sm text-muted-foreground">For public blockchain projects, the community IS the stakeholder. Managing it well is a core PM competency.</p>
           </div>
@@ -329,7 +615,7 @@ export function PM_Section4() {
         </div>
 
         {/* ═══════ QUIZ 2/3 ═══════ */}
-        <div className="h-full">
+        <div id="s4-quiz-2" className="h-full">
           <QuizSlide
             question="(2/3) In the DACI decision framework used by blockchain project teams, what is the specific role of the 'A' — Approver?"
             options={[
@@ -343,7 +629,7 @@ export function PM_Section4() {
         </div>
 
         {/* ═══════ QUIZ 3/3 ═══════ */}
-        <div className="h-full">
+        <div id="s4-quiz-3" className="h-full">
           <QuizSlide
             question="(3/3) Your smart contract developer says: 'Each transaction costs ~23,000 gas — at current base fees that's about $4 per call.' How should you translate this for the executive sponsor?"
             options={[
@@ -359,13 +645,13 @@ export function PM_Section4() {
         {/* ═══════ TAKEAWAYS ═══════ */}
         <div id="s4-takeaways" className="h-full">
           <TakeawaySlide
-            title="Key Takeaways — Session 04"
+            title="Key Takeaways — Section 04"
             takeaways={[
-              'The blockchain PM is the translator between three worlds: the technical team, business stakeholders, and the public community — each requires a different communication register.',
-              'Technical-to-business translation is a core PM skill: convert gas limits and vulnerabilities into risk, cost, and timeline language that executives can act on.',
-              'Documentation serves multiple audiences simultaneously — whitepapers for the community, technical specs for auditors, and runbooks for operations. All must exist before mainnet.',
-              'The DACI framework prevents decision gridlock: define who Drives, Approves, Contributes, and is Informed for every major decision — especially before the specification freeze.',
-              'Community trust is built through radical transparency and consistent communication cadence. A well-handled incident builds more trust than silence after a perfect launch.',
+              'Communication is the core of project management — it enables alignment, transparency, trust, and value delivery, and the stakeholder map from Section 1 is its direct input.',
+              'Bridge technical and non-technical audiences with three disciplines: translate technical risk into business impact, demonstrate with working software instead of slides, and document every decision in writing.',
+              'Communication focus evolves with the lifecycle (vision → scope and risks → coordination → status → lessons learned), planned as: identify stakeholders → define needs → select channels → set frequency → monitor effectiveness.',
+              'Blockchain adds one non-negotiable protocol: an incident communication plan — internal authority and cadence, external disclosure rules — agreed and rehearsed before launch, never improvised mid-incident.',
+              'Select collaboration tools by project needs, not popularity — standardize a minimal ecosystem. Technology supports communication; active listening, leadership, and human interaction build trust.',
             ]}
           />
         </div>
