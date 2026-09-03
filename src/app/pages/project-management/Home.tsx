@@ -1,8 +1,10 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, ExternalLink, Mail } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { BrandLogo } from '../../components/shared/BrandLogo';
 import { SiteFooter } from '../../components/shared/SiteFooter';
+import { TeacherCard } from '../../components/shared/TeacherCard';
+import { useInstructor } from '../../data/instructors';
 import { useLang } from '../../../i18n/useLang';
 
 const sectionMeta = [
@@ -16,13 +18,12 @@ const sectionMeta = [
 ];
 
 const badgeKeys = ['sessions', 'risk', 'stakeholder', 'leadership'] as const;
-const statKeys = ['education', 'experience', 'industry'] as const;
 
 export function ProjectManagementHome() {
   const lang = useLang();
   const { t } = useTranslation('project-management/home');
   const BASE = `/${lang}/project-management`;
-  const highlights = t('instructor.highlights', { returnObjects: true }) as string[];
+  const instructors = [useInstructor('zuzanna'), useInstructor('shayan')];
 
   return (
     <div className="size-full overflow-y-auto">
@@ -92,59 +93,15 @@ export function ProjectManagementHome() {
         </div>
       </div>
 
-      {/* Instructor */}
+      {/* Instructors */}
       <div className="max-w-7xl mx-auto px-12 py-16 border-t border-border">
         <h2 className="text-4xl font-bold text-foreground mb-3">{t('instructor.title')}</h2>
         <p className="text-muted-foreground mb-10">{t('instructor.subtitle')}</p>
 
-        <div className="max-w-2xl bg-card border border-border rounded-2xl p-6 flex gap-6 items-start">
-          <div className="size-20 rounded-full bg-gradient-to-br from-[#f97316] to-[#eab308] flex items-center justify-center shrink-0 text-white text-2xl font-black">
-            PG
-          </div>
-          <div>
-            <div className="text-xs font-bold text-[#f97316] tracking-widest mb-1">{t('instructor.badge')}</div>
-            <h3 className="text-xl font-black text-foreground mb-0.5">{t('instructor.name')}</h3>
-            <p className="text-sm text-[#f97316] font-medium mb-3">
-              {t('instructor.role')}
-            </p>
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {statKeys.map(key => (
-                <div key={key} className="px-3 py-1 bg-[#f97316]/10 border border-[#f97316]/20 rounded-full">
-                  <span className="text-xs text-muted-foreground">{t(`instructor.stats.${key}.label`)}: </span>
-                  <span className="text-xs font-semibold text-[#f97316]">{t(`instructor.stats.${key}.value`)}</span>
-                </div>
-              ))}
-            </div>
-
-            <ul className="space-y-1.5 mb-4">
-              {highlights.map((h) => (
-                <li key={h} className="flex gap-2 text-sm text-muted-foreground">
-                  <span className="text-[#f97316] shrink-0">•</span>
-                  {h}
-                </li>
-              ))}
-            </ul>
-
-            <div className="flex items-center gap-4">
-              <a
-                href="mailto:pedro@zharta.com"
-                className="inline-flex items-center gap-1.5 text-sm text-[#f97316] font-medium hover:underline"
-              >
-                <Mail className="size-3.5" />
-                pedro@zharta.com
-              </a>
-              <a
-                href="https://www.linkedin.com/in/pedrogranate/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-[#f97316] font-medium hover:underline"
-              >
-                <ExternalLink className="size-3.5" />
-                LinkedIn
-              </a>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {instructors.map((instructor) => (
+            <TeacherCard key={instructor.name} {...instructor} />
+          ))}
         </div>
       </div>
 

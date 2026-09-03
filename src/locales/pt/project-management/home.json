@@ -45,22 +45,7 @@
     }
   },
   "instructor": {
-    "title": "Conhece o Formador",
-    "subtitle": "A pessoa por trás deste curso",
-    "badge": "FORMADOR",
-    "name": "Pedro Granate",
-    "role": "Cofundador, COO e CPO · Zharta",
-    "stats": {
-      "education": { "label": "Educação", "value": "Mestrado em Engenharia Mecânica, IST" },
-      "experience": { "label": "Experiência", "value": "10+ anos em Gestão de Projetos e Operações" },
-      "industry": { "label": "Indústria", "value": "Engenharia · Fabrico · Tecnologia" }
-    },
-    "highlights": [
-      "Mestrado em Engenharia Mecânica pelo IST (Instituto Superior Técnico)",
-      "Engenheiro de Desenvolvimento na Bosch Termotecnologia",
-      "Gestor de Projetos em funções de produção e desenvolvimento",
-      "Gestor de Projetos na Hovione (contexto CMO)",
-      "Cofundador, COO e CPO na Zharta — estratégia de produto e operacional"
-    ]
+    "title": "Conhece os Formadores",
+    "subtitle": "As pessoas por trás deste curso"
   }
 }

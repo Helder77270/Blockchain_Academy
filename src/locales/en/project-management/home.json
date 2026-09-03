@@ -45,22 +45,7 @@
     }
   },
   "instructor": {
-    "title": "Meet the Instructor",
-    "subtitle": "The person behind this course",
-    "badge": "INSTRUCTOR",
-    "name": "Pedro Granate",
-    "role": "Co-founder, COO & CPO · Zharta",
-    "stats": {
-      "education": { "label": "Education", "value": "MSc Mechanical Engineering, IST" },
-      "experience": { "label": "Experience", "value": "10+ years PM & Operations" },
-      "industry": { "label": "Industry", "value": "Engineering · Manufacturing · Tech" }
-    },
-    "highlights": [
-      "MSc in Mechanical Engineering from IST (Instituto Superior Técnico)",
-      "Development Engineer at Bosch Termotecnologia",
-      "Project Manager in production & development roles",
-      "Project Manager at Hovione (CMO context)",
-      "Co-founder, COO & CPO at Zharta — product and operational strategy"
-    ]
+    "title": "Meet the Instructors",
+    "subtitle": "The people behind this course"
   }
 }
