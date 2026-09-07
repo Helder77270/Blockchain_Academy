@@ -3,37 +3,41 @@
     "courseBadge": "Curso 04",
     "titleLine1": "Gestão de Projetos para",
     "titleLine2": "Iniciativas de Blockchain",
-    "tagline": "Planeia, executa e lidera projetos de blockchain — ligando a complexidade técnica aos resultados de negócio.",
+    "tagline": "Aprende a gerir eficazmente projetos de blockchain — combinando boas práticas de gestão de projetos com as exigências técnicas, regulatórias e de stakeholders da blockchain, do âmbito à qualidade, mudança e encerramento do projeto.",
     "badges": {
-      "sessions": "5 Sessões",
+      "sessions": "6 Secções",
       "risk": "Frameworks de Risco",
       "stakeholder": "Ferramentas de Stakeholders",
       "leadership": "Modelos de Liderança"
     },
     "startLearning": "Começar a Aprender"
   },
-  "sectionsTitle": "Sessões do Curso",
+  "sectionsTitle": "Secções do Curso",
   "explore": "Explorar",
   "sections": {
     "section1": {
       "title": "Introdução à Gestão de Projetos de Blockchain",
-      "description": "O que torna os projetos de blockchain únicos, o ciclo de vida do projeto, os papéis-chave e o debate Agile vs Waterfall para equipas descentralizadas."
+      "description": "Os elementos dos projetos de blockchain, gestão de projeto vs. de produto, a checklist de entrega, Agile vs. Waterfall e a gestão de stakeholders."
     },
     "section2": {
       "title": "Planeamento e Definição de Âmbito de Projetos de Blockchain",
-      "description": "Frameworks de decisão, definição de âmbito, mapeamento de stakeholders, estruturas de decomposição do trabalho e modelos de governação."
+      "description": "Objetivos SMART, a fronteira on-chain/off-chain, WBS e a bifurcação para o backlog, adaptação por pacote de trabalho, estimativas, cronogramas e ferramentas de planeamento com IA."
     },
     "section3": {
       "title": "Gestão de Risco em Projetos de Blockchain",
-      "description": "Riscos técnicos, regulatórios e de adoção — com frameworks de avaliação, processos de auditoria de smart contracts e estratégias de mitigação."
+      "description": "Princípios de risco, as quatro categorias de risco em blockchain, avaliação e priorização, estratégias de mitigação e contingência, e o registo de riscos vivo."
     },
     "section4": {
       "title": "Comunicação e Colaboração para Equipas de Blockchain",
-      "description": "Comunicação multi-stakeholder, tradução do técnico para o negócio, práticas de documentação e governação descentralizada."
+      "description": "Comunicação com stakeholders técnicos e não técnicos, protocolos ao longo do ciclo de vida, comunicação de incidentes e seleção de ferramentas de colaboração."
     },
     "section5": {
       "title": "Liderar Equipas de Projetos de Blockchain",
-      "description": "Composição de equipas, liderança em contextos descentralizados, cerimónias Agile, gestão da mudança e medição do sucesso do projeto."
+      "description": "O papel do gestor de projetos de blockchain, construção de confiança em equipas distribuídas, estilos de liderança, liderança ágil e resolução de conflitos."
+    },
+    "section6": {
+      "title": "Para Além do Planeamento e Execução",
+      "description": "Gestão da qualidade, o gate de compromisso irreversível, monitorização e avaliação, controlo de mudanças e encerramento do projeto com transição para operações."
     },
     "conclusion": {
       "title": "Conclusão",
@@ -41,22 +45,7 @@
     }
   },
   "instructor": {
-    "title": "Conhece o Formador",
-    "subtitle": "A pessoa por trás deste curso",
-    "badge": "FORMADOR",
-    "name": "Pedro Granate",
-    "role": "Cofundador, COO e CPO · Zharta",
-    "stats": {
-      "education": { "label": "Educação", "value": "Mestrado em Engenharia Mecânica, IST" },
-      "experience": { "label": "Experiência", "value": "10+ anos em Gestão de Projetos e Operações" },
-      "industry": { "label": "Indústria", "value": "Engenharia · Fabrico · Tecnologia" }
-    },
-    "highlights": [
-      "Mestrado em Engenharia Mecânica pelo IST (Instituto Superior Técnico)",
-      "Engenheiro de Desenvolvimento na Bosch Termotecnologia",
-      "Gestor de Projetos em funções de produção e desenvolvimento",
-      "Gestor de Projetos na Hovione (contexto CMO)",
-      "Cofundador, COO e CPO na Zharta — estratégia de produto e operacional"
-    ]
+    "title": "Conhece os Formadores",
+    "subtitle": "As pessoas por trás deste curso"
   }
 }

@@ -4,10 +4,10 @@ import { ScrollProgressBar } from './components/navigation/ScrollProgressBar';
 import { SlideNavButtons } from './components/navigation/SlideNavButtons';
 import { useLang } from '../i18n/useLang';
 
-// Course 4 is intentionally NOT in the translation scope yet (per plan: it's
-// locked / "Coming Soon"). Section labels stay hardcoded English. The locale
-// prefix is still respected so a user who switches to PT mid-session and
-// then somehow lands here keeps their preference.
+// Course 4 is intentionally NOT in the translation scope yet: section labels
+// stay hardcoded English (only the Home page is translated). The locale
+// prefix is still respected so a user who switches to PT keeps their
+// preference while navigating here.
 export function ProjectManagementRoot() {
   const location = useLocation();
   const lang = useLang();
@@ -21,6 +21,7 @@ export function ProjectManagementRoot() {
     { id: '3',    number: '03', label: 'Risk',          path: `${BASE}/section-3` },
     { id: '4',    number: '04', label: 'Communication', path: `${BASE}/section-4` },
     { id: '5',    number: '05', label: 'Leadership',    path: `${BASE}/section-5` },
+    { id: '6',    number: '06', label: 'Beyond Execution', path: `${BASE}/section-6` },
     { id: 'end',  number: '🏁', label: 'Conclusion',    path: `${BASE}/conclusion` },
     { id: 'bib',  number: '📖', label: 'Bibliography',  path: `${BASE}/bibliography` },
   ];

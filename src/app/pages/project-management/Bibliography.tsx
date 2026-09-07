@@ -11,6 +11,13 @@ interface Resource {
 }
 
 const resources: Resource[] = [
+  {
+    title: "Smart Contract Security Audit Practice Guides",
+    url: "https://consensys.github.io/smart-contract-best-practices/",
+    description: "Practitioner sources on audit scoping, threat modeling, and pre-audit preparation — instructor background for the security-risk examples in Section 3, kept at PM-implication depth in the course itself rather than engineering depth.",
+    tag: "Research",
+    tagColor: "#f59e0b",
+  },
   // Must-Reads
   {
     title: "The Truth About Blockchain — Harvard Business Review",
@@ -57,11 +64,11 @@ const resources: Resource[] = [
     tagColor: "#6366f1",
   },
   {
-    title: "PMBOK Guide — Project Management Institute",
+    title: "PMBOK Guide (8th Edition, 2026) — Project Management Institute",
     url: "https://www.pmi.org/pmbok-guide-standards",
-    description: "The global standard for project management practice. The 7th edition shifts to a principles-based model aligned with agile thinking. The foundational reference for any serious blockchain PM.",
-    tag: "Framework",
-    tagColor: "#6366f1",
+    description: "The Standard for Project Management and PMBOK Guide, Eighth Edition (January 2026) — the primary grounding for this course: performance domains, tailoring guidance, risk response strategies, stakeholder and conflict-management vocabulary.",
+    tag: "Must-Read",
+    tagColor: "#f97316",
   },
 
   // Books

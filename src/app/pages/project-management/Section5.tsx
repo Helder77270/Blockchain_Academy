@@ -4,123 +4,183 @@ import { DiscussionSlide } from '../../components/templates/DiscussionSlide';
 import { QuizSlide } from '../../components/templates/QuizSlide';
 import { SectionNav } from '../../components/navigation/SectionNav';
 import { SiteFooter } from '../../components/shared/SiteFooter';
+import { MicroVaultCallout } from '../../components/shared/MicroVaultCallout';
+import { DeepDiveBadge } from '../../components/shared/DeepDiveBadge';
 import { Trophy } from 'lucide-react';
 
 const chapters = [
-  { id: 's5-team',      label: 'Team Composition' },
-  { id: 's5-leadership',label: 'Leadership Models' },
-  { id: 's5-agile',     label: 'Agile for Blockchain' },
-  { id: 's5-change',    label: 'Change Management' },
-  { id: 's5-metrics',   label: 'Measuring Success' },
-  { id: 's5-quiz',      label: 'Quiz' },
+  { id: 's5-role',      label: '5.1 Role of the PM' },
+  { id: 's5-trust',     label: '5.2 Trust & Cohesion' },
+  { id: 's5-leadership',label: '5.3 Leadership Styles' },
+  { id: 's5-agile',     label: '5.4 Agile Leadership' },
+  { id: 's5-conflict',  label: '5.5 Conflict & Performance' },
+  { id: 's5-sources',   label: 'Sources & Literature' },
+  { id: 's5-extras',    label: 'Extras', kind: 'group' as const },
+  { id: 's5-team',      label: 'Deep Dive: Team Composition' },
+  { id: 's5-change',    label: 'Deep Dive: Change Adoption' },
+  { id: 's5-metrics',   label: 'Deep Dive: Success Metrics' },
   { id: 's5-discussion',label: 'Discussion' },
+  { id: 's5-quiz',      label: 'Quiz' },
   { id: 's5-takeaways', label: 'Takeaways' },
 ];
 
 export function PM_Section5() {
   return (
     <div className="h-full w-full flex overflow-hidden">
-      <SectionNav chapters={chapters} />
+      <SectionNav chapters={chapters} accentColor="#8b5cf6" />
       <div id="section-scroll" className="flex-1 overflow-y-auto snap-y snap-mandatory">
         <div className="slide-flow">
 
         {/* ═══════ TITLE ═══════ */}
         <div className="h-full">
           <TitleSlide
-            sectionNumber="SESSION 05"
+            sectionNumber="SECTION 05"
             title="Leading Blockchain Project Teams"
-            subtitle="From team composition to change management — the human side of delivering decentralized technology"
+            subtitle="The role of the PM, building trust, leadership styles, agile leadership, and conflict resolution — the human side of delivery"
             icon={<Trophy className="size-20 text-[#8b5cf6]" />}
             gradient="from-[#8b5cf6] to-[#f97316]"
           />
         </div>
 
-        {/* ═══════ TEAM COMPOSITION ═══════ */}
-        <div id="s5-team" className="h-full flex flex-col p-5 lg:p-8">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Session 05</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Building the Blockchain Project Team</h2>
-            <p className="text-sm text-muted-foreground">Blockchain talent is scarce and expensive. Team composition decisions made at the start will define your project's success ceiling.</p>
+        {/* ═══════ 5.1 THE ROLE OF THE BLOCKCHAIN PM ═══════ */}
+        <div id="s5-role" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05 · Slide 5.1</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">The Role of the Blockchain Project Manager</h2>
+            <p className="text-sm text-muted-foreground">
+              Modern PMI perspective: project managers are not merely planners or controllers — they create the environment where teams
+              successfully deliver value.
+            </p>
           </div>
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-5">
-            <div className="col-span-2 grid grid-cols-2 gap-3">
+
+          <div className="flex-1 min-h-0 flex flex-col gap-3">
+            {/* The five postures */}
+            <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-5 gap-3 content-center">
               {[
-                {
-                  size: 'Core Team (always in-house)',
-                  color: '#8b5cf6',
-                  members: [
-                    'PM / Delivery Lead — project coordination and stakeholder management',
-                    'Blockchain Architect — platform decision-making and irreversible design choices',
-                    'Product Owner — requirements prioritization and business alignment',
-                    'Legal / Compliance Lead — regulatory navigation and risk sign-off',
-                  ],
-                },
-                {
-                  size: 'Extended Team (in-house or embedded)',
-                  color: '#f97316',
-                  members: [
-                    '2–4 Smart Contract Developers — contract implementation and testing',
-                    'Integration Engineer — oracle, API, and off-chain bridge development',
-                    'QA / Test Engineer — test coverage, fuzzing, and integration testing',
-                    'DevOps / Infrastructure — node operation, monitoring, CI/CD pipelines',
-                  ],
-                },
-                {
-                  size: 'External Specialists (contracted)',
-                  color: '#22d3ee',
-                  members: [
-                    'Security Auditors — independent smart contract review (mandatory)',
-                    'Token Economist — tokenomics design and incentive modelling',
-                    'Community Manager — Discord, governance forum, public communications',
-                    'Technical Writer — whitepaper, documentation, protocol specifications',
-                  ],
-                },
-                {
-                  size: 'Advisory Network',
-                  color: '#eab308',
-                  members: [
-                    'Blockchain Ecosystem Advisors — industry connections and protocol expertise',
-                    'Legal Counsel (jurisdiction-specific) — country-level regulatory advice',
-                    'Security Research Advisors — bug bounty oversight and threat modelling',
-                    'Domain Expert Advisors — industry vertical knowledge (finance, supply chain, etc.)',
-                  ],
-                },
-              ].map(group => (
-                <div key={group.size} className="p-4 bg-card border rounded-xl" style={{ borderColor: group.color + '40' }}>
-                  <div className="font-bold text-xs mb-2" style={{ color: group.color }}>{group.size}</div>
-                  <ul className="space-y-1">
-                    {group.members.map(m => <li key={m} className="text-xs text-muted-foreground flex gap-1.5"><span style={{ color: group.color }} className="shrink-0">•</span>{m}</li>)}
-                  </ul>
+                { t: 'Facilitator', icon: '🤲', d: 'Enables the team rather than directing every activity' },
+                { t: 'Coordinator', icon: '🔗', d: 'Aligns stakeholders across organizations, time zones, and roles' },
+                { t: 'Information integrator', icon: '🧠', d: 'Brings technical, legal, and business signals into one picture' },
+                { t: 'Accountable leader', icon: '🎖️', d: 'Owns decision rights, escalation, and approval processes' },
+                { t: 'Value enabler', icon: '💎', d: 'Keeps delivery pointed at value, not just scope and schedule' },
+              ].map(r => (
+                <div key={r.t} className="p-3 lg:p-4 rounded-xl bg-card border border-border flex flex-col items-center text-center gap-1.5">
+                  <span className="text-2xl">{r.icon}</span>
+                  <div className="font-bold text-sm text-[#8b5cf6]">{r.t}</div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{r.d}</p>
                 </div>
               ))}
             </div>
-            <div className="space-y-3">
-              <div className="font-bold text-sm text-foreground">Talent Scarcity Realities</div>
-              <div className="space-y-2">
-                {[
-                  { issue: 'Smart Contract Devs are expensive', detail: 'Senior Solidity developers command $150k–$300k. Plan your budget early. Do not compete with DeFi protocols for talent without matching their compensation.' },
-                  { issue: 'Blockchain literacy gap is real', detail: 'Most enterprise PMs, QA engineers, and POs do not have blockchain experience. Build a training budget into the project — or onboarding will slow you down.' },
-                  { issue: 'Pseudonymous contributors', detail: 'Many top blockchain contributors operate under pseudonyms. This is normal in the space — adapt your HR and contracting practices accordingly.' },
-                  { issue: 'Global, async-first teams', detail: 'Blockchain talent is globally distributed. Design your team rituals for async-first collaboration rather than trying to force synchronous meetings across time zones.' },
-                ].map(r => (
-                  <div key={r.issue} className="p-3 bg-[#ef4444]/8 border border-[#ef4444]/30 rounded-lg">
-                    <div className="font-semibold text-xs text-[#ef4444] mb-0.5">⚠️ {r.issue}</div>
-                    <div className="text-xs text-muted-foreground">{r.detail}</div>
-                  </div>
+
+            <div className="shrink-0 p-3 lg:p-4 rounded-xl bg-card border border-border text-xs lg:text-sm text-muted-foreground leading-relaxed">
+              <span className="font-bold text-foreground">Responsibilities:</span> align stakeholders · enable team performance · support
+              decision-making · manage uncertainty · deliver value. In blockchain initiatives the PM may interact with steering
+              committees, sponsors, security review boards, or <span className="font-semibold text-foreground">DAO governance mechanisms</span> —
+              leadership means balancing team autonomy with governance requirements by clarifying decision rights, escalation mechanisms,
+              approval processes, and accountability.
+            </div>
+
+            <div className="shrink-0 p-3 lg:p-4 rounded-xl bg-gradient-to-r from-[#8b5cf6]/15 to-[#f97316]/15 border-2 border-[#8b5cf6]/40 text-sm text-foreground font-semibold">
+              Key principle: project managers deliver results through people rather than through authority alone.
+            </div>
+
+            <MicroVaultCallout className="shrink-0">
+              In MicroVault the founder acts as project manager, product owner, and stakeholder liaison at once — common in small DeFi
+              startups. We clarify decision rights even within a three-person team, so authority is explicit rather than assumed.
+            </MicroVaultCallout>
+          </div>
+        </div>
+
+        {/* ═══════ 5.2 BUILDING TRUST & TEAM COHESION ═══════ */}
+        <div id="s5-trust" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05 · Slide 5.2</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Building Trust &amp; Fostering Team Cohesion</h2>
+            <p className="text-sm text-muted-foreground">
+              Blockchain teams face structural obstacles to trust that generic team-building advice doesn't address — trust has to be
+              engineered through process, not assumed to emerge naturally.
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Why trust is harder */}
+            <div className="flex flex-col gap-2.5 min-h-0">
+              <div className="font-bold text-sm text-foreground shrink-0">Why trust is harder to build by default:</div>
+              {[
+                { t: 'Distributed, asynchronous work', d: 'removes the informal, in-person moments that normally build trust quickly.', icon: '🌍' },
+                { t: "Specialists can't verify each other", d: "a non-technical founder can't audit a smart contract; a developer can't independently judge a legal opinion.", icon: '🔍' },
+                { t: 'Pseudonymous contribution norms', d: 'common in public-protocol work — team members may have thinner shared history than co-located teams.', icon: '🎭' },
+                { t: 'High-stakes, irreversible decisions', d: 'an audit sign-off or mainnet deployment raises the cost of misplaced trust — making deliberate construction more important.', icon: '⚠️' },
+              ].map(o => (
+                <div key={o.t} className="flex items-start gap-3 p-3 rounded-xl bg-[#ef4444]/8 border border-[#ef4444]/30">
+                  <span className="text-lg shrink-0">{o.icon}</span>
+                  <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed"><span className="font-bold text-foreground">{o.t}</span> — {o.d}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Practices */}
+            <div className="flex flex-col gap-2.5 min-h-0">
+              <div className="font-bold text-sm text-foreground shrink-0">Practices that build trust under these conditions:</div>
+              {[
+                { t: 'Transparency by default', d: 'decisions and their reasoning documented and visible to the whole team — substitutes for the informal trust co-located teams get "for free."', icon: '📖' },
+                { t: 'Competence-based delegation', d: "consistently delegate decisions to whoever has the expertise — the auditor's findings aren't second-guessed by non-specialists — and be transparent about why.", icon: '🎓' },
+                { t: 'Predictable rituals', d: 'consistent stand-ups, demos, and retrospectives — even lightweight ones — give distributed teams a shared rhythm.', icon: '🗓️' },
+                { t: 'Psychological safety around bad news', d: 'critical before an audit or deployment gate — a team that fears raising a concern late will raise it after it becomes a costly incident instead.', icon: '🛟' },
+              ].map(p => (
+                <div key={p.t} className="flex items-start gap-3 p-3 rounded-xl bg-[#39B54A]/8 border border-[#39B54A]/30">
+                  <span className="text-lg shrink-0">{p.icon}</span>
+                  <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed"><span className="font-bold text-foreground">{p.t}</span> — {p.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="shrink-0 mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-r from-[#8b5cf6]/15 to-[#f97316]/15 border-2 border-[#8b5cf6]/40 text-xs lg:text-sm text-foreground font-semibold flex items-center">
+              Key principle: in distributed, high-stakes blockchain teams, trust is a deliberate output of transparent process — not a
+              byproduct of time spent together.
+            </div>
+            <MicroVaultCallout>
+              Three people, multiple time zones, one Solidity developer whose work the founders can't verify. Trust is built by making
+              every architecture and audit-prep decision visible in a shared repo, deferring unconditionally to the auditor's findings,
+              and a weekly retrospective where "what are we worried about" is a standing item — so a late concern surfaces before, not
+              after, the audit.
+            </MicroVaultCallout>
+          </div>
+        </div>
+
+        {/* ═══════ 5.3 LEADERSHIP STYLES & SKILLS ═══════ */}
+        <div id="s5-leadership" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05 · Slide 5.3</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Leadership Styles &amp; Essential Leadership Skills</h2>
+            <p className="text-sm text-muted-foreground">
+              There is no single style for every project environment — effective leaders adapt to the situation, and the posture must
+              match the project context.
+            </p>
+          </div>
+
+          {/* Styles + skills strip */}
+          <div className="shrink-0 mb-3 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3">
+            <div className="rounded-xl border border-border overflow-hidden">
+              <div className="grid grid-cols-5 text-[10px] lg:text-[11px] font-bold text-center bg-muted text-foreground">
+                {['Transformational', 'Servant', 'Democratic', 'Coaching', 'Directive'].map(s => <div key={s} className="p-1.5 lg:p-2">{s}</div>)}
+              </div>
+              <div className="grid grid-cols-5 text-[10px] lg:text-[11px] text-center text-muted-foreground border-t border-border">
+                {['Innovation and change', 'Agile & blockchain teams', 'Collaborative environments', 'Team development', 'Crisis situations'].map((u, i) => <div key={i} className="p-1.5 lg:p-2">{u}</div>)}
+              </div>
+            </div>
+            <div className="p-2.5 rounded-xl bg-card border border-border">
+              <div className="text-[10px] font-black uppercase tracking-wider text-muted-foreground mb-1">Essential skills</div>
+              <div className="flex flex-wrap gap-1">
+                {['Emotional intelligence', 'Decision-making', 'Conflict management', 'Strategic thinking', 'Adaptability'].map(s => (
+                  <span key={s} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 text-[#8b5cf6]">{s}</span>
                 ))}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ═══════ LEADERSHIP MODELS ═══════ */}
-        <div id="s5-leadership" className="h-full flex flex-col p-5 lg:p-8">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Session 05</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Leadership in Blockchain Contexts</h2>
-            <p className="text-sm text-muted-foreground">Blockchain projects span a spectrum — from centrally-controlled enterprise consortia to fully decentralized open-source protocols. Each demands a different leadership posture.</p>
-          </div>
-          <div className="flex-1 min-h-0 grid grid-cols-3 gap-5">
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-4 lg:gap-5">
             {[
               {
                 context: 'Enterprise / Consortium Blockchain',
@@ -166,16 +226,43 @@ export function PM_Section5() {
               </div>
             ))}
           </div>
+
+          <MicroVaultCallout className="shrink-0 mt-3">
+            MicroVault's lead uses servant leadership with the dev team day-to-day — but shifts to directive style if a security
+            incident occurs. Style matched to situation, not habit.
+          </MicroVaultCallout>
         </div>
 
-        {/* ═══════ AGILE FOR BLOCKCHAIN ═══════ */}
+        {/* ═══════ 5.4 AGILE LEADERSHIP ═══════ */}
         <div id="s5-agile" className="h-full flex flex-col p-5 lg:p-8">
-          <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Session 05</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Agile Ceremonies Adapted for Blockchain</h2>
-            <p className="text-sm text-muted-foreground">Standard Scrum works — with blockchain-specific adaptations to account for irreversibility, audit cycles, and on-chain deployment constraints.</p>
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05 · Slide 5.4</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Agile Leadership in Dynamic Blockchain Environments</h2>
+            <p className="text-sm text-muted-foreground">
+              Blockchain projects evolve with regulation, technology, security threats, and market volatility. Agile leaders enable teams
+              rather than directing every activity — the ceremonies below keep that adaptivity from drifting past the irreversible-commitment constraints.
+            </p>
           </div>
-          <div className="flex-1 min-h-0 grid grid-cols-2 gap-5">
+
+          {/* Leadership characteristics / responsibilities / agile practices */}
+          <div className="shrink-0 mb-3 grid grid-cols-1 lg:grid-cols-3 gap-2.5">
+            {[
+              { label: 'Leadership characteristics', color: '#8b5cf6', items: ['Flexibility', 'Continuous learning', 'Fast decision-making', 'Team empowerment', 'Iterative delivery'] },
+              { label: 'Leadership responsibilities', color: '#f97316', items: ['Remove blockers', 'Encourage innovation', 'Facilitate collaboration', 'Prioritize value delivery'] },
+              { label: 'Agile practices', color: '#39B54A', items: ['Scrum ceremonies', 'Kanban boards', 'MVP delivery', 'Continuous feedback', 'Incremental releases'] },
+            ].map(g => (
+              <div key={g.label} className="p-2.5 rounded-xl bg-card border border-border">
+                <div className="text-[10px] font-black uppercase tracking-wider mb-1.5" style={{ color: g.color }}>{g.label}</div>
+                <div className="flex flex-wrap gap-1">
+                  {g.items.map(it => (
+                    <span key={it} className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border text-muted-foreground" style={{ borderColor: g.color + '40', backgroundColor: g.color + '10' }}>{it}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex-1 min-h-0 overflow-y-auto grid grid-cols-2 gap-4 lg:gap-5 content-start">
             <div className="space-y-3">
               {[
                 {
@@ -248,14 +335,202 @@ export function PM_Section5() {
               ))}
             </div>
           </div>
+
+          <MicroVaultCallout className="shrink-0 mt-3">
+            When a competitor launch or new regulation appears, MicroVault's lead re-prioritizes the backlog quickly rather than holding
+            to the original plan — while still treating the mainnet go/no-go gate as non-negotiable regardless of how the backlog shifts.
+          </MicroVaultCallout>
         </div>
 
-        {/* ═══════ CHANGE MANAGEMENT ═══════ */}
+        {/* ═══════ 5.5 CONFLICT RESOLUTION & TEAM PERFORMANCE ═══════ */}
+        <div id="s5-conflict" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-3 lg:mb-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05 · Slide 5.5</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Conflict Resolution &amp; Team Performance</h2>
+            <p className="text-sm text-muted-foreground">
+              Conflict is natural — especially in remote, technically complex, fast-changing blockchain environments. The objective is not
+              to eliminate it but to manage it constructively.
+            </p>
+          </div>
+
+          <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Conflict approaches */}
+            <div className="flex flex-col gap-2.5 min-h-0 justify-center">
+              <div className="font-bold text-sm text-foreground shrink-0">
+                Conflict management approaches (PMI) — why it happens: technical disagreements, remote work, rapid change, resource competition, cultural differences
+              </div>
+              {[
+                { s: 'Collaborate', c: '#39B54A', d: 'Work through the disagreement together — best for long-term solutions.' },
+                { s: 'Compromise', c: '#eab308', d: 'Each side concedes something — fast resolution when time matters.' },
+                { s: 'Facilitate', c: '#22d3ee', d: 'Structure the conversation and drive alignment — the PM\'s default in expert disputes.' },
+                { s: 'Escalate', c: '#f97316', d: 'Route to the appropriate authority — for governance issues beyond the team.' },
+                { s: 'Withdraw', c: '#8b5cf6', d: 'Deliberately step back — for low-priority conflicts not worth the energy.' },
+              ].map(a => (
+                <div key={a.s} className="flex gap-3 p-2.5 bg-card border border-border rounded-lg items-start">
+                  <div className="shrink-0 px-2.5 py-1 rounded text-xs font-black text-white" style={{ background: a.c }}>{a.s.toUpperCase()}</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{a.d}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Performance management */}
+            <div className="flex flex-col gap-3 min-h-0">
+              <div className="p-3 lg:p-4 rounded-xl bg-card border border-border">
+                <div className="font-bold text-sm text-foreground mb-2">Performance management focus</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {['Team engagement', 'Quality outcomes', 'Stakeholder satisfaction', 'Continuous feedback', 'Knowledge sharing'].map(f => (
+                    <span key={f} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#39B54A]/10 border border-[#39B54A]/30 text-[#39B54A]">{f}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="p-3 lg:p-4 rounded-xl bg-card border border-border flex-1">
+                <div className="font-bold text-sm text-foreground mb-2">Blockchain-specific metrics</div>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {['Smart contract quality', 'Security incident rates', 'Sprint velocity', 'Deployment stability', 'Community engagement'].map(m => (
+                    <span key={m} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 text-[#8b5cf6]">{m}</span>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Measure not just delivery speed but quality outcomes and long-term value creation — and keep supporting performance
+                  through psychological safety (Slide 5.2), feedback, and recognition. The full eight-dimension KPI framework is in the
+                  deep dive below.
+                </p>
+              </div>
+              <div className="p-3 rounded-xl bg-gradient-to-r from-[#8b5cf6]/15 to-[#f97316]/15 border-2 border-[#8b5cf6]/40 text-xs lg:text-sm text-foreground font-semibold shrink-0">
+                Key principle: high-performing teams require both effective conflict resolution and continuous performance improvement.
+              </div>
+              <MicroVaultCallout className="shrink-0">
+                A disagreement over whether to delay launch for a second audit is resolved by collaboration and escalation to the
+                founders — and it surfaced constructively in the first place because of the trust practices from Slide 5.2. We track
+                audit findings and deployment stability alongside delivery metrics.
+              </MicroVaultCallout>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ SUGGESTED SOURCES & LITERATURE — SECTION 5 ═══════ */}
+        <div id="s5-sources" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-4 lg:mb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05</span>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Suggested Sources &amp; Literature</h2>
+            <p className="text-sm text-muted-foreground">Where the leadership material in this section is grounded — and what to treat as course-original synthesis.</p>
+          </div>
+          <div className="flex-1 min-h-0 flex flex-col gap-3 justify-center max-w-4xl">
+            {[
+              {
+                title: 'PMI — The Standard for Project Management & PMBOK® Guide, Eighth Edition (Jan. 2026)',
+                body: 'The stakeholder performance domain, and the PMI conflict-management approach vocabulary (collaborate / compromise / facilitate / escalate / withdraw).',
+                color: '#f97316',
+              },
+              {
+                title: 'General leadership-style literature',
+                body: 'Transformational, servant, democratic, coaching, and directive styles — broadly consistent across practitioner and academic sources; not PMI-specific, included as widely accepted vocabulary.',
+                color: '#6366f1',
+              },
+              {
+                title: 'Distributed / remote-team trust literature',
+                body: 'The trust-and-cohesion practices in Slide 5.2 are course-original synthesis, grounded in the structural characteristics of distributed, specialist-heavy blockchain teams — no single authoritative "blockchain team trust" standard exists; treat it as practical synthesis rather than an established framework.',
+                color: '#8b5cf6',
+              },
+            ].map(s => (
+              <div key={s.title} className="p-4 rounded-xl bg-card border border-border" style={{ borderLeftWidth: 4, borderLeftColor: s.color }}>
+                <div className="font-bold text-sm text-foreground mb-1">{s.title}</div>
+                <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed">{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════ DEEP DIVE: TEAM COMPOSITION ═══════ */}
+        <div id="s5-team" className="h-full flex flex-col p-5 lg:p-8">
+          <div className="shrink-0 mb-5">
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05</span>
+              <DeepDiveBadge />
+            </div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Building the Blockchain Project Team</h2>
+            <p className="text-sm text-muted-foreground">Blockchain talent is scarce and expensive. Team composition decisions made at the start define your project's success ceiling.</p>
+          </div>
+          <div className="flex-1 min-h-0 grid grid-cols-3 gap-5">
+            <div className="col-span-2 grid grid-cols-2 gap-3">
+              {[
+                {
+                  size: 'Core Team (always in-house)',
+                  color: '#8b5cf6',
+                  members: [
+                    'PM / Delivery Lead — project coordination and stakeholder management',
+                    'Blockchain Architect — platform decision-making and irreversible design choices',
+                    'Product Owner — requirements prioritization and business alignment',
+                    'Legal / Compliance Lead — regulatory navigation and risk sign-off',
+                  ],
+                },
+                {
+                  size: 'Extended Team (in-house or embedded)',
+                  color: '#f97316',
+                  members: [
+                    '2–4 Smart Contract Developers — contract implementation and testing',
+                    'Integration Engineer — oracle, API, and off-chain bridge development',
+                    'QA / Test Engineer — test coverage, fuzzing, and integration testing',
+                    'DevOps / Infrastructure — node operation, monitoring, CI/CD pipelines',
+                  ],
+                },
+                {
+                  size: 'External Specialists (contracted)',
+                  color: '#22d3ee',
+                  members: [
+                    'Security Auditors — independent smart contract review (mandatory)',
+                    'Token Economist — tokenomics design and incentive modelling',
+                    'Community Manager — Discord, governance forum, public communications',
+                    'Technical Writer — whitepaper, documentation, protocol specifications',
+                  ],
+                },
+                {
+                  size: 'Advisory Network',
+                  color: '#eab308',
+                  members: [
+                    'Blockchain Ecosystem Advisors — industry connections and protocol expertise',
+                    'Legal Counsel (jurisdiction-specific) — country-level regulatory advice',
+                    'Security Research Advisors — bug bounty oversight and threat modelling',
+                    'Domain Expert Advisors — industry vertical knowledge (finance, supply chain, etc.)',
+                  ],
+                },
+              ].map(group => (
+                <div key={group.size} className="p-4 bg-card border rounded-xl" style={{ borderColor: group.color + '40' }}>
+                  <div className="font-bold text-xs mb-2" style={{ color: group.color }}>{group.size}</div>
+                  <ul className="space-y-1">
+                    {group.members.map(m => <li key={m} className="text-xs text-muted-foreground flex gap-1.5"><span style={{ color: group.color }} className="shrink-0">•</span>{m}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-3">
+              <div className="font-bold text-sm text-foreground">Talent Scarcity Realities</div>
+              <div className="space-y-2">
+                {[
+                  { issue: 'Smart Contract Devs are expensive', detail: 'Senior Solidity developers command $150k–$300k. Plan your budget early. Do not compete with DeFi protocols for talent without matching their compensation.' },
+                  { issue: 'Blockchain literacy gap is real', detail: 'Most enterprise PMs, QA engineers, and POs do not have blockchain experience. Build a training budget into the project — or onboarding will slow you down.' },
+                  { issue: 'Pseudonymous contributors', detail: 'Many top blockchain contributors operate under pseudonyms. This is normal in the space — adapt your HR and contracting practices accordingly.' },
+                  { issue: 'Global, async-first teams', detail: 'Blockchain talent is globally distributed. Design your team rituals for async-first collaboration rather than trying to force synchronous meetings across time zones.' },
+                ].map(r => (
+                  <div key={r.issue} className="p-3 bg-[#ef4444]/8 border border-[#ef4444]/30 rounded-lg">
+                    <div className="font-semibold text-xs text-[#ef4444] mb-0.5">⚠️ {r.issue}</div>
+                    <div className="text-xs text-muted-foreground">{r.detail}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════ DEEP DIVE: CHANGE MANAGEMENT / ADOPTION ═══════ */}
         <div id="s5-change" className="h-full flex flex-col p-5 lg:p-8">
           <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Session 05</span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Change Management for Blockchain Adoption</h2>
-            <p className="text-sm text-muted-foreground">Blockchain projects require organizational change — new workflows, new trust models, and new mental models for users who have never used a decentralized system.</p>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05</span>
+              <DeepDiveBadge />
+            </div>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Organizational Change &amp; Blockchain Adoption</h2>
+            <p className="text-sm text-muted-foreground">Adopting blockchain means new workflows, trust models, and mental models. (Formal project change control — approving scope changes — is covered in Section 6.3.)</p>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-3 gap-5">
             <div className="p-5 bg-card border border-border rounded-xl space-y-3">
@@ -308,12 +583,15 @@ export function PM_Section5() {
           </div>
         </div>
 
-        {/* ═══════ MEASURING SUCCESS ═══════ */}
+        {/* ═══════ DEEP DIVE: MEASURING SUCCESS ═══════ */}
         <div id="s5-metrics" className="h-full flex flex-col p-5 lg:p-8">
           <div className="shrink-0 mb-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Session 05</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#8b5cf6]">Section 05</span>
+              <DeepDiveBadge />
+            </div>
             <h2 className="text-2xl lg:text-3xl font-bold text-foreground mt-1 mb-1">Measuring Blockchain Project Success</h2>
-            <p className="text-sm text-muted-foreground">Standard project KPIs — on time, on budget, on scope — are necessary but insufficient. Blockchain projects require additional dimensions of measurement.</p>
+            <p className="text-sm text-muted-foreground">The performance focus of Slide 5.5, expanded into eight dimensions — standard KPIs (on time, on budget, on scope) are necessary but insufficient.</p>
           </div>
           <div className="flex-1 min-h-0 grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
@@ -417,6 +695,17 @@ export function PM_Section5() {
           </div>
         </div>
 
+        {/* ═══════ DISCUSSION ═══════ */}
+        <div id="s5-discussion" className="h-full">
+          <DiscussionSlide
+            prompt="You are the PM for a DeFi protocol where the lead smart contract developer is also the most influential community member. They are resistant to your change management plan and are expressing this publicly in the governance forum. How do you handle this?"
+            guidingQuestions={[
+              'Your consortium blockchain project is six months behind schedule. One of the five consortium members wants to exit because of a business strategy change unrelated to your project. How do you manage: (a) the technical impact, (b) the governance impact, and (c) the communication to remaining members?',
+              'What does "success" look like for a blockchain project at 12 months post-launch? Define 5 metrics you would present to your executive sponsor as evidence that the project has delivered lasting value — not just a successful deployment.',
+            ]}
+          />
+        </div>
+
         {/* ═══════ QUIZ ═══════ */}
         <div id="s5-quiz" className="h-full">
           <QuizSlide
@@ -432,7 +721,7 @@ export function PM_Section5() {
         </div>
 
         {/* ═══════ QUIZ 2/3 ═══════ */}
-        <div className="h-full">
+        <div id="s5-quiz-2" className="h-full">
           <QuizSlide
             question="(2/3) You are PM for a public DeFi protocol. Contributors are pseudonymous and volunteer-driven. A critical bug needs urgent fixing but two core developers publicly disagree on the implementation approach. What leadership posture is most effective?"
             options={[
@@ -446,7 +735,7 @@ export function PM_Section5() {
         </div>
 
         {/* ═══════ QUIZ 3/3 ═══════ */}
-        <div className="h-full">
+        <div id="s5-quiz-3" className="h-full">
           <QuizSlide
             question="(3/3) At 12 months post-launch, which set of metrics best demonstrates that your blockchain project has delivered lasting value — not just a successful deployment event?"
             options={[
@@ -459,27 +748,16 @@ export function PM_Section5() {
           />
         </div>
 
-        {/* ═══════ DISCUSSION ═══════ */}
-        <div id="s5-discussion" className="h-full">
-          <DiscussionSlide
-            prompt="You are the PM for a DeFi protocol where the lead smart contract developer is also the most influential community member. They are resistant to your change management plan and are expressing this publicly in the governance forum. How do you handle this?"
-            guidingQuestions={[
-              'Your consortium blockchain project is six months behind schedule. One of the five consortium members wants to exit because of a business strategy change unrelated to your project. How do you manage: (a) the technical impact, (b) the governance impact, and (c) the communication to remaining members?',
-              'What does "success" look like for a blockchain project at 12 months post-launch? Define 5 metrics you would present to your executive sponsor as evidence that the project has delivered lasting value — not just a successful deployment.',
-            ]}
-          />
-        </div>
-
         {/* ═══════ TAKEAWAYS ═══════ */}
         <div id="s5-takeaways" className="h-full">
           <TakeawaySlide
-            title="Key Takeaways — Session 05"
+            title="Key Takeaways — Section 05"
             takeaways={[
-              'Blockchain teams require a unique cross-functional composition including roles not found in classical IT: token economists, auditors, DAO leads, and pseudonymous global contributors.',
-              'Leadership posture must match the project context: authoritative in enterprise consortia, servant leadership in public protocols, facilitative in DAOs.',
-              'Standard Agile ceremonies work for blockchain with key adaptations: specification freeze reviews, audit triage sessions, and mainnet Go/No-Go gates are non-negotiable additions.',
-              'Change management for blockchain requires addressing mental model shifts (trust in code over institutions) and providing abstraction layers that hide complexity from end users.',
-              'Project success is measured across eight dimensions: delivery, security, technical performance, adoption, governance health, compliance, team health, and long-term resilience.',
+              'The blockchain PM is a facilitator, coordinator, information integrator, accountable leader, and value enabler — delivering results through people rather than authority alone, with decision rights made explicit.',
+              'Trust in distributed, specialist-heavy blockchain teams is engineered, not assumed: transparency by default, competence-based delegation, predictable rituals, and psychological safety around bad news — most acutely before an irreversible gate.',
+              'No single leadership style fits every situation — servant leadership day-to-day, directive in a crisis, and a posture matched to context: authoritative in consortia, servant in public protocols, facilitative in DAOs.',
+              'Agile leadership enables fast re-prioritization under change, while blockchain-specific ceremonies — spec freeze reviews, audit triage, mainnet go/no-go gates — remain non-negotiable.',
+              'Manage conflict constructively (collaborate, compromise, facilitate, escalate, withdraw) and measure performance on quality outcomes and long-term value — smart contract quality, security incidents, deployment stability — not delivery speed alone.',
             ]}
           />
         </div>

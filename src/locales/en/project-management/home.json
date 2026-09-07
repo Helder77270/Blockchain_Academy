@@ -3,37 +3,41 @@
     "courseBadge": "Course 04",
     "titleLine1": "Project Management for",
     "titleLine2": "Blockchain Initiatives",
-    "tagline": "Plan, execute, and lead blockchain projects — bridging technical complexity and business outcomes.",
+    "tagline": "Learn how to effectively manage blockchain projects — combining PM best practices with blockchain's technical, regulatory, and stakeholder demands, from scoping through quality, change, and project closing.",
     "badges": {
-      "sessions": "5 Sessions",
+      "sessions": "6 Sections",
       "risk": "Risk Frameworks",
       "stakeholder": "Stakeholder Tools",
       "leadership": "Leadership Models"
     },
     "startLearning": "Start Learning"
   },
-  "sectionsTitle": "Course Sessions",
+  "sectionsTitle": "Course Sections",
   "explore": "Explore",
   "sections": {
     "section1": {
-      "title": "Introduction to Blockchain Project Management",
-      "description": "What makes blockchain projects unique, the project lifecycle, key roles, and the Agile vs Waterfall debate for decentralized teams."
+      "title": "Introduction to Blockchain Projects Management",
+      "description": "The elements of blockchain projects, project vs. product management, the delivery checklist, Agile vs. Waterfall, and stakeholder management."
     },
     "section2": {
       "title": "Project Planning & Scoping for Blockchain",
-      "description": "Decision frameworks, scope definition, stakeholder mapping, work breakdown structures, and governance models."
+      "description": "SMART objectives, the on-chain/off-chain boundary, WBS and the backlog fork, per-work-package tailoring, estimation, schedules, and AI-enabled planning tools."
     },
     "section3": {
       "title": "Risk Management in Blockchain Projects",
-      "description": "Technical, regulatory, and adoption risks — with assessment frameworks, smart contract audit processes, and mitigation strategies."
+      "description": "Risk principles, the four blockchain risk categories, assessment and prioritization, mitigation and contingency strategies, and the living risk register."
     },
     "section4": {
       "title": "Communication & Collaboration for Blockchain Teams",
-      "description": "Multi-stakeholder communication, translating technical to business, documentation practices, and decentralized governance."
+      "description": "Communicating with technical and non-technical stakeholders, lifecycle protocols, incident communication, and collaboration tool selection."
     },
     "section5": {
       "title": "Leading Blockchain Project Teams",
-      "description": "Team composition, leadership in decentralized contexts, Agile ceremonies, change management, and measuring project success."
+      "description": "The role of the blockchain PM, building trust in distributed teams, leadership styles, agile leadership, and conflict resolution."
+    },
+    "section6": {
+      "title": "Beyond Planning & Execution",
+      "description": "Quality management, the irreversible-commitment gate, monitoring and evaluation, change control, and project closure with transition to operations."
     },
     "conclusion": {
       "title": "Conclusion",
@@ -41,22 +45,7 @@
     }
   },
   "instructor": {
-    "title": "Meet the Instructor",
-    "subtitle": "The person behind this course",
-    "badge": "INSTRUCTOR",
-    "name": "Pedro Granate",
-    "role": "Co-founder, COO & CPO · Zharta",
-    "stats": {
-      "education": { "label": "Education", "value": "MSc Mechanical Engineering, IST" },
-      "experience": { "label": "Experience", "value": "10+ years PM & Operations" },
-      "industry": { "label": "Industry", "value": "Engineering · Manufacturing · Tech" }
-    },
-    "highlights": [
-      "MSc in Mechanical Engineering from IST (Instituto Superior Técnico)",
-      "Development Engineer at Bosch Termotecnologia",
-      "Project Manager in production & development roles",
-      "Project Manager at Hovione (CMO context)",
-      "Co-founder, COO & CPO at Zharta — product and operational strategy"
-    ]
+    "title": "Meet the Instructors",
+    "subtitle": "The people behind this course"
   }
 }

@@ -3,7 +3,7 @@ import helderPhoto from '../../Profile photos Helder.jpg';
 import shayanPhoto from '../../Profile photos Shayan.jpg';
 
 export interface InstructorData {
-  photo: string;
+  photo?: string;
   nickname: string;
   name: string;
   role: string;
@@ -45,9 +45,25 @@ export const shayan: InstructorData = {
   ],
 };
 
-export type InstructorId = 'helder' | 'shayan';
+export const zuzanna: InstructorData = {
+  nickname: 'Programme Coordinator, Blockchain.pt',
+  name: 'Zuzanna Dziedzic',
+  role: 'Project & Programme Manager · NOVA SBE',
+  gradient: 'from-[#f97316] to-[#eab308]',
+  accentColor: '#f97316',
+  highlights: [
+    'Project & Programme Manager with 10+ years leading international initiatives across development, innovation, and education',
+    'Delivered complex, multi-stakeholder projects under EuropeAid, UNDP, Horizon 2020, Innovate UK, EUROSTARS, and Erasmus+',
+    'PMP®-certified, with an ITCILO Certificate in Monitoring & Evaluation (Results-Based Management)',
+    "MA in Political Science and a Postgraduate Diploma in Humanitarian Action",
+    'Programme Coordinator of the Blockchain.pt (PRR) initiative at NOVA SBE',
+    'Designed the Blockchain Academy programme and its project-management training materials under the Ripple Impact Fund',
+  ],
+};
 
-const INSTRUCTORS: Record<InstructorId, InstructorData> = { helder, shayan };
+export type InstructorId = 'helder' | 'shayan' | 'zuzanna';
+
+const INSTRUCTORS: Record<InstructorId, InstructorData> = { helder, shayan, zuzanna };
 
 /**
  * Returns instructor data with the localized fields (nickname, role,
